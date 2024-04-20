@@ -10,6 +10,7 @@ An experimental framework for RedM. Limited support and breaking changes guarant
    - [oxmysql](https://overextended.dev/oxmysql)
    - [ox_lib](https://overextended.dev/ox_lib)
    - [frp_creator](https://github.com/faroeste-roleplay/frp_creator)
+   - [frp_queue](https://github.com/faroeste-roleplay/frp_queue)
    - [frp_spawn_selector](https://github.com/faroeste-roleplay/frp_spawn_selector)
 2. Download a release or build the source code.
    - ```git clone https://github.com/faroeste-roleplay/frp_core.git```

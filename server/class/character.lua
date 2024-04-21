@@ -15,7 +15,7 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
     self.xp = xp or 0
     self.role = role or 0
 
-    self.initialize = function(this, userId, source)
+    self.Initialize = function(this, userId, source)
         self:setSource(source)
         self:setUserId(userId)
 
@@ -34,39 +34,39 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
         self.Inventory = res
     end
 
-    self.setUserId = function(this, v)
+    self.SetUserId = function(this, v)
         self.userId = v
     end
 
-    self.setSource = function(this, v)
+    self.SetSource = function(this, v)
         self.source = v
     end
 
-    self.getUserId = function()
+    self.GetUserId = function()
         return self.userId
     end
 
-    self.getSource = function()
+    self.GetSource = function()
         return self.source
     end
 
-    self.getInventory = function()
+    self.GetInventory = function()
         return self.Inventory
     end
 
-    self.getId = function()
+    self.GetId = function()
         return self.id
     end
 
-    self.getFullName = function()
+    self.GetFullName = function()
         return string.format("%s %s", self.firstName, self.lastName)
     end
 
-    self.getAge = function()
+    self.GetAge = function()
         return self.charAge
     end
 
-    self.getmetaData = function(key)
+    self.GetMetadata = function(key)
         local rows = API_Database.query("FRP/GetCharMetadata", {charId = self.id})
         if rows and rows[1] then
             self.metaData = rows[1]
@@ -79,7 +79,7 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
         return rows[1]
     end
 
-    function self.setMetaData(meta, val)
+    function self.SetMetadata(meta, val)
         if not meta or type(meta) ~= 'string' then return end
         self.metaData[meta] = val;
 
@@ -87,17 +87,17 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
         return rows
     end
 
-    self.savePosition = function(this, x, y, z)
+    self.SavePosition = function(this, x, y, z)
         local encoded = vector3(x, y, z)
-        self:setMetaData("position", encoded)
+        self:SetMetadata("position", encoded)
     end
 
-    self.getLastPosition = function(this)
-        local lastPositionFromDb = self:getmetaData("position")
+    self.GetLastPosition = function(this)
+        local lastPositionFromDb = self:GetMetadata("position")
         return lastPositionFromDb ~= nil and json.decode(lastPositionFromDb) or vector3(-329.9, 775.11, 121.74)
     end
 
-    self.setCharacterAppearance = function( this, characterAppearance )
+    self.SetCharacterAppearance = function( this, characterAppearance )
         local res = MySQL.insert.await([[
             INSERT INTO character_appearance 
                 (charId, isMale, expressions, bodyApparatusId, bodyApparatusStyleId,
@@ -116,7 +116,7 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
         return res
     end
 
-    self.setCharacterAppearanceCustomizable = function( this, characterAppearance )
+    self.SetCharacterAppearanceCustomizable = function( this, characterAppearance )
         local res = MySQL.insert.await([[
             INSERT INTO character_appearance_customizable 
                 (charId, overridePedModel, overridePedIsMale, equippedOutfitId,
@@ -133,7 +133,7 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
         return res
     end
 
-    self.setCharacterAppearanceOverlays = function( this, characterAppearanceOverlays )
+    self.SetCharacterAppearanceOverlays = function( this, characterAppearanceOverlays )
         local res = MySQL.insert.await([[
             INSERT INTO character_appearance_overlays 
                 (charId, data)
@@ -146,15 +146,15 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
         return res
     end
 
-    self.setCharacterExpessions = function( this, expressions )
+    self.SetCharacterExpessions = function( this, expressions )
         
     end
 
-    self.setCharacterWhistle = function(this, whistle)
+    self.SetCharacterWhistle = function(this, whistle)
         local whistleShape, whistlePitch, whistleClarity = table.unpack( whistle )
     end
 
-    self.release = function(this)
+    self.Release = function(this)
         TriggerEvent("API:ReleaseCharacter", self.source)
     end
 

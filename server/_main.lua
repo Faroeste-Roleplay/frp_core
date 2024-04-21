@@ -18,6 +18,6 @@ cAPI = Tunnel.getInterface("API")
 
 AddEventHandler("onResourceStop", function(resName)
     if resName == GetCurrentResourceName() then
-        API.destroyResourcesCoreDependancies()
+        API.DestroyResourcesCoreDependancies()
     end
 end)

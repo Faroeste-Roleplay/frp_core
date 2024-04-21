@@ -18,7 +18,7 @@ function API.User(playerId, id, ipAddress, identifiers)
     self.identifiers = identifiers or MapIdentifiers( GetPlayerIdentifiers(self.source) )
     self.primaryIdentifier = nil
 
-    self.initialize = function()
+    self.Initialize = function()
         local mappedIdentifiers =  self.identifiers
         self.primaryIdentifier = mappedIdentifiers[Config.PrimaryIdentifier]
 
@@ -38,30 +38,30 @@ function API.User(playerId, id, ipAddress, identifiers)
         self.numMaxSlots = res.numCharSlots
     end
 
-    self.userLoadded = function(this)
-        self:updateName( GetPlayerName(self.source) )
+    self.UserLoadded = function(this)
+        self:UpdateName( GetPlayerName(self.source) )
     end
 
-    self.updateName = function( this, name )
+    self.UpdateName = function( this, name )
         self.name = name
         API_Database.query("FRP/SetUsername", {id = self.id, name = name})
     end
 
     -- @return The source or player server id
-    self.getSource = function()
+    self.GetSource = function()
         return self.source
     end
 
     -- @return the userId
-    self.getId = function()
+    self.GetId = function()
         return self.id
     end
 
-    self.getIpAddress = function()
+    self.GetIpAddress = function()
         return ipAddress
     end
 
-    self.getIdentifiers = function()
+    self.GetIdentifiers = function()
         local num = GetNumPlayerIdentifiers(self.source)
 
         local identifiers = {}
@@ -72,7 +72,7 @@ function API.User(playerId, id, ipAddress, identifiers)
         return identifiers
     end
 
-    self.getCharacters = function()
+    self.GetCharacters = function()
         local rows = API_Database.query("FRP/GetCharacters", {userId = self.id})
 
         if #rows > 0 then
@@ -82,13 +82,13 @@ function API.User(playerId, id, ipAddress, identifiers)
         return false
     end
 
-    self.createCharacter = function(this, firstName, lastName, birthDate, playerProfileCreation)
+    self.CreateCharacter = function(this, firstName, lastName, birthDate, playerProfileCreation)
         local Character = nil
 
         local metaData = { position = Config.DefaultSpawnPosition }
 
         local rows = API_Database.query("FRP/CreateCharacter", {
-            userId = self:getId(),
+            userId = self:GetId(),
             firstName = firstName,
             lastName = lastName,
             -- birthDate = birthDate,
@@ -117,9 +117,9 @@ function API.User(playerId, id, ipAddress, identifiers)
                 charId,
             })
             playerProfileCreation.components.expressions = playerProfileCreation.faceFeatures
-            Character:setCharacterAppearance(   playerProfileCreation.components    )
-            Character:setCharacterAppearanceCustomizable(    playerProfileCreation.componentsCustomizable    )
-            Character:setCharacterAppearanceOverlays(    playerProfileCreation.overlays    )
+            Character:SetCharacterAppearance(   playerProfileCreation.components    )
+            Character:SetCharacterAppearanceCustomizable(    playerProfileCreation.componentsCustomizable    )
+            Character:SetCharacterAppearanceOverlays(    playerProfileCreation.overlays    )
             
             API_Database.execute("FRP/CreateCharStatus", {
                 charId = charId,
@@ -138,15 +138,15 @@ function API.User(playerId, id, ipAddress, identifiers)
         return charId
     end
 
-    self.deleteCharacter = function(this, id)
+    self.DeleteCharacter = function(this, id)
         API_Database.execute("FRP/DeleteCharacter", {charId = id})
     end
 
-    self.setCharacter = function(this, id)
+    self.SetCharacter = function(this, id)
         local charRow = API_Database.query("FRP/GetCharacter", {charId = id})
 
         if #charRow > 0 then
-            API.chars[id] = self:getId()
+            API.chars[id] = self:GetId()
 
             local charData = charRow[1]
 
@@ -160,7 +160,7 @@ function API.User(playerId, id, ipAddress, identifiers)
                 charData.deathState
             )
 
-            self.Character:initialize(self.id, self.source)
+            self.Character:Initialize(self.id, self.source)
             TriggerEvent("API:OnUserSelectCharacter", self, id)
 
             return self.Character
@@ -171,18 +171,18 @@ function API.User(playerId, id, ipAddress, identifiers)
     --
     -- @return Character Object of the actual selected character
 
-    self.getCharacter = function()
+    self.GetCharacter = function()
         return self.Character
     end
 
-    self.saveCharacter = function()
+    self.SaveCharacter = function()
         -- if self.Character ~= nil then
-        --     self.Character:savePosition(Character:getLastPosition())
+        --     self.Character:SavePosition(Character:getLastPosition())
         -- end
     end
 
-    self.drawCharacter = function()
-        local Character = self:getCharacter()
+    self.DrawCharacter = function()
+        local Character = self:GetCharacter()
 
         -- local character_model = Character:getModel()
 
@@ -190,22 +190,22 @@ function API.User(playerId, id, ipAddress, identifiers)
 
         --local character_clothing = Character:getClothes()
 
-        local character_lastposition = Character:getLastPosition()
+        local character_lastposition = Character:GetLastPosition()
 
         -- local character_stats = Character:getCachedStats()
 
         if characters_appearence ~= nil then
-            cAPI.Initialize(self:getSource(), character_model, characters_appearence, character_lastposition, character_stats)
+            cAPI.Initialize(self:GetSource(), character_model, characters_appearence, character_lastposition, character_stats)
         end
 
         -- cAPI.CWanted(Character:getWanted())
     end
 
-    self.disconnect = function(this, reason)
+    self.Disconnect = function(this, reason)
         DropPlayer(self:getSource(), reason)
     end
 
-    self.notify = function(this, type, text, quantity)
+    self.Notify = function(this, type, text, quantity)
         -- Notify(self:getSource(), v)
         if type ~= nil and text == nil and quantity == nil then
             text = type
@@ -221,19 +221,19 @@ function API.User(playerId, id, ipAddress, identifiers)
         TriggerClientEvent("API:UserLogout", self.source)
     end
     
-    self.save = function()
+    self.Save = function()
         
     end
 
-    self.drop = function(reason)
-        User:clearCache()
+    self.Drop = function(reason)
+        User:ClearCache()
 
         DropPlayer(self.source, reason)
 
         print(#GetPlayers() .. "/".. GetConvarInt('sv_maxclients', 32) .."| " .. self.name .. " (" .. self.ipAddress .. ") desconectou (motivo = " .. reason .. ")")
     end
 
-    self.clearCache = function() 
+    self.ClearCache = function() 
         TriggerClientEvent("FRP:_CORE:SetServerIdAsUserId", -1, self.source, nil)
 
         API.sources[self.source] = nil

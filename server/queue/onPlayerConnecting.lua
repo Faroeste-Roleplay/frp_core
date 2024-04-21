@@ -263,7 +263,7 @@ function onPlayerJoining(temporaryPlayerId)
 	local identifiers = GetPlayerIdentifiers(temporaryPlayerId)
 	local mappedIdentifiers = MapIdentifiers(identifiers)
 
-	connectUser(permanentPlayerId, userId, mappedIdentifiers)
+	API.ConnectUser(permanentPlayerId, userId, mappedIdentifiers)
 
 	-- Users[permanentPlayerId] = user
 	-- Users[temporaryPlayerId] = nil

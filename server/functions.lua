@@ -1,14 +1,14 @@
-function API.destroyResourcesCoreDependancies()
+function API.DestroyResourcesCoreDependancies()
     for _, User in pairs(API.users) do
         User:Logout()
     end
 end
 
-function API.getSources()
+function API.GetSources()
     return API.sources
 end
 
-function API.logs(archive, text)
+function API.Logs(archive, text)
     archive = io.open(archive, "a")
     if archive then
         archive:write(text .. "\n")
@@ -16,29 +16,29 @@ function API.logs(archive, text)
     archive:close()
 end
 
-function API.dropPlayer(source, reason)
-    local User = API.getUserFromSource(source)
+function API.DropPlayer(source, reason)
+    local User = API.GetUserFromSource(source)
     if User then
-        User:drop(reason)
+        User:Drop(reason)
     end
 end
 
-function API.kick(source, reason)
-    API.dropPlayer(source, reason)
+function API.Kick(source, reason)
+    API.DropPlayer(source, reason)
 end
 
 function API.NotifyUsersWithGroup(group, message, checkForInheritance)
     for userId, User in pairs(API.users) do
-        local Character = User:getCharacter()
+        local Character = User:GetCharacter()
 
         if Character ~= nil then
             if checkForInheritance == nil or checkForInheritance == true then
-                if Character:hasGroupOrInheritance(group) then
-                    User:notify(message)
+                if Character:HasGroupOrInheritance(group) then
+                    User:Notify(message)
                 end
             else
-                if Character:hasGroup(group) then
-                    User:notify(message)
+                if Character:HasGroup(group) then
+                    User:Notify(message)
                 end
             end
         end
@@ -49,10 +49,10 @@ function API.NotifyUsersOrg(org_id, message)
     local members = exports.orgs:GetMembersOrg(org_id)
 
     for userId, User in pairs(API.users) do
-        local Character = User:getCharacter()
+        local Character = User:GetCharacter()
 
         if Character ~= nil and members[Character.id] ~= nil and members[Character.id].member_id ~= nil and members[Character.id].member_id > 0 then
-            User:notify(message)
+            User:Notify(message)
         end
     end
 end

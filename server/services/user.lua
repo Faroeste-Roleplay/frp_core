@@ -50,11 +50,11 @@ function API.getUserFromUserId(userId)
     return API.users[userId]
 end
 
-function API.getUserFromSource(source)
+function API.GetUserFromSource(source)
     return API.users[API.sources[source]]
 end
 
-function API.getUserIdFromSourceIdentifier(source)
+function API.GetUserIdFromSourceIdentifier(source)
     if source ~= nil then
         local ids = GetPlayerIdentifiers(source)
         if ids ~= nil and #ids > 0 then
@@ -64,14 +64,14 @@ function API.getUserIdFromSourceIdentifier(source)
     return nil
 end
 
-function API.getUserFromCharId(charId)
+function API.GetUserFromCharId(charId)
     if API.users[API.chars[tonumber(charId)]] then
         return API.users[API.chars[tonumber(charId)]]
     end
     return nil
 end
 
-function API.getUserIdFromCharId(charId)
+function API.GetUserIdFromCharId(charId)
     if API.chars[charId] then
         return API.chars[charId]
     else
@@ -83,18 +83,18 @@ function API.getUserIdFromCharId(charId)
     return nil
 end
 
-function API.getUsersByGroup(group, checkForInheritance)
+function API.GetUsersByGroup(group, checkForInheritance)
     local ret = {}
 
-    for userId, User in pairs(API.getUsers()) do
-        local Character = User:getCharacter()
+    for userId, User in pairs(API.GetUsers()) do
+        local Character = User:GetCharacter()
         if Character ~= nil then
             if checkForInheritance == nil or checkForInheritance == true then
-                if Character:hasGroupOrInheritance(group) then
+                if Character:HasGroupOrInheritance(group) then
                     table.insert(ret, User)
                 end
             else
-                if Character:hasGroup(group) then
+                if Character:HasGroup(group) then
                     table.insert(ret, User)
                 end
             end
@@ -104,11 +104,11 @@ function API.getUsersByGroup(group, checkForInheritance)
     return ret
 end
 
-function API.getUsers()
+function API.GetUsers()
     return API.users
 end
 
-function API.setBanned(this, userid, reason)
+function API.SetBanned(this, userid, reason)
     if userid ~= nil then
         API_Database.query("FRP/SetBanned", {userId = userid, reason = reason})
         DropPlayer(this, reason)
@@ -122,7 +122,7 @@ function API.UnBan(this, userid)
     end
 end
 
-function API.isBanned(userId)
+function API.IsBanned(userId)
     local rows = API_Database.query("FRP/BannedUser", {userId = userId})
     
     if #rows > 0 then
@@ -132,7 +132,7 @@ function API.isBanned(userId)
     end
 end
 
-function API.isWhitelisted(identifier)
+function API.IsWhitelisted(identifier)
     local rows = API_Database.query("FRP/Whitelisted", {identifier = identifier})
     
     if #rows > 0 then        
@@ -142,14 +142,14 @@ function API.isWhitelisted(identifier)
     end
 end
 
-function API.setAsWhitelisted(userId, whitelisted)
+function API.SetAsWhitelisted(userId, whitelisted)
     if whitelisted then
-        if not API.isWhitelisted(userId) then
+        if not API.IsWhitelisted(userId) then
             API_Database.execute("AddIdentifierWhitelist", {userId = userId})
             return true
         end
     else
-        if API.isWhitelisted(userId) then
+        if API.IsWhitelisted(userId) then
             API_Database.execute("RemoveIdentifierWhitelist", {userId = userId})
             return true
         end

@@ -1,3 +1,5 @@
+-- Original Author (see LICENSE or https://github.com/ImagicTheCat/vRP)
+
 SERVER = IsDuplicityVersion()
 CLIENT = not SERVER
 

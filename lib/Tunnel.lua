@@ -1,3 +1,6 @@
+-- https://github.com/ImagicTheCat/vRP
+-- MIT license (see LICENSE or vrp/vRPShared.lua)
+
 local Tools = module("lib/Tools")
 
 local TriggerRemoteEvent = nil

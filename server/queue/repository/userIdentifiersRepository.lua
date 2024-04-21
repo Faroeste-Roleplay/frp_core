@@ -12,7 +12,7 @@ function GetUserFromIdentifiersRepository(mappedIdentifiers)
             identifier
         })
 
-        if res.id then
+        if res?.id then
             user = res
             break
         end

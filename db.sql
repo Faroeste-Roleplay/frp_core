@@ -310,3 +310,72 @@ CREATE TABLE IF NOT EXISTS `user_credentials` (
   KEY `FK_user_credentials_user` (`userId`),
   CONSTRAINT `FK_user_credentials_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+
+ALTER TABLE `ox_inventory`
+	ADD COLUMN `id` INT NOT NULL AUTO_INCREMENT FIRST,
+	ADD PRIMARY KEY (`id`);
+
+CREATE TABLE `transport` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`type` ENUM('Horse','Vehicle','Boat') NOT NULL COLLATE 'utf8mb4_general_ci',
+	`modelName` VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
+	`name` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
+	`ownerId` INT(11) NOT NULL,
+	`inventoryId` INT(11) NOT NULL,
+	`createdAt` DATETIME NULL DEFAULT NULL,
+	PRIMARY KEY (`id`) USING BTREE,
+	INDEX `FK_transport_character` (`ownerId`) USING BTREE,
+	INDEX `FK_transport_ox_inventory` (`inventoryId`) USING BTREE,
+	CONSTRAINT `FK_transport_character` FOREIGN KEY (`ownerId`) REFERENCES `character` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
+	CONSTRAINT `FK_transport_ox_inventory` FOREIGN KEY (`inventoryId`) REFERENCES `ox_inventory` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+)
+COLLATE='utf8mb4_general_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=1
+;
+
+CREATE TABLE `transport_horse` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`transportId` INT(11) NULL DEFAULT NULL,
+	`isMale` TINYINT(1) NULL DEFAULT '1',
+	`equipmentsInventoryId` INT(11) NULL DEFAULT NULL,
+	PRIMARY KEY (`id`) USING BTREE,
+	UNIQUE INDEX `transportId` (`transportId`) USING BTREE,
+	CONSTRAINT `FK_transport_horse_transport` FOREIGN KEY (`transportId`) REFERENCES `transport` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+)
+COLLATE='utf8mb4_general_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=1
+;
+
+CREATE TABLE `transport_state` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`transportId` INT(11) NULL DEFAULT NULL,
+	`isDestroyedOrDead` TINYINT(1) NOT NULL DEFAULT '0',
+	`wasDestroyedOrDiedAt` DATETIME NULL DEFAULT NULL,
+	PRIMARY KEY (`id`) USING BTREE,
+	UNIQUE INDEX `transportId` (`transportId`) USING BTREE,
+	CONSTRAINT `FK_transport_state_transport` FOREIGN KEY (`transportId`) REFERENCES `transport` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+)
+COLLATE='utf8mb4_general_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=1
+;
+
+CREATE TABLE `transport_state_horse` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`transportId` INT(11) NULL DEFAULT NULL,
+	`currHealth` TINYINT(3) UNSIGNED NOT NULL DEFAULT '100',
+	`currHealthCore` TINYINT(3) UNSIGNED NOT NULL DEFAULT '100',
+	`currStamina` TINYINT(3) UNSIGNED NOT NULL DEFAULT '1',
+	`currStaminaCore` TINYINT(3) UNSIGNED NOT NULL DEFAULT '100',
+	`updatedAt` DATETIME NOT NULL,
+	PRIMARY KEY (`id`) USING BTREE,
+	UNIQUE INDEX `transportId` (`transportId`) USING BTREE,
+	CONSTRAINT `FK_transport_state_horse_transport` FOREIGN KEY (`transportId`) REFERENCES `transport` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+)
+COLLATE='utf8mb4_general_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=1
+;

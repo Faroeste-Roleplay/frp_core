@@ -420,13 +420,13 @@ end
 function cAPI.PackPedComponents( playerProfileCreation, playerAppearanceComponents )
     return {
         isMale = playerProfileCreation?.isMale,
-        bodyApparatusId = playerAppearanceComponents?.BODIES_UPPER?[2] or 0,
-        bodyApparatusStyleId = playerAppearanceComponents?.BODIES_UPPER?[1] or 0,
+        bodyApparatusId = playerAppearanceComponents?.BODIES_UPPER[2],
+        bodyApparatusStyleId = playerAppearanceComponents?.BODIES_UPPER[1],
 
-        headApparatusId = playerAppearanceComponents?.heads?[1] or 0,
-        teethApparatusStyleId = playerAppearanceComponents?.teeth?[2] or 0,
-        eyesApparatusId = playerAppearanceComponents?.eyes?[1] or 0,
-        eyesApparatusStyleId = playerAppearanceComponents?.eyes?[2] or 0,
+        headApparatusId = playerAppearanceComponents?.heads[1],
+        teethApparatusStyleId = playerAppearanceComponents?.teeth[2],
+        eyesApparatusId = playerAppearanceComponents?.eyes[1],
+        eyesApparatusStyleId = playerAppearanceComponents?.eyes[2],
 
         -- whistleShape = playerAppearanceComponents[1],
         -- whistlePitch = playerAppearanceComponents[1],

@@ -1,3 +1,7 @@
+-- Original Author (see LICENSE or https://github.com/ImagicTheCat/vRP)
+
+-- This file describe a two way proxy between the server and the clients (request system).
+
 local Tools = module("lib/Tools")
 
 local TriggerRemoteEvent = nil

@@ -1,3 +1,7 @@
+-- Original Author (see LICENSE or https://github.com/ImagicTheCat/vRP)
+
+-- Proxy interface system, used to add/call functions between resources
+
 local Tools = module("lib/Tools")
 
 local Proxy = {}

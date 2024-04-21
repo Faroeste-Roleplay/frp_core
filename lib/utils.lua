@@ -1,3 +1,7 @@
+-- Original Author (see LICENSE or https://github.com/ImagicTheCat/vRP)
+
+-- This file define global tools required by vRP and vRP extensions.
+
 SERVER = IsDuplicityVersion()
 CLIENT = not SERVER
 

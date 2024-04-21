@@ -88,13 +88,13 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
     end
 
     self.savePosition = function(this, x, y, z)
-        local encoded = json.encode({x, y, z})
+        local encoded = vector3(x, y, z)
         self:setMetaData("position", encoded)
     end
 
     self.getLastPosition = function(this)
         local lastPositionFromDb = self:getmetaData("position")
-        return lastPositionFromDb ~= nil and json.decode(lastPositionFromDb) or {-329.9, 775.11, 121.74}
+        return lastPositionFromDb ~= nil and json.decode(lastPositionFromDb) or vector3(-329.9, 775.11, 121.74)
     end
 
     self.setCharacterAppearance = function( this, characterAppearance )

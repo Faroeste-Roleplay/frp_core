@@ -2,7 +2,7 @@ Config = {}
 
 Config.Allowlist = false
 
-Config.DefaultSpawnPosition = vec3(-1099.470, -1839.129, 60.327)
+Config.DefaultSpawnPosition = vector3(-1099.470, -1839.129, 60.327)
 
 -- [[ steam or discord or fivem]]
 Config.PrimaryIdentifier = "steam"

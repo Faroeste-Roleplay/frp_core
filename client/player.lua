@@ -19,14 +19,16 @@ function cAPI.Initialize(pedModel, charAppearence, lastPosition, stats)
     if lastPosition == nil then
         lastPosition = Config.DefaultSpawnPosition
     end
-
-    local decodedLastPosition = json.decode(lastPosition)
+    decodedLastPosition = lastPosition
+    if type(lastPosition) ~= "vector3" then
+        decodedLastPosition = json.decode(lastPosition)
+    end
     
     if decodedLastPosition.x ~= nil then
         decodedLastPosition = {decodedLastPosition.x, decodedLastPosition.y, decodedLastPosition.z}
     end
 
-    local pScale = gCharAppearence.pedSize
+    local pScale = gCharAppearence?.pedSize
     -- local pClothing
 
     -- if type(clothing) ~= "string" then
@@ -53,10 +55,10 @@ function cAPI.Initialize(pedModel, charAppearence, lastPosition, stats)
     cAPI.SetPlayerAppearence(PlayerPedId())
     --  cAPI.SetPedCloAthing(PlayerPedId(), pClothing)
 
-    pHealth = pStats[1] or 250
-    pStamina = pStats[2] or 34.0
-    pHealthCore = pStats[3] or 100
-    pStaminaCore = pStats[3] or 100
+    pHealth = pStats?[1] or 250
+    pStamina = pStats?[2] or 34.0
+    pHealthCore = pStats?[3] or 100
+    pStaminaCore = pStats?[3] or 100
 
     Wait(3000)
 
@@ -73,20 +75,20 @@ function cAPI.SetPlayerAppearence(playerId)
 
     --cAPI.SetPedBodyType(PlayerPedId(), pBodySize)    
 
-    cAPI.SetSkin(playerId, gCharAppearence.enabledComponents)   
+    cAPI.SetSkin(playerId, gCharAppearence?.enabledComponents)   
 
-    cAPI.SetPedFaceFeature(playerId, gCharAppearence.faceFeatures)    
+    cAPI.SetPedFaceFeature(playerId, gCharAppearence?.faceFeatures)    
 
-    cAPI.SetPedScale(playerId, gCharAppearence.pedHeight) 
+    cAPI.SetPedScale(playerId, gCharAppearence?.pedHeight) 
     
-    cAPI.SetPedOverlay(playerId, gCharAppearence.overlays)
+    cAPI.SetPedOverlay(playerId, gCharAppearence?.overlays)
     
-    local bodySize = json.decode(gCharAppearence.enabledComponents)
+    local bodySize = json.decode(gCharAppearence?.enabledComponents)
 
-    cAPI.SetPedPortAndWeight(playerId, bodySize['porte'], gCharAppearence.pedWeight)
+    cAPI.SetPedPortAndWeight(playerId, bodySize?['porte'] or 0, gCharAppearence?.pedWeight)
 
-    if gCharAppearence.clothes ~= nil then
-        cAPI.SetSkin(playerId, gCharAppearence.clothes)   
+    if gCharAppearence?.clothes ~= nil then
+        cAPI.SetSkin(playerId, gCharAppearence?.clothes)   
     end
     
 end

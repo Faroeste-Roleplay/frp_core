@@ -1,5 +1,6 @@
--- https://github.com/ImagicTheCat/vRP
--- MIT license (see LICENSE or vrp/vRPShared.lua)
+-- Original Author (see LICENSE or https://github.com/ImagicTheCat/vRP)
+
+-- This file describe a two way proxy between the server and the clients (request system).
 
 local Tools = module("lib/Tools")
 

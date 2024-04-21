@@ -33,6 +33,9 @@ function cAPI.SetPedScale(ped, num)
 end
 
 function cAPI.SetPedOverlay(ped, data)
+    if data == nil then
+        return
+    end
     if data ~= "{}" then
         data = json.decode(data)
         for i = 1, #data do
@@ -77,7 +80,7 @@ end
 
 function cAPI.SetPedFaceFeature(ped, faceFeatures)
     faceFeatures = json.decode(faceFeatures)
-
+    if faceFeatures == nil then return end
     for index, floatValue in pairs(faceFeatures) do
         -- Doesn't need to be requested !!!!!!        
         NativeSetPedFaceFeature(ped, tonumber(index), tonumber(floatValue))
@@ -99,7 +102,9 @@ end
 
 function cAPI.SetSkin(ped, componentArray)
     componentArray = json.decode(componentArray)
-
+    if componentArray == nil then
+        return
+    end
     local isMale = "female"
 
     if IsPedMale(ped) then

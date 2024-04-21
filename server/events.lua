@@ -7,8 +7,10 @@ AddEventHandler('playerDropped', function(reason)
 
     local wasReleased, userRef = ReleasePlayerUserAsDisconnected(source, reason)
 
-    local Character = User:Character()
-    Character:SetLastPosition( playerPosition )
+    if User then 
+        local Character = User:Character()
+        Character:setLastPosition( playerPosition )
+    end 
 
 	if wasReleased then
         TriggerEvent("FRP:playerDropped", playerId, User)

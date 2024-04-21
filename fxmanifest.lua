@@ -35,7 +35,7 @@ server_scripts {
 	'@oxmysql/lib/MySQL.lua',
 	"lib/deferalsCard.lua",
 
-    '@logs/import.lua',
+    '@frp_logs/import.lua',
 	---------------------
 	"server/database.lua",
 	"server/_main.lua",

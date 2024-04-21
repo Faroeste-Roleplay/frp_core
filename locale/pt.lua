@@ -1,4 +1,4 @@
-i18n.importData("en", {
+i18n.importData("pt", {
     error = {
         create_user = 'Não foi possível criar seu usuário, contate um Desenvolvedor!',
         user_connected = 'O seu usuário já está conectado no servidor. Tente novamente mais tarde!',

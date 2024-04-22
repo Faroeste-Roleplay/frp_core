@@ -216,7 +216,7 @@ function API.User(playerId, id, ipAddress, identifiers)
     end
 
     self.Logout = function()
-        self.Character:release()
+        self.Character:Release()
         self.Character = nil
         TriggerClientEvent("API:UserLogout", self.source)
     end

@@ -5,8 +5,10 @@ AddEventHandler('playerDropped', function(reason)
     local userId = API.sources[playerId]
     local User = API.users[userId]
 
-	local Character = User:Character()
-	Character:SetLastPosition( playerPosition )
+	local Character = User:GetCharacter()
+	if Character then
+		Character:SetLastPosition( playerPosition )
+	end
 
     local wasReleased, userRef = ReleasePlayerUserAsDisconnected(source, reason)
 

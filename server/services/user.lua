@@ -157,3 +157,13 @@ function API.SetAsWhitelisted(userId, whitelisted)
 
     return false
 end
+
+function API.ClearUserFromCache(source, userId)
+    local User = API.users[userId]
+
+    TriggerClientEvent("FRP:_CORE:SetServerIdAsUserId", -1,source, nil)
+
+    API.sources[source] = nil
+    API.users[userId] = nil
+    API.identifiers[User.primaryIdentifier] = nil
+end

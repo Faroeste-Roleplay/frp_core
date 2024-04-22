@@ -6,6 +6,7 @@ AddEventHandler('playerDropped', function(reason)
     local User = API.users[userId]
 
 	local Character = User:GetCharacter()
+
 	if Character then
 		Character:SavePosition( playerPosition )
 	end
@@ -13,6 +14,7 @@ AddEventHandler('playerDropped', function(reason)
     local wasReleased, userRef = ReleasePlayerUserAsDisconnected(source, reason)
 
 	if wasReleased then
+        API.ClearUserFromCache(playerId, userId)
 		TriggerEvent("FRP:playerDropped", playerId, User)
 	end
 end)

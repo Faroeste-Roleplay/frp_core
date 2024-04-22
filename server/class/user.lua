@@ -225,21 +225,9 @@ function API.User(playerId, id, ipAddress, identifiers)
     end
 
     self.Drop = function(reason)
-        User:ClearCache()
-
         DropPlayer(self.source, reason)
 
         print(#GetPlayers() .. "/".. GetConvarInt('sv_maxclients', 32) .."| " .. self.name .. " (" .. self.ipAddress .. ") desconectou (motivo = " .. reason .. ")")
-    end
-
-    self.ClearCache = function() 
-        TriggerClientEvent("FRP:_CORE:SetServerIdAsUserId", -1, self.source, nil)
-
-        API.sources[self.source] = nil
-        API.users[self.id] = nil
-        API.identifiers[self.primaryIdentifier] = nil
-
-        self = nil
     end
 
     return self

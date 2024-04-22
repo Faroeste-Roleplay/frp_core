@@ -285,6 +285,7 @@ AddEventHandler('playerJoining', onPlayerJoining)
 
 function ReleasePlayerUserAsDisconnected(playerId, reason)
 	local userId = API.sources[playerId]
+    local User = API.users[userId]
 
 	if not userId then
 		return
@@ -299,7 +300,7 @@ function ReleasePlayerUserAsDisconnected(playerId, reason)
 
 	SetUserIdLock(userId, false)
 
-	return true, user
+	return true, User
 end
 
 function SetUserIdLock(userId, locked)

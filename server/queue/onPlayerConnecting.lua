@@ -294,13 +294,8 @@ function ReleasePlayerUserAsDisconnected(playerId, reason)
 
 	log:captureMessage( ('Usuário %s se desconectou | "%s" '):format(userId, reason or '?') )
 
-	-- if not userId then
-	-- 	return false, nil
-	-- end
-
-	-- db.updateUser(user.get('identifier'), { money = user.getMoney(), bank = user.getBank() })
-	
-	API.users[userId] = nil
+	User:Save()
+	User:ClearCache()
 
 	SetUserIdLock(userId, false)
 

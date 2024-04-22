@@ -66,34 +66,37 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
         return self.charAge
     end
 
-    self.GetMetadata = function(key)
-        local rows = API_Database.query("FRP/GetCharMetadata", {charId = self.id})
-        if rows and rows[1] then
-            self.metaData = rows[1]
+    self.GetMetadata = function(this, key)
+        if not self.metaData[key] then
+            local rows = API_Database.query("FRP/GetCharMetadata", {charId = self.id})
+
+            if rows and rows[1] then
+                local rowDecoded = rows[1]
+                self.metaData = json.decode(rowDecoded.metaData)
+            end
         end
 
         if key then
-            return rows[1][key]
+            return self.metaData[key]
         end
 
-        return rows[1]
+        return self.metaData
     end
 
-    function self.SetMetadata(meta, val)
+    function self.SetMetadata(this, meta, val)
         if not meta or type(meta) ~= 'string' then return end
         self.metaData[meta] = val;
-
-        local rows = API_Database.query("FRP/UpdateCharMetadata", {charId = self.id, metaData = self.metaData})
+        local rows = API_Database.query("FRP/UpdateCharMetadata", {charId = self.id, metaData = json.encode(self.metaData)})
         return rows
     end
 
     self.SavePosition = function(this, position)
-        self:SetMetadata("position", json.encode( position ))
+        self:SetMetadata("position", position)
     end
 
     self.GetLastPosition = function(this)
         local lastPositionFromDb = self:GetMetadata("position")
-        return lastPositionFromDb ~= nil and json.decode(lastPositionFromDb) or vector3(-329.9, 775.11, 121.74)
+        return lastPositionFromDb ~= nil and vector3(lastPositionFromDb.x, lastPositionFromDb.y, lastPositionFromDb.z) or vector3(-329.9, 775.11, 121.74)
     end
 
     self.SetCharacterAppearance = function( this, characterAppearance )

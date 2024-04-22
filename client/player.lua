@@ -41,18 +41,16 @@ function cAPI.Initialize(pedModel, charAppearence, lastPosition, stats)
 
     local pStats = stats
 
-    Citizen.CreateThread(
-        function()
-            cAPI.PlaySkyCameraAnimationAtCoords(decodedLastPosition)
-            cAPI.PlayerAsInitialized(true)
-        end
-    )
+    CreateThread(function()
+        cAPI.PlaySkyCameraAnimationAtCoords(decodedLastPosition)
+        cAPI.PlayerAsInitialized(true)
+    end)
 
     -- cAPI.ReplaceWeapons({})
     
-    cAPI.SetPlayerPed(pedModel)
+    -- cAPI.SetPlayerPed(pedModel)
 
-    cAPI.SetPlayerAppearence(PlayerPedId())
+    -- cAPI.SetPlayerAppearence(PlayerPedId())
     --  cAPI.SetPedCloAthing(PlayerPedId(), pClothing)
 
     pHealth = pStats?[1] or 250

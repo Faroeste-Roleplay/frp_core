@@ -285,6 +285,7 @@ AddEventHandler('playerJoining', onPlayerJoining)
 
 function ReleasePlayerUserAsDisconnected(playerId, reason)
 	local userId = API.sources[playerId]
+    local User = API.users[userId]
 
 	if not userId then
 		return
@@ -294,17 +295,12 @@ function ReleasePlayerUserAsDisconnected(playerId, reason)
 
 	log:captureMessage( ('Usuário %s se desconectou | "%s" '):format(userId, reason or '?') )
 
-	-- if not userId then
-	-- 	return false, nil
-	-- end
-
-	-- db.updateUser(user.get('identifier'), { money = user.getMoney(), bank = user.getBank() })
-	
-	API.users[userId] = nil
+	User:Save()
+	User:ClearCache()
 
 	SetUserIdLock(userId, false)
 
-	return true, user
+	return true, User
 end
 
 function SetUserIdLock(userId, locked)

@@ -5,19 +5,16 @@ AddEventHandler('playerDropped', function(reason)
     local userId = API.sources[playerId]
     local User = API.users[userId]
 
-    local wasReleased, userRef = ReleasePlayerUserAsDisconnected(source, reason)
-
-    local Character = User:Character()
-    Character:SetLastPosition( playerPosition )
-
-	if wasReleased then
-        TriggerEvent("FRP:playerDropped", playerId, User)
+	local Character = User:GetCharacter()
+	if Character then
+		Character:SetLastPosition( playerPosition )
 	end
 
-	log:captureMessage(('Desconectou %s - %s'):format(GetPlayerName( playerId ), GetPlayerIdentifiers( playerId )[1]))
+    local wasReleased, userRef = ReleasePlayerUserAsDisconnected(source, reason)
 
-    User:Save()
-    User:ClearCache()
+	if wasReleased then
+		TriggerEvent("FRP:playerDropped", playerId, User)
+	end
 end)
 
 AddEventHandler('playerConnectionBailed', function(playerId, reason)

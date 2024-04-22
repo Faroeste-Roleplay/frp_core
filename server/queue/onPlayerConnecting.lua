@@ -120,7 +120,7 @@ function OnPlayerConnecting(name, setKickReason, deferrals)
 		userId = matchingUser.userId
 
 		isUserIdLocked 	  = API.userIdLock[userId] ~= nil
-		isUserIdConnected = API.users[userId] ~= nil and GetPlayerEndpoint(API.users[userId].getSource()) ~= nil
+		isUserIdConnected = API.users[userId] ~= nil and GetPlayerEndpoint(API.users[userId]:GetSource()) ~= nil
 
 		isUserIdConnectedOrLocked = isUserIdLocked or isUserIdConnected
 	end
@@ -224,7 +224,7 @@ function OnPlayerConnecting(name, setKickReason, deferrals)
 
 	--[[ O Queue vai cancelar esse evento caso ele esteja ativo. ]]
 	-- if not WasEventCanceled() then
-		setDeferralsDone()
+		-- setDeferralsDone()
 	-- end
 	
 	-- exports.oxmysql:single('SELECT id, gold FROM user_gold WHERE userId = ? LIMIT 1' , { userId }, function(row)
@@ -291,14 +291,12 @@ function ReleasePlayerUserAsDisconnected(playerId, reason)
 		return
 	end
 
-	ConnectionLog( ('Player(%s) UserId(%s):'):format(GetPlayerName(playerId), userId and tostring(userId) or '?') , ('se desconectou, motivo: %s'):format(reason or '?'))
-
-	log:captureMessage( ('Usuário %s se desconectou | "%s" '):format(userId, reason or '?') )
-
 	User:Save()
-	User:ClearCache()
 
 	SetUserIdLock(userId, false)
+
+	ConnectionLog( ('Player(%s) UserId(%s):'):format(GetPlayerName(playerId), userId and tostring(userId) or '?') , ('se desconectou, motivo: %s'):format(reason or '?'))
+	log:captureMessage( ('Usuário %s se desconectou | "%s" '):format(userId, reason or '?') )
 
 	return true, User
 end

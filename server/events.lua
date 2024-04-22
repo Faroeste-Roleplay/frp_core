@@ -7,7 +7,7 @@ AddEventHandler('playerDropped', function(reason)
 
 	local Character = User:GetCharacter()
 	if Character then
-		Character:SetLastPosition( playerPosition )
+		Character:SavePosition( playerPosition )
 	end
 
     local wasReleased, userRef = ReleasePlayerUserAsDisconnected(source, reason)

@@ -16,8 +16,8 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
     self.role = role or 0
 
     self.Initialize = function(this, userId, source)
-        self:setSource(source)
-        self:setUserId(userId)
+        self:SetSource(source)
+        self:SetUserId(userId)
 
         local res = MySQL.single.await([[
             SELECT * 
@@ -87,9 +87,8 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
         return rows
     end
 
-    self.SavePosition = function(this, x, y, z)
-        local encoded = vector3(x, y, z)
-        self:SetMetadata("position", encoded)
+    self.SavePosition = function(this, position)
+        self:SetMetadata("position", json.encode( position ))
     end
 
     self.GetLastPosition = function(this)

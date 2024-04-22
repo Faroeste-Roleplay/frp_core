@@ -28,7 +28,7 @@ function API.CreateUser(playerId, mappedIdentifiers)
     return userId
 end
 
-function API.getUserIdByIdentifiers(identifiers, name)
+function API.GetUserIdByIdentifiers(identifiers, name)
     local mappedIdentifiers =  MapIdentifiers( identifiers )
     local identiferKey = Config.PrimaryIdentifier
 

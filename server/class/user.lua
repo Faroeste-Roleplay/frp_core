@@ -167,7 +167,7 @@ function API.User(playerId, id, ipAddress, identifiers)
         end
     end
 
-    -- getCharacter()
+    -- GetCharacter()
     --
     -- @return Character Object of the actual selected character
 
@@ -175,44 +175,38 @@ function API.User(playerId, id, ipAddress, identifiers)
         return self.Character
     end
 
-    self.SaveCharacter = function()
-        -- if self.Character ~= nil then
-        --     self.Character:SavePosition(Character:getLastPosition())
-        -- end
-    end
-
     self.DrawCharacter = function()
         local Character = self:GetCharacter()
 
-        -- local character_model = Character:getModel()
+        -- local character_model = Character:GetModel()
 
-        local characters_appearence =  {}-- Character:getCharacterAppearence()
+        local characters_appearence =  {}-- Character:GetCharacterAppearence()
 
-        --local character_clothing = Character:getClothes()
+        --local character_clothing = Character:GetClothes()
 
         local character_lastposition = Character:GetLastPosition()
 
-        -- local character_stats = Character:getCachedStats()
+        -- local character_stats = Character:GetCachedStats()
 
         if characters_appearence ~= nil then
             cAPI.Initialize(self:GetSource(), character_model, characters_appearence, character_lastposition, character_stats)
         end
 
-        -- cAPI.CWanted(Character:getWanted())
+        -- cAPI.CWanted(Character:GetWanted())
     end
 
     self.Disconnect = function(this, reason)
-        DropPlayer(self:getSource(), reason)
+        DropPlayer(self:GetSource(), reason)
     end
 
     self.Notify = function(this, type, text, quantity)
-        -- Notify(self:getSource(), v)
+        -- Notify(self:GetSource(), v)
         if type ~= nil and text == nil and quantity == nil then
             text = type
             type = "dev"
         end
 
-        TriggerClientEvent("FRP:TOAST:New", self:getSource(), type, text, quantity)
+        TriggerClientEvent("FRP:TOAST:New", self:GetSource(), type, text, quantity)
     end
 
     self.Logout = function()

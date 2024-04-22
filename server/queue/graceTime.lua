@@ -40,7 +40,7 @@ function EnsureGraceTimeLifetimeCountdown()
 end
 
 AddEventHandler('API:playerDropped', function(user)
-    local userId = user.getId()
+    local userId = user.GetId()
 
     gGraceTimeUsers[userId] = GetGameTimer()
 
@@ -48,7 +48,7 @@ AddEventHandler('API:playerDropped', function(user)
 end)
 
 AddEventHandler('API:playerLoaded', function(playerId, user)
-    local userId = user.getId()
+    local userId = user.GetId()
 
     gGraceTimeUsers[userId] = nil
 end)

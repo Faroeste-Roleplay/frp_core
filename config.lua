@@ -8,4 +8,4 @@ Config.DefaultSpawnPosition = vector3(-1099.470, -1839.129, 60.327)
 Config.PrimaryIdentifier = "steam"
 
 Config.DiscordGuildId = GetConvarInt("discord_guild_id", 412627639380213760)
-Config.DiscordInvite = "https://discord.gg/YBJz2p5"
+Config.DiscordInvite = "https://discord.gg/uVDf5kGbB8"

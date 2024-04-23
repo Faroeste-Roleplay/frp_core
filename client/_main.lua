@@ -8,6 +8,8 @@ Proxy.addInterface("API", cAPI)
 
 Player = {}
 
+promptList = {}
+
 initializedPlayer = false
 
 gServerToUserChanged = false

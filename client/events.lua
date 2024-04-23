@@ -17,6 +17,15 @@ AddEventHandler("onResourceStart",	function(resourceName)
 	TriggerServerEvent("API:addReconnectPlayer")
 end)
 
+AddEventHandler("onResourceStop", function(resourceName)
+    if (GetCurrentResourceName() ~= resourceName) then
+		return
+	end
+    for k,l in pairs(promptList)do
+        PromptDelete(l)
+    end
+end)
+
 RegisterNetEvent('FRP:_CORE:SetServerIdAsUserId', function(serverid, userid)
 	gServerToUser[serverid] = userid
 	gServerToUserChanged    = true

@@ -231,3 +231,51 @@ function cAPI.NotifyToast(type, text, quantity)
 
     TriggerEvent("FRP:TOAST:New", type, text, quantity)
 end
+
+function cAPI.promptCreator(data)
+    local _str,button,holdmode,group = data.str,data.button,data.holdmode,data.group
+	local promptr = PromptRegisterBegin()
+	if type(button) == "table" then
+		for k,l in pairs(button)do
+			PromptSetControlAction(promptr, l)
+		end
+	else
+		PromptSetControlAction(promptr, button)
+	end
+	local str = CreateVarString(10, 'LITERAL_STRING', _str)
+	PromptSetText(promptr, str)
+	PromptSetUrgentPulsingEnabled(promptr,true)
+	PromptSetEnabled(promptr, true)
+	PromptSetVisible(promptr, true)
+	PromptSetPriority(promptr, 1)
+	PromptSetStandardMode(promptr, true)
+	local mode = true
+	if holdmode ~= nil then
+		mode = holdmode
+		if mode == false then
+			PromptSetStandardMode(promptr, not mode)
+			PromptSetEnabled(promptr, not mode)
+		else
+			PromptSetHoldMode(promptr, mode)
+			PromptSetEnabled(promptr, mode)
+		end
+	else
+		PromptSetHoldMode(promptr, mode)
+		PromptSetEnabled(promptr, true)
+	end
+
+    if group then
+        PromptSetGroup(promptr, group)
+    else
+        PromptSetPosition(promptr,0,0,0)
+    end
+	PromptRegisterEnd(promptr)
+	table.insert(promptList,promptr)
+	return promptr
+end
+
+function cAPI.removePromptFromList(prompt)
+    if not prompt then return end
+    PromptDelete(prompt)
+    promptList[prompt] = nil
+end

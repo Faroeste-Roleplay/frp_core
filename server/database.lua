@@ -176,13 +176,13 @@ API_Database.prepare("FRP/CreateCharStatus", "INSERT INTO `character_rpg_stats` 
 API_Database.prepare("FRP/GetCharacters", "SELECT * FROM `character` WHERE `userId` = @userId")
 API_Database.prepare("FRP/GetCharacter", "SELECT * FROM `character` WHERE `id` = @charId")
 API_Database.prepare("FRP/GetCharacterAppearence", "SELECT * from characters_appearence WHERE id = @charId")
-API_Database.prepare("FRP/DeleteCharacter", "DELETE FROM character WHERE id = @charId")
-API_Database.prepare("FRP/GetUserIdByCharId", "SELECT userId from character WHERE id = @charId")
-API_Database.prepare("FRP/GetCharNameByCharId", "SELECT characterName from character WHERE id = @charId")
-API_Database.prepare("FRP/UpdateLevel", "UPDATE character SET level = @level WHERE id = @charId")
-API_Database.prepare("FRP/UpdateXP", "UPDATE character SET xp = @xp WHERE id = @charId")
-API_Database.prepare("UPDATE:character_data_role", "UPDATE character SET groups = @role WHERE id = @charId")
-API_Database.prepare("UPDATE:character_data_clothing", "UPDATE character SET clothes = @clothing WHERE id = @charId")
+API_Database.prepare("FRP/DeleteCharacter", "DELETE FROM `character` WHERE id = @charId")
+API_Database.prepare("FRP/GetUserIdByCharId", "SELECT userId from `character` WHERE id = @charId")
+API_Database.prepare("FRP/GetCharNameByCharId", "SELECT characterName from `character` WHERE id = @charId")
+API_Database.prepare("FRP/UpdateLevel", "UPDATE `character` SET level = @level WHERE id = @charId")
+API_Database.prepare("FRP/UpdateXP", "UPDATE `character` SET xp = @xp WHERE id = @charId")
+API_Database.prepare("UPDATE:character_data_role", "UPDATE `character` SET groups = @role WHERE id = @charId")
+API_Database.prepare("UPDATE:character_data_clothing", "UPDATE `character` SET clothes = @clothing WHERE id = @charId")
 
 
 API_Database.prepare("FRP/GetCharMetadata", "SELECT `metaData` from `character` WHERE id = @charId")
@@ -198,6 +198,6 @@ API_Database.prepare("FRP/SetPedWeight", "UPDATE characters_appearence SET pedWe
 
 API_Database.prepare("FRP/GetCharModel", "SELECT model from characters_appearence WHERE charId = @charId")
 
-API_Database.prepare("FRP/SetCWeaponData", "UPDATE character SET weapons = @weapons WHERE charId = @charId")
-API_Database.prepare("FRP/SetPlayerDeath", "UPDATE character SET is_dead = @is_dead WHERE charId = @charId")
-API_Database.prepare("FRP/GetPlayerDeath", "SELECT is_dead from character WHERE charId = @charId")
+API_Database.prepare("FRP/SetCWeaponData", "UPDATE `character` SET weapons = @weapons WHERE charId = @charId")
+API_Database.prepare("FRP/SetPlayerDeath", "UPDATE `character` SET is_dead = @is_dead WHERE charId = @charId")
+API_Database.prepare("FRP/GetPlayerDeath", "SELECT is_dead from `character` WHERE charId = @charId")

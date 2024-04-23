@@ -169,9 +169,8 @@ end
 
 function cAPI.HasGroup(group)
     local bit = config_file_GROUPS[group:lower()]
-
     if bit ~= nil then
-        return (Player.role & bit) ~= 0
+        return (Player?.role & bit) ~= 0
     end
 
     return false

@@ -407,13 +407,13 @@ function cAPI.PackPedComponentsCustomizable( playerAppearanceComponents )
 
         -- equippedOutfitId = playerAppearanceComponents.hair[1],
 
-        hairApparatusId = playerAppearanceComponents?.hair[1],
-        hairApparatusStyleId = playerAppearanceComponents?.hair[2],
+        hairApparatusId = playerAppearanceComponents?.hair?[1] or 0,
+        hairApparatusStyleId = playerAppearanceComponents?.hair?[2] or 0,
 
         mustacheApparatusId = playerAppearanceComponents?.mustache?[1] or 0,
         mustacheApparatusStyleId = playerAppearanceComponents?.mustache?[2] or 0,
 
-        weightPercentage = playerAppearanceComponents.waistType,
+        weightPercentage = playerAppearanceComponents?.waistType or 0,
     }
 end
 

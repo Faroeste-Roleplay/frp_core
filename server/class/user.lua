@@ -17,8 +17,9 @@ function API.User(playerId, id, ipAddress, identifiers)
     self.name = "Unknown"
     self.identifiers = identifiers or MapIdentifiers( GetPlayerIdentifiers(self.source) )
     self.primaryIdentifier = nil
+    self.groups = {}
 
-    self.Initialize = function()
+    self.Initialize = function(this)
         local mappedIdentifiers =  self.identifiers
         self.primaryIdentifier = mappedIdentifiers[Config.PrimaryIdentifier]
 
@@ -36,6 +37,8 @@ function API.User(playerId, id, ipAddress, identifiers)
         })
 
         self.numMaxSlots = res.numCharSlots
+
+        TriggerEvent("FRP:onUserStarted", self)
     end
 
     self.UserLoadded = function(this)
@@ -48,20 +51,20 @@ function API.User(playerId, id, ipAddress, identifiers)
     end
 
     -- @return The source or player server id
-    self.GetSource = function()
+    self.GetSource = function(this)
         return self.source
     end
 
     -- @return the userId
-    self.GetId = function()
+    self.GetId = function(this)
         return self.id
     end
 
-    self.GetIpAddress = function()
+    self.GetIpAddress = function(this)
         return ipAddress
     end
 
-    self.GetIdentifiers = function()
+    self.GetIdentifiers = function(this)
         local num = GetNumPlayerIdentifiers(self.source)
 
         local identifiers = {}
@@ -72,7 +75,7 @@ function API.User(playerId, id, ipAddress, identifiers)
         return identifiers
     end
 
-    self.GetCharacters = function()
+    self.GetCharacters = function(this)
         local rows = API_Database.query("FRP/GetCharacters", {userId = self.id})
 
         if #rows > 0 then
@@ -161,7 +164,7 @@ function API.User(playerId, id, ipAddress, identifiers)
             )
 
             self.Character:Initialize(self.id, self.source)
-            TriggerEvent("API:OnUserSelectCharacter", self, id)
+            TriggerEvent("FRP:OnUserSelectCharacter", self, id)
 
             return self.Character
         end
@@ -171,11 +174,11 @@ function API.User(playerId, id, ipAddress, identifiers)
     --
     -- @return Character Object of the actual selected character
 
-    self.GetCharacter = function()
+    self.GetCharacter = function(this)
         return self.Character
     end
 
-    self.DrawCharacter = function()
+    self.DrawCharacter = function(this)
         local Character = self:GetCharacter()
 
         -- local character_model = Character:GetModel()
@@ -209,7 +212,7 @@ function API.User(playerId, id, ipAddress, identifiers)
         TriggerClientEvent("FRP:TOAST:New", self:GetSource(), type, text, quantity)
     end
 
-    self.Logout = function()
+    self.Logout = function(this)
         local character = self.Character
 
         if character then
@@ -217,10 +220,11 @@ function API.User(playerId, id, ipAddress, identifiers)
         end
     
         self.Character = nil
+        TriggerEvent("FRP:spawnSelector:DisplayCharSelection", self)
         TriggerClientEvent("API:UserLogout", self.source)
     end
     
-    self.Save = function()
+    self.Save = function(this)
         
     end
 
@@ -228,6 +232,127 @@ function API.User(playerId, id, ipAddress, identifiers)
         DropPlayer(self.source, reason)
 
         print(#GetPlayers() .. "/".. GetConvarInt('sv_maxclients', 32) .."| " .. self.name .. " (" .. self.ipAddress .. ") desconectou (motivo = " .. reason .. ")")
+    end
+    
+    
+    self.GetGroups = function(this)
+        return self.groups
+    end
+
+    self.GetGroupByName = function(this, groupName)
+        for _, group in ipairs(self.groups) do 
+            if group.name == groupName then
+                return self.groups[_]
+            end
+        end
+    end
+
+    self.HasGroup = function(this, groupName)
+        for _, group in ipairs(self.groups) do 
+            if group.name == groupName then
+                return true
+            end
+        end
+
+        return false
+    end
+
+    self.JoinGroup = function(this, group, addPrincipal)
+        local groupName = group:GetName()
+        
+        if self:HasGroup(groupName) then
+            return false
+        end
+
+        table.insert(self.groups, { name = groupName, id = group:GetId() })
+
+        if addPrincipal then
+            local playerPrincipal = string.format('player.%s', self.source)
+            ACL.AddPrincipal(playerPrincipal, group:GetPrincipal())
+        end
+
+        TriggerClientEvent("FRP:JoinedGroup", self.source, groupName)
+    end
+
+    self.LeaveGroup = function(this, group)
+        local groupName = group:GetName()
+
+        if not self:HasGroup(groupName) then
+            return false
+        end
+
+        for idx, gpName in pairs(self.groups) do 
+            if gpName == groupName then
+                table.remove(self.groups, groupName)
+            end
+        end
+
+        local playerPrincipal = string.format('player.%s', self.source)
+        ACL.RemovePrincipal(playerPrincipal, group:GetPrincipal())
+
+        TriggerClientEvent("FRP:LeftGroup", self.source, groupName)
+    end
+
+    self.SetGroupFlagState = function(this, group, flag, enabled) 
+        local groupName = group:GetName()
+        local flags = self:GetGroupByName( groupName )?.flags;
+
+        if not flags then
+            return false
+        end
+
+        if enabled then 
+            for _, fg in ipairs(flags) do 
+                if fg == flag then
+                    return false
+                end
+            end
+            table.insert(flags, flag)
+        else
+            for _, fg in ipairs(flags) do 
+                if fg == flag then
+                    table.remove(flags, _)
+                    goto nextStep 
+                end
+            end
+            return false
+        end
+
+        ::nextStep::
+
+        local playerId = self.source
+        local flagAce = group:GetAceForFlag(flag)
+        local playerPrincipal = string.format("player.%s", playerId)
+
+        if enabled then
+            ACL.AddAce(playerPrincipal, flagAce, true)
+        else
+            ACL.RemoveAce(playerPrincipal, flagAce, true)
+        end
+
+        TriggerClientEvent("FRP:onGroupFlagsChanged", playerId, groupName)
+    
+        return true
+    end
+
+    self.SetGroupFlagEnabled = function(this, group, flag)
+        return self:SetGroupFlagState(group, flag, true)
+    end
+
+    self.SetGroupFlagDisabled = function(this, group, flag)
+        return self:SetGroupFlagState(group, flag, false)
+    end
+
+    self.GetEnabledGroupFlags = function(this, group, flag)
+        local groupName = group:GetName();
+
+        for _, group in pairs(self.groups) do 
+            if group.name == groupName then
+                return group?.flags or {}
+            end
+        end
+
+        return {}
     end
 
     return self

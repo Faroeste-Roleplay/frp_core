@@ -35,24 +35,23 @@ function API.GroupSystem()
         for _, groupModel in ipairs(groupModels) do
             local name, parentId = groupModel.name, groupModel.parentId
 
-            if not parentId then
-                return
+            if parentId then
+                local parentName = self.groupNameById[parentId]
+
+                local child = self:GetGroupByName(name)
+                local parent = self:GetGroupByName(parentName)
+
+                child:SetParent(parent)
+                parent:AddChild(child)
+
+                local childPrincipal = child:GetPrincipal()
+                local parentPrincipal = parent:GetPrincipal()
+
+
+                ACL.AddPrincipal(childPrincipal, parentPrincipal)
+
+                print(string.format("[%s] Extends [%s]", name, parentName))
             end
-
-            local parentName = self.groupNameById[parentId]
-
-            local child = self:GetGroupByName(name)
-            local parent = self:GetGroupByName(parentName)
-
-            child:SetParent(parent)
-            parent:AddChild(child)
-
-            local childPrincipal = child:GetPrincipal()
-            local parentPrincipal = parent:GetPrincipal()
-
-            ACL.AddPrincipal(childPrincipal, parentPrincipal)
-
-            print(string.format("[%s] Extends [%s]", name, parentName))
         end
     end
 
@@ -79,7 +78,6 @@ function API.GroupSystem()
     self.LoadUserGroupMembership = function(this, user, view)
         local userId = user:GetId()
 
-        -- print(" LoadUserGroupMembership :: ", view)
         local character = user:GetCharacter()
         local characterId
 
@@ -90,8 +88,6 @@ function API.GroupSystem()
         local characterId = view == "USER_ONLY" and nil or characterId;
 
         local groupMembers = getGroupMembersAnyGroup(userId, characterId)
-
-        -- print(" groupMembers:: ", groupMembers, json.encode(groupMembers))
 
         for _, groupMember in pairs(groupMembers) do 
             local groupMemberId, groupId = groupMember.id, groupMember.groupId
@@ -108,7 +104,6 @@ function API.GroupSystem()
     end
 
     self.AddUserToGroupLocally = function(this, user, group, groupMemberId)
-        -- print(" AddUserToGroupLocally :: ", groupMemberId)
         group:AddMember(user, true)
 
         self.groupMemberIdToUserId[groupMemberId] = user:GetSource()

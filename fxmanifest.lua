@@ -18,11 +18,16 @@ shared_scripts {
 client_scripts {
 	"data/components.lua",
 	"data/overlays.js",
+
+	"data/horses_components.lua",
+	"data/mp_overlay_layers.lua",
+	"data/mp_peds_components.lua",
 	---------------------
 	"lib/ReadDataFiles.lua",
 	---------------------
 	"client/_main.lua",
 	"client/functions.lua",
+	"client/appearance.js",
 	---------------------
 	"client/ped.lua",
 	"client/player.lua",
@@ -44,8 +49,6 @@ server_scripts {
 	"server/functions.lua",
 	"server/gui.lua",
 	-----------------------
-	"server/services/user.lua",
-	-----------------------
 	"server/queue/graceTime.lua",
 	"server/queue/onPlayerConnecting.lua",
 	"server/queue/priority.lua",
@@ -54,6 +57,12 @@ server_scripts {
 	-----------------------
 	"server/class/character.lua",
 	"server/class/user.lua",
+	"server/class/group.lua",
+	"server/class/groupSystem.lua",
+	-----------------------
+	"server/services/acl.lua",
+	"server/services/user.lua",
+	"server/services/group.lua",
 }
 
 files {

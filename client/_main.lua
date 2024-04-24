@@ -21,6 +21,8 @@ end)
 
 --- disable things
 Citizen.CreateThread(function()
+	-- show all maps
+	SetMinimapHideFow(true)
 	while true do
 		Citizen.Wait(0)
 
@@ -33,6 +35,17 @@ Citizen.CreateThread(function()
 		
 		DisableControlAction(0, 0x6E9734E8, true) -- DESATIVAR DESISTIR
 		DisableControlAction(0, 0x295175BF, true) -- DESATIVAR SOLTAR DA CORDA
+
+		-- Disable event notification
+		local size = GetNumberOfEvents(0)   
+		if size > 0 then
+			for i = 0, size - 1 do
+				local eventAtIndex = GetEventAtIndex(0, i)
+				if eventAtIndex == GetHashKey("EVENT_CHALLENGE_GOAL_COMPLETE") or eventAtIndex == GetHashKey("EVENT_CHALLENGE_REWARD") or eventAtIndex == GetHashKey("EVENT_DAILY_CHALLENGE_STREAK_COMPLETED") then 
+					Citizen.InvokeNative(0x6035E8FBCA32AC5E)
+				end
+			end
+		end
 	end
 end)
 

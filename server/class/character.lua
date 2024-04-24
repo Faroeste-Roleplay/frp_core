@@ -85,10 +85,6 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
 
     function self.SetMetadata(this, meta, val)
         if not meta or type(meta) ~= 'string' then return end
-        if type(self.metaData) == "string" then 
-            self.metaData = {}
-            self.metaData = json.decode(self.metaData)
-        end
         self.metaData[meta] = val;
         local rows = API_Database.query("FRP/UpdateCharMetadata", {charId = self.id, metaData = json.encode(self.metaData)})
         return rows

@@ -46,7 +46,7 @@ function API.GetUserIdByIdentifiers(identifiers, name)
     end
 end
 
-function API.getUserFromUserId(userId)
+function API.GetUserFromUserId(userId)
     return API.users[userId]
 end
 

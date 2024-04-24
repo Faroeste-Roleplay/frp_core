@@ -52,7 +52,8 @@ RegisterNetEvent("API:addReconnectPlayer", function()
     end
 end)
 
-RegisterNetEvent("API:OnUserSelectCharacter")
+RegisterNetEvent("FRP:OnUserSelectCharacter")
+
 RegisterNetEvent("API:OnUserCharacterInitialization")
 AddEventHandler("API:OnUserCharacterInitialization", function(User, character_id)
     TriggerClientEvent("FRP:EVENTS:CharacterSetRole", User:GetSource(), User:GetCharacter().role)

@@ -379,3 +379,14 @@ COLLATE='utf8mb4_general_ci'
 ENGINE=InnoDB
 AUTO_INCREMENT=1
 ;
+
+ALTER TABLE `group_member`
+	ADD CONSTRAINT `FK_group_member_group` FOREIGN KEY (`groupId`) REFERENCES `group` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
+	ADD CONSTRAINT `FK_group_member_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
+	ADD CONSTRAINT `FK_group_member_character` FOREIGN KEY (`characterId`) REFERENCES `character` (`id`) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE `group`
+	ADD CONSTRAINT `FK_group_group` FOREIGN KEY (`parentId`) REFERENCES `group` (`id`) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE `group_member`
+	CHANGE COLUMN `createdAt` `createdAt` DATETIME NULL DEFAULT CURDATE() AFTER `characterId`;

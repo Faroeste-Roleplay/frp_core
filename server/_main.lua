@@ -16,8 +16,26 @@ Proxy.addInterface("API_DB", API_Database)
 
 cAPI = Tunnel.getInterface("API")
 
+CreateThread(function()
+    API.groupSystem = API.GroupSystem()
+    API.groupSystem:Initialize()
+end)
+
 AddEventHandler("onResourceStop", function(resName)
     if resName == GetCurrentResourceName() then
         API.DestroyResourcesCoreDependancies()
     end
 end)
+
+-- RegisterCommand("debug_api", function()
+--     print(" API users :: ", json.encode(API.users, {intent=true}))
+--     print(" ================================= ")
+--     print(" API sources :: ", json.encode(API.sources, {intent=true}))
+--     print(" ================================= ")
+--     print(" API identifiers :: ", json.encode(API.identifiers, {intent=true}))
+-- end)
+
+
+-- RegisterCommand("hasGroup", function(playerId, args)
+--     print(" API.IsPlayerAceAllowedGroup :: ", API.IsPlayerAceAllowedGroup(playerId, args[1]))
+-- end)

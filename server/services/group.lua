@@ -35,7 +35,14 @@ function getGroupByName(groupName)
 end
 
 function getGroupMember(groupId, userId, characterId) 
-    return MySQL.single.await('SELECT * FROM `group_member` WHERE `groupId` = ? AND `userId` = ? OR `characterId` = ? LIMIT 1', {
+    if not characterId then
+        return MySQL.single.await('SELECT * FROM `group_member` WHERE `groupId` = ? AND `userId` = ? AND `characterId` IS NULL LIMIT 1', {
+            groupId,
+            userId
+        })
+    end
+
+    return MySQL.single.await('SELECT * FROM `group_member` WHERE `groupId` = ? AND `userId` = ? AND `characterId` = ? LIMIT 1', {
         groupId,
         userId,
         characterId
@@ -43,8 +50,13 @@ function getGroupMember(groupId, userId, characterId)
 end
 
 function getGroupMembersAnyGroup(userId, characterId)
-    -- print(" userId ", userId, characterId)
-    return MySQL.query.await('SELECT id, groupId FROM `group_member` WHERE `userId` = ? OR `characterId` = ? ', {
+    if not characterId then
+        return MySQL.query.await('SELECT id, groupId FROM `group_member` WHERE `userId` = ? AND `characterId` IS NULL ', {
+            userId
+        })
+    end
+
+    return MySQL.query.await('SELECT id, groupId FROM `group_member` WHERE `userId` = ? AND `characterId` = ? ', {
         userId,
         characterId
     })

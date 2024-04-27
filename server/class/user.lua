@@ -165,6 +165,7 @@ function API.User(playerId, id, ipAddress, identifiers)
 
             self.Character:Initialize(self.id, self.source)
             TriggerEvent("FRP:OnUserSelectCharacter", self, id)
+            cAPI.SetCharacterId(self:GetSource(), id)
 
             return self.Character
         end

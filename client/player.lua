@@ -8,6 +8,10 @@ function cAPI.SetDataAppearence(pedModel, charAppearence)
     gCharAppearence = charAppearence
 end
 
+function cAPI.SetCharacterId(charId)
+    LocalPlayer.state:set('characterId', charId, false)
+end
+
 function cAPI.Initialize(pedModel, charAppearence, lastPosition, stats)
     charAppearence = charAppearence[1] 
 
@@ -41,14 +45,18 @@ function cAPI.Initialize(pedModel, charAppearence, lastPosition, stats)
 
     local pStats = stats
 
-    CreateThread(function()
-        cAPI.PlaySkyCameraAnimationAtCoords(decodedLastPosition)
+    if Config.SkyCamSpawnEffect then
+        CreateThread(function()
+            cAPI.PlaySkyCameraAnimationAtCoords(decodedLastPosition)
+            cAPI.PlayerAsInitialized(true)
+        end)
+    else
         cAPI.PlayerAsInitialized(true)
-    end)
+    end
 
     -- cAPI.ReplaceWeapons({})
     
-    -- cAPI.SetPlayerPed(pedModel)
+    cAPI.SetPlayerPed('mp_male')
 
     -- cAPI.SetPlayerAppearence(PlayerPedId())
     --  cAPI.SetPedCloAthing(PlayerPedId(), pClothing)
@@ -65,7 +73,6 @@ function cAPI.Initialize(pedModel, charAppearence, lastPosition, stats)
     cAPI.VaryPlayerCore(0, pHealthCore)
     cAPI.VaryPlayerCore(1, pStaminaCore)
 
-    TriggerServerEvent("FRP:RESPAWN:CheckDeath")
     TriggerServerEvent("API:pre_OnUserCharacterInitialization")
 end
 

@@ -5,6 +5,18 @@ AddEventHandler("playerSpawned", function()
 	TriggerServerEvent("pre_playerSpawned")
 end)
 
+AddEventHandler("onClientResourceStart", function() -- Reveal whole map on spawn and enable pvp
+    if Config.RevealMap then
+        Citizen.InvokeNative(0x4B8F743A4A6D2FF8, true)
+    end
+end)
+
+CreateThread( function()
+    if Config.RevealMap then
+        Citizen.InvokeNative(0x4B8F743A4A6D2FF8, true)
+    end
+end)
+
 AddEventHandler("onClientMapStart",	function()
 	-- print("client map initialized")
 end)

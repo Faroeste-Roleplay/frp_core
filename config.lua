@@ -1,6 +1,8 @@
 Config = {}
 
 Config.Allowlist = false
+Config.RevealMap = true
+Config.SkyCamSpawnEffect = true
 
 Config.DefaultSpawnPosition = vector3(-1099.470, -1839.129, 60.327)
 

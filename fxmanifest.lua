@@ -23,11 +23,15 @@ client_scripts {
 	"data/mp_overlay_layers.lua",
 	"data/mp_peds_components.lua",
 	---------------------
-	"lib/ReadDataFiles.lua",
-	---------------------
 	"client/_main.lua",
 	"client/functions.lua",
-	"client/appearance.js",
+	---------------------
+	"client/appearance/constants.js",
+	"client/appearance/overlays.js",
+	"client/appearance/main.js",
+	"client/appearance/apparatusDatabase.js",
+	"client/appearance/clothingSystemResolvers.js",
+	"client/appearance/utils.js",
 	---------------------
 	"client/ped.lua",
 	"client/player.lua",

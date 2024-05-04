@@ -11,7 +11,7 @@ AddEventHandler('playerDropped', function(reason)
 		Character:SavePosition( playerPosition )
 	end
 
-    local wasReleased, userRef = ReleasePlayerUserAsDisconnected(source, reason)
+    local wasReleased, userRef = ReleasePlayerUserAsDisconnected(playerId, reason)
 
 	if wasReleased then
         API.ClearUserFromCache(playerId, userId)

@@ -31,6 +31,8 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
             res.items = json.decode(res.items)
         end
 
+        self:GetMetadata()
+
         self.Inventory = res
     end
 

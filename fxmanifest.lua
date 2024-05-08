@@ -11,6 +11,7 @@ shared_scripts {
 	---------------------
 	"lib/utils.lua",
 	"lib/i18n.lua",
+	"lib/dataview.lua",
 
 	"locale/*.lua"
 }
@@ -26,11 +27,12 @@ client_scripts {
 	"client/_main.lua",
 	"client/functions.lua",
 	---------------------
-	"client/appearance/constants.js",
-	"client/appearance/overlays.js",
-	"client/appearance/main.js",
-	"client/appearance/apparatusDatabase.js",
-	"client/appearance/clothingSystemResolvers.js",
+	"client/appearance/constants.lua",
+	"client/appearance/overlays.lua",
+	"client/appearance/main.lua",
+	"client/appearance/apparatusDatabase.lua",
+	"client/appearance/clothingSystemResolvers.lua",
+	"client/appearance/utils.lua",
 	"client/appearance/utils.js",
 	---------------------
 	"client/ped.lua",

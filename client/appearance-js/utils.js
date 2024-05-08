@@ -1,4 +1,14 @@
 
+const mergeArrData = (arr, data) => {
+    return [ ...arr, ...data];
+}
+exports("mergeArrData", mergeArrData)
+
+const mergeObjectData = (obj, data) => {
+    return { ...obj, ...data }
+}
+exports("mergeObjectData", mergeObjectData)
+
 function handleApparatusChangeAnimation(ped, type)
 {
     if (type === eMetapedBodyApparatusType.Teeth)
@@ -38,7 +48,7 @@ async function requestAnimDict(animDict) {
 }
 
 const camelToSnakeCase = str => str.replace(/[A-Z]/g, (letter, index) => { return index == 0 ? letter.toLowerCase() : '_'+ letter.toLowerCase();});;
-
+exports('camelToSnakeCase', camelToSnakeCase)
 // HELLO WORLD -> Hello World
 function titleCaseWord(mySentence)
 {
@@ -93,3 +103,4 @@ async function setManagedPromiseTick(callback, timeout) {
         clearTimeout(timerTimeout);
     }
 }
+exports('setManagedPromiseTick', setManagedPromiseTick)

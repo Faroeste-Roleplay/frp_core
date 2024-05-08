@@ -65,10 +65,14 @@ async function handleStartEditor(ped)
     //     console.log(`apparel :: type(${eMetapedBodyApparatusTypeToStr[type]}, ${type}[${typeof type}]) id(${id}) styleId(${styleId})`)
     // });
 
-    return equippedMetapedClothing
+    return newEquippedMetapedClothing
 }
 
-exports('getPedEquippedApparels', (pedId, pedIsMale) => {
+// RegisterCommand('debugApp', () => {
+//     console.log(" equippedMetapedClothing :: ", equippedMetapedClothing);
+// }, false)
+
+exports('getPedEquippedApparels', async (pedId, pedIsMale) => {
     const numMetaAssets = N_0x90403e8107b60e81(pedId); 
 
     const boolBuffer = new ArrayBuffer(8 * 5);
@@ -101,7 +105,10 @@ exports('getPedEquippedApparels', (pedId, pedIsMale) => {
     return new Map(equippedApparels.filter(v => !!v).map(e => [ e.type, { id: e.id, styleId: e.styleId } ]))
 })
 
-exports('handleStartEditor', handleStartEditor);
+exports('handleStartEditor', async (ped) => {
+    return await handleStartEditor(ped)
+})
+
 on('appearance:handleStartEditor', handleStartEditor);
 
 async function requestChangeApparatus(ped, request)
@@ -273,5 +280,9 @@ async function requestChangeApparatus(ped, request)
 
     return equippedMetapedClothing
 }
-exports('requestChangeApparatus', requestChangeApparatus);
+
+exports('requestChangeApparatus', async (ped, request) => {
+    return await requestChangeApparatus(ped, request)
+})
+
 on('appearance:requestChangeApparatus', requestChangeApparatus);

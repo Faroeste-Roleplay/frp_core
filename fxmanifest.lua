@@ -33,7 +33,14 @@ client_scripts {
 	"client/appearance/apparatusDatabase.lua",
 	"client/appearance/clothingSystemResolvers.lua",
 	"client/appearance/utils.lua",
-	"client/appearance/utils.js",
+	"client/appearance-js/utils.js",
+	---------------------
+	-- "client/appearance-js/constants.js",
+	-- "client/appearance-js/overlays.js",
+	-- "client/appearance-js/main.js",
+	-- "client/appearance-js/apparatusDatabase.js",
+	-- "client/appearance-js/clothingSystemResolvers.js",
+	-- "client/appearance-js/utils.js",
 	---------------------
 	"client/ped.lua",
 	"client/player.lua",

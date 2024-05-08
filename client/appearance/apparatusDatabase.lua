@@ -182,14 +182,8 @@ function getShopitemAnyByMetapedBodyApparatus(metapedBodyApparatus)
                 if shopitem ~= nil then
                     return shopitem
                 end
-            else
-                errorMessage = "Style"
             end
-        else
-            errorMessage = "Gender"
         end
-    else
-        errorMessage = "Type"
     end
 
 end

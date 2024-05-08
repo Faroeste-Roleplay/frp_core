@@ -12,8 +12,8 @@ function MetapedClothingSystemOverlayHandler.createPlayer()
         if not self.baseLayer or not self.baseLayer.textureId then
             self.baseLayer = {
                 textureId = -1,
-                numLayers = 0,
-                nextLayerId = 0
+                numLayers = 1,
+                nextLayerId = 1
             }
             self.layers = {}
         end
@@ -25,7 +25,7 @@ function MetapedClothingSystemOverlayHandler.createPlayer()
     end
 
     self.findLayerByType = function(layerType)
-        print(" setBaseLayerTextureData :: ", layerType)
+        -- print(" setBaseLayerTextureData :: ", layerType)
         local index = -1
         local matchingLayer = nil
 
@@ -41,7 +41,7 @@ function MetapedClothingSystemOverlayHandler.createPlayer()
     end
 
     self.setBaseLayerTextureData = function(albedo, normal, material)
-        print(" setBaseLayerTextureData :: ", albedo, normal, material)
+        -- print(" setBaseLayerTextureData :: ", albedo, normal, material)
         self.baseLayer.albedo = albedo
         self.baseLayer.normal = normal
         self.baseLayer.material = material
@@ -53,12 +53,12 @@ function MetapedClothingSystemOverlayHandler.createPlayer()
     end
 
     self.createTextureBlend = function()
-        print("createTextureBlend")
+        -- print("createTextureBlend")
 
-        print(" SELF :: ", json.encode(self.baseLayer))
+        -- print(" SELF :: ", self.baseLayer)
 
         if not self.baseLayer then
-            self:initTextureBlend()
+            self.initTextureBlend()
         end
 
         local textureId = self.baseLayer.textureId
@@ -66,16 +66,16 @@ function MetapedClothingSystemOverlayHandler.createPlayer()
         local normal = self.baseLayer.normal
         local material = self.baseLayer.material
 
-        print("createTextureBlend - Texture Info:", textureId, albedo, normal, material)
+        -- print("createTextureBlend - Texture Info:", textureId, albedo, normal, material)
 
         if textureId ~= -1 then
             -- SetTextureLayerTextureMap
-            N_0x253a63b5badbc398(textureId, 0, albedo, normal, material)
+            N_0x253a63b5badbc398(textureId, 0, removeDecimalZero(albedo), removeDecimalZero(normal), removeDecimalZero(material))
         else
             -- RequestTexture
-            local newTextureId = N_0xc5e7204f322e49eb(albedo, normal, material)
+            local newTextureId = N_0xc5e7204f322e49eb(removeDecimalZero(albedo), removeDecimalZero(normal), removeDecimalZero(material))
 
-            print("REQUEST TEXTURE: ", newTextureId)
+            -- print("REQUEST TEXTURE: ", newTextureId)
 
             if newTextureId == -1 then
                 error("Failed to create overlay texture - albedo: " .. albedo .. ", normal: " .. normal .. ", material: " .. material)
@@ -104,7 +104,7 @@ function MetapedClothingSystemOverlayHandler.createPlayer()
 
             while not N_0x31dc8d3f216d8509(newTextureId) do 
                 Wait(100)
-                print(" N_0x31dc8d3f216d8509 ")
+                -- print(" N_0x31dc8d3f216d8509 ")
             end
 
         end
@@ -117,7 +117,7 @@ function MetapedClothingSystemOverlayHandler.createPlayer()
 
 
     self.updateLayerData = function(layer, updateTextureMap)
-        print(" updateLayerData :: ")
+        -- print(" updateLayerData :: ")
         local textureId = self.baseLayer.textureId
 
         local layerId = layer.layerId
@@ -136,49 +136,49 @@ function MetapedClothingSystemOverlayHandler.createPlayer()
         local sheetGridIndex = layer.sheetGridIndex
 
         if updateTextureMap and (albedo or normal or material) then
-            print(string.format("updateLayerData :: albedo(%s) normal(%s) material(%s)", albedo, normal, material))
+            -- print(string.format("updateLayerData :: albedo(%s) normal(%s) material(%s)", albedo, normal, material))
 
             -- SetTextureLayerTextureMap
-            N_0x253a63b5badbc398(textureId, layerId, albedo or 0, normal or 0, material or 0)
+            N_0x253a63b5badbc398(textureId, layerId, removeDecimalZero(albedo or 0), removeDecimalZero(normal or 0), removeDecimalZero(material or 0))
         end
 
         if pallete then
-            print(string.format("updateLayerData :: pallete(%s) tint0(%s) tint1(%s) tint1(%s)", pallete, tint0, tint1, tint1))
+            -- print(string.format("updateLayerData :: pallete(%s) tint0(%s) tint1(%s) tint1(%s)", pallete, tint0, tint1, tint1))
 
             -- SetTextureLayerPallete
-            N_0x1ed8588524ac9be1(textureId, layerId, pallete)
+            N_0x1ed8588524ac9be1(textureId, layerId, removeDecimalZero(pallete))
 
             -- SetTextureLayerTint
             N_0x2df59ffe6ffd6044(textureId, layerId, tint0, tint1, tint2)
         end
 
         if modTexture then
-            print(string.format("updateLayerData :: modTexture(%s) modTexAlpha(%s) modChannel(%s)", modTexture, modTexAlpha, modChannel))
+            -- print(string.format("updateLayerData :: modTexture(%s) modTexAlpha(%s) modChannel(%s)", modTexture, modTexAlpha, modChannel))
 
             -- SetTextureLayerMod
             N_0xf2ea041f1146d75b(textureId, layerId, modTexture, modTexAlpha + 0.0001, modChannel)
         end
 
         if texRough then
-            print(string.format("updateLayerData :: texRough(%s)", texRough))
+            -- print(string.format("updateLayerData :: texRough(%s)", texRough))
 
             -- SetTextureLayerRoughness
             N_0x057c4f092e2298be(textureId, layerId, texRough)
         end
 
-        print(string.format("updateLayerData :: sheetGridIndex(%s)", sheetGridIndex))
+        -- print(string.format("updateLayerData :: sheetGridIndex(%s)", sheetGridIndex))
 
         -- SetTextureLayerSheetGridIndex
         N_0x3329aae2882fc8e4(textureId, layerId, sheetGridIndex or 0)
 
-        print(string.format("updateLayerData :: texAlpha(%s)", texAlpha))
+        -- print(string.format("updateLayerData :: texAlpha(%s)", texAlpha))
 
         -- SetTextureLayerAlpha
         N_0x6c76bc24f8bb709a(textureId, layerId, texAlpha + 0.0001)
     end
 
     self.addLayerToTextureBlend = function(layer)
-        print(" addLayerToTextureBlend :: ", json.encode(layer))
+        -- print(" addLayerToTextureBlend :: ", json.encode(layer, {indent=true}))
         local textureId = self.baseLayer.textureId
 
         local albedo = layer.albedo
@@ -189,9 +189,9 @@ function MetapedClothingSystemOverlayHandler.createPlayer()
         local sheetGridIndex = layer.sheetGridIndex
 
         -- AddTextureLayer
-        local layerId = N_0x86bb5ff45f193a02(textureId, albedo or 0, normal or 0, material or 0, blendType, texAlpha + 0.0001, sheetGridIndex)
+        local layerId = N_0x86bb5ff45f193a02(textureId, removeDecimalZero(albedo or 0), removeDecimalZero(normal or 0), removeDecimalZero(material or 0), blendType, (texAlpha or 0) + 0.0001, sheetGridIndex)
 
-        print('adding layer to texture blend', textureId, layerId, layer)
+        -- print('adding layer to texture blend', textureId, layerId, layer)
 
         if layerId == -1 then
             -- throw new ApplicationException(`Ocorreu um error ao criar uma nova layer do para o nosso texture blend. Type(${eOverlayToStr[layer.type]}) Albedo(${albedo}) Normal(${normal}) Material(${material}) BlendType(${blendType})`);
@@ -199,11 +199,11 @@ function MetapedClothingSystemOverlayHandler.createPlayer()
 
         layer.layerId = layerId
 
-        self:updateLayerData(layer, false)
+        self.updateLayerData(layer, false)
     end
 
     self.getBlendType = function(layerType)
-        print(" getBlendType :: ", layerType)
+        -- print(" getBlendType :: ", layerType)
         if layerType == eOverlayLayer.MPC_OVERLAY_LAYER_FACIAL_HAIR or
             layerType == eOverlayLayer.MPC_OVERLAY_LAYER_FOUNDATION or
             layerType == eOverlayLayer.MPC_OVERLAY_LAYER_HEAD_HAIR or
@@ -232,14 +232,14 @@ function MetapedClothingSystemOverlayHandler.createPlayer()
     end
 
     self.updateOrCreateLayer = function(layer)
-        print(" updateOrCreateLayer :: ", json.encode(layer))
+        -- print(" updateOrCreateLayer :: ", json.encode(layer))
         local baseLayer = self.baseLayer
 
         if layer.type == eOverlayLayer.MPC_OVERLAY_LAYER_ROOT then
             self.baseLayer = layer
-            self:setBaseLayerTextureData(layer.albedo, layer.normal, layer.material)
+            self.setBaseLayerTextureData(layer.albedo, layer.normal, layer.material)
         else
-            local matchingLayerIndex, matchingLayer = self:findLayerByType(layer.type)
+            local matchingLayerIndex, matchingLayer = self.findLayerByType(layer.type)
 
             if not matchingLayer then
                 -- create
@@ -258,23 +258,37 @@ function MetapedClothingSystemOverlayHandler.createPlayer()
                     tint1 = 0,
                     tint2 = 0,
                     texAlpha = 0.0,
-                    blendType = self:getBlendType(layer.type)
+                    blendType = self.getBlendType(layer.type)
                 }
 
                 local newLayer = exports.frp_core:mergeObjectData(basicLayer, layer)
+                -- for i, value in pairs(newLayer) do 
+                --     if i ~= "texAlpha" then
+                --         newLayer[i] = removeDecimalZero(value)
+                --     end
+                -- end
                 self.layers[baseLayer.numLayers] = newLayer
                 baseLayer.numLayers = baseLayer.numLayers + 1
-                self:addLayerToTextureBlend(newLayer)
+
+                self.addLayerToTextureBlend(newLayer)
             else
                 local updatedLayer = exports.frp_core:mergeObjectData(matchingLayer, layer)
+
+                -- for i, value in pairs(updatedLayer) do 
+                --     if i ~= "texAlpha" then
+                --         updatedLayer[i] = removeDecimalZero(value)
+                --     end
+                -- end
+
                 self.layers[matchingLayerIndex] = updatedLayer
-                self:updateLayerData(updatedLayer, true)
+                -- print(" updatedLayer ::::: ", json.encode(updatedLayer, {indent=true}))
+                self.updateLayerData(updatedLayer, true)
             end
         end
     end
 
     self.applyTextureBlend = function(pedId)
-        print(" applyTextureBlend :: ", pedId)
+        -- print(" applyTextureBlend :: ", pedId)
         if not NetworkGetEntityIsNetworked(pedId) then
             -- throw CustomException('Ped não é networked')
             error('Ped não é networked', pedId)

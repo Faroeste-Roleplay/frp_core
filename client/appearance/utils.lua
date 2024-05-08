@@ -19,3 +19,14 @@ function indexOf(array, value)
     return nil
 end
 
+function removeDecimalZero(number)
+    local strNumber = tostring(number)
+    local strippedNumber = strNumber
+
+    -- Verifica se o número tem um ponto decimal e termina com .0
+    if string.match(strNumber, "%.%d*") then
+        strippedNumber = string.match(strNumber, "%.%d+") == ".0" and string.match(strNumber, "%d+") or strNumber
+    end
+
+    return tonumber(strippedNumber)
+end

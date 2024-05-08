@@ -108,12 +108,12 @@ function manageQueue()
         timeOut += 1
 
         if Citizen.InvokeNative(0xA0BC8FAED8CFEB3C, entry.reqPed) then
-            print(" ^1 PRONTO PARA APLICAR ")
+            -- print(" ^1 PRONTO PARA APLICAR ")
             break
         end
 
         if timeOut >= 4000 then
-            print(" ^1 DEU MERDA ")
+            -- print(" ^1 DEU MERDA ")
             break
         end
     end
@@ -133,16 +133,16 @@ function manageQueue()
 end
 
 function HANDLER_UPDATE_OVERLAY_LAYER(ped, data)
-    print(" HANDLER_UPDATE_OVERLAY_LAYER :: ", json.encode(data))
+    -- print(" HANDLER_UPDATE_OVERLAY_LAYER :: ", json.encode(data))
     local layerType = data.layerType
     local styleIndex = data.styleIndex
-    local palleteIndex = data.palleteIndex or 0
+    local palleteIndex = data.palleteIndex or 1
     local tint0 = data.tint0
     local alpha = data.alpha
 
     -- print("HANDLER_UPDATE_OVERLAY_LAYER(" .. eOverlayToStr[layerType] .. ")")
 
-    local mpOverlayLayersDataFile = exports.frp_core.mp_overlay_layers()
+    local mpOverlayLayersDataFile = gMpOverlayLayers
 
     local overlayLayerDataFileEntry = nil
     for _, entry in pairs(mpOverlayLayersDataFile) do
@@ -174,7 +174,7 @@ function HANDLER_UPDATE_OVERLAY_LAYER(ped, data)
 
     local pallete = nil
     if palleteIndex ~= nil then
-        pallete = colorPalettes[palleteIndex + 1].hash
+        pallete = colorPalettes[palleteIndex].hash
     end
 
     if palleteIndex and not pallete then
@@ -208,20 +208,19 @@ function HANDLER_UPDATE_OVERLAY_LAYER(ped, data)
         blendType = 0
     end
 
-    print("HANDLER_UPDATE_OVERLAY_LAYER(" .. eOverlayToStr[layerType] .. ") :: blendType(" .. blendType .. ")")
-    print("HANDLER_UPDATE_OVERLAY_LAYER(" .. eOverlayToStr[layerType] .. ") :: pallete(" .. (blendType == 0 and pallete or "nil") .. ")")
-    print("HANDLER_UPDATE_OVERLAY_LAYER(" .. eOverlayToStr[layerType] .. ") :: albedo: ", albedo, albedo ~= nil and tostring(albedo))
-    print("HANDLER_UPDATE_OVERLAY_LAYER(" .. eOverlayToStr[layerType] .. ") :: normal: ", normal, normal ~= nil and tostring(normal))
-    print("HANDLER_UPDATE_OVERLAY_LAYER(" .. eOverlayToStr[layerType] .. ") :: material:", material, material ~= nil and tostring(material))
-
+    -- print("HANDLER_UPDATE_OVERLAY_LAYER(" .. eOverlayToStr[layerType] .. ") :: blendType(" .. blendType .. ")")
+    -- print("HANDLER_UPDATE_OVERLAY_LAYER(" .. eOverlayToStr[layerType] .. ") :: pallete(" .. (blendType == 0 and pallete or "nil") .. ")")
+    -- print("HANDLER_UPDATE_OVERLAY_LAYER(" .. eOverlayToStr[layerType] .. ") :: albedo: ", albedo, albedo ~= nil and tonumber(albedo))
+    -- print("HANDLER_UPDATE_OVERLAY_LAYER(" .. eOverlayToStr[layerType] .. ") :: normal: ", normal, normal ~= nil and tonumber(normal))
+    -- print("HANDLER_UPDATE_OVERLAY_LAYER(" .. eOverlayToStr[layerType] .. ") :: material:", material, material ~= nil and tonumber(material))
 
     gMetapedClothingSystemOverlayHandler.updateOrCreateLayer(
         {
             type = layerType,
             
-            albedo = albedo ~= nil and tonumber(albedo),
-            normal = normal ~= nil and tonumber(normal),
-            material = material ~= nil and tonumber(material),
+            albedo = albedo,
+            normal =  normal,
+            material = material,
 
             blendType = blendType,
             pallete = blendType == 0 and pallete or nil, -- Palette is only used for blendType 0
@@ -232,8 +231,6 @@ function HANDLER_UPDATE_OVERLAY_LAYER(ped, data)
     )
 
     gMetapedClothingSystemOverlayHandler.applyTextureBlend(ped)
-
-    Wait(100)
 
     return true
 end
@@ -254,8 +251,6 @@ function HANDLER_UPDATE_BASE_OVERLAY_LAYER(ped, data)
 
     gMetapedClothingSystemOverlayHandler.applyTextureBlend(ped)
 
-    Wait(100)
-
     return true
 end
 
@@ -267,7 +262,7 @@ function HANDLER_UPDATE_CURRENT_HEAD_BLEND (ped, data)
     N_0x4668d80430d6c299(ped)
 
     while not HasPedHeadBlendFinished(ped) do
-        Wait(2000)
+        Wait(100)
     end
 
     return true
@@ -333,16 +328,6 @@ function HANDLER_UPDATE_CURRENT_BODY (ped, data)
         useTempPath = useTempPath,
     });
 
-    -- try
-    -- {
-    --     await Promise.all([ lowerBodyPromise, upperBodyPromise ]);
-    -- }
-    -- catch(e)
-    -- {
-    --     console.log("Err :: ", e)
-    --     // throw new CustomException(`Falha ao carregar uma das partes do corpo successLower(${'successLower'}) successUpper(${'successUpper'}), error: ${e}`);
-    -- }
-
     return true;
 end
 
@@ -391,7 +376,7 @@ end
 
 
 function HANDLER_UPDATE_CURRENT_APPARATUS(ped, data)
-    print(" HANDLER_UPDATE_CURRENT_APPARATUS ")
+    -- print(" HANDLER_UPDATE_CURRENT_APPARATUS ")
     -- Caso o ped esteja usando um componente temporário
     -- a gente deve remover o componente temporario completamente a aplica esse novo
     -- ou só alterar o componente que está em cache?

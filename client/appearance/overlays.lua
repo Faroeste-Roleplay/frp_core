@@ -83,15 +83,6 @@ function MetapedClothingSystemOverlayHandler.createPlayer()
 
             self.baseLayer.textureId = newTextureId
 
-            -- Game.onResourceStop.connect(() =>
-            -- {
-            --     // ClearPedTexture
-            --     N_0xb63b9178d0f58d82(textureId);
-            -- 
-            --     // ReleaseTexture
-            --     N_0x6befaa907b076859(textureId);
-            -- });
-
             AddEventHandler("onResourceStop", function(resName)
                 if resName == GetCurrentResourceName() then
                     -- ClearPedTexture
@@ -114,8 +105,6 @@ function MetapedClothingSystemOverlayHandler.createPlayer()
 
 
     -- Define other methods similarly
-
-
     self.updateLayerData = function(layer, updateTextureMap)
         -- print(" updateLayerData :: ")
         local textureId = self.baseLayer.textureId
@@ -144,7 +133,6 @@ function MetapedClothingSystemOverlayHandler.createPlayer()
 
         if pallete then
             -- print(string.format("updateLayerData :: pallete(%s) tint0(%s) tint1(%s) tint1(%s)", pallete, tint0, tint1, tint1))
-
             -- SetTextureLayerPallete
             N_0x1ed8588524ac9be1(textureId, layerId, removeDecimalZero(pallete))
 
@@ -154,14 +142,12 @@ function MetapedClothingSystemOverlayHandler.createPlayer()
 
         if modTexture then
             -- print(string.format("updateLayerData :: modTexture(%s) modTexAlpha(%s) modChannel(%s)", modTexture, modTexAlpha, modChannel))
-
             -- SetTextureLayerMod
             N_0xf2ea041f1146d75b(textureId, layerId, modTexture, modTexAlpha + 0.0001, modChannel)
         end
 
         if texRough then
             -- print(string.format("updateLayerData :: texRough(%s)", texRough))
-
             -- SetTextureLayerRoughness
             N_0x057c4f092e2298be(textureId, layerId, texRough)
         end
@@ -232,7 +218,6 @@ function MetapedClothingSystemOverlayHandler.createPlayer()
     end
 
     self.updateOrCreateLayer = function(layer)
-        -- print(" updateOrCreateLayer :: ", json.encode(layer))
         local baseLayer = self.baseLayer
 
         if layer.type == eOverlayLayer.MPC_OVERLAY_LAYER_ROOT then
@@ -262,23 +247,12 @@ function MetapedClothingSystemOverlayHandler.createPlayer()
                 }
 
                 local newLayer = exports.frp_core:mergeObjectData(basicLayer, layer)
-                -- for i, value in pairs(newLayer) do 
-                --     if i ~= "texAlpha" then
-                --         newLayer[i] = removeDecimalZero(value)
-                --     end
-                -- end
                 self.layers[baseLayer.numLayers] = newLayer
                 baseLayer.numLayers = baseLayer.numLayers + 1
 
                 self.addLayerToTextureBlend(newLayer)
             else
                 local updatedLayer = exports.frp_core:mergeObjectData(matchingLayer, layer)
-
-                -- for i, value in pairs(updatedLayer) do 
-                --     if i ~= "texAlpha" then
-                --         updatedLayer[i] = removeDecimalZero(value)
-                --     end
-                -- end
 
                 self.layers[matchingLayerIndex] = updatedLayer
                 -- print(" updatedLayer ::::: ", json.encode(updatedLayer, {indent=true}))
@@ -316,7 +290,6 @@ function MetapedClothingSystemOverlayHandler.createPlayer()
         N_0x92daaba2c1c10b0e(baseLayerTextureId)
         N_0xcc8ca3e88256e58f(pedId, 0, 1, 1, 1, false)
     end
-
 
     return self
 end

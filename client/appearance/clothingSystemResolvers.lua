@@ -59,14 +59,6 @@ function manageQueue()
         return ""
     end
 
-    -- deferred.first({
-    --     handler(entry.reqPed, entry.reqData)
-    -- }):next(function(result)
-        
-    -- end, function(err)
-        
-    -- end)
-
 	local d = promise.new()
     local success = handler(entry.reqPed, entry.reqData)
 
@@ -84,21 +76,6 @@ function manageQueue()
 
     d:resolve(success)
     timeout(10000)
-
-    -- local timeoutPromise = newPromise(function(resolve, reject)
-    --     setTimeout(function()
-    --         reject(new Error("Demorou demais para completar o request"))
-    --     end, 10000)
-    -- end)
-
-    -- exports.frp_core:setManagedPromiseTick(function(rr)
-    --     print(" setManagedPromiseTick 1 ")
-    --     if not not N_0xa0bc8faed8cfeb3c(entry.reqPed) then
-    --         print(" setManagedPromiseTick 2 ")
-    --         rr()
-    --     end
-    --     print(" setManagedPromiseTick 3 ")
-    -- end, 3000)
 
     local timeOut = 0
 
@@ -511,16 +488,6 @@ function HANDLER_UPDATE_CURRENT_APPARATUS(ped, data)
 
     -- Aguardar o componente realmente ser aplicado no ped
     -- e assim então passar para o proximo request da fila.
-    
-    --[[local interval = setInterval(() =>
-    --{
-        --if (this.metapedClothingSystem.isMetapedUsingApparatus(ped, apparatus))
-        --{
-            --clearInterval(interval);
-
-            --return resolve(true);
-        --}
-    --}, 0);]]
 
     return true;
 end

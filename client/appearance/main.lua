@@ -25,7 +25,6 @@ function handleStartEditor(ped)
     local equippedApparels = {};
 
     for _, hash in ipairs(equippedApparelsHash) do
-        -- print(" hash :: ", json.encode(hash))
         if hash and hash ~= 0 then
             local apparel = getMetapedBodyApparatusFromShopitemAny(nil, apparelsGender, nil, nil, hash);
             table.insert(equippedApparels, apparel);
@@ -260,25 +259,6 @@ function requestChangeApparatus(ped, request)
             local albedoHash = bAlbedo:GetInt32(0);
             local normalHash = bNormal:GetInt32(0);
             local materialHash = bMaterial:GetInt32(0);
-
-            -- local albedoHash = DataView.ArrayBuffer(32)
-            -- print(" bAlbedo :: ", bAlbedo, json.encode(bAlbedo))
-            -- albedoHash:SetInt32(0, bAlbedo.blob)
-            -- print("albedoHash", albedoHash, albedoHash:Buffer())
-
-            -- local normalHash = DataView.ArrayBuffer(32)
-            -- print(" bNormal :: ", bNormal, json.encode(bNormal))
-            -- normalHash:SetInt32(0,bNormal.blob)
-
-            -- local materialHash = DataView.ArrayBuffer(32)
-            -- print(" bMaterial :: ", bMaterial, json.encode(bMaterial))
-            -- materialHash:SetInt32(0,bMaterial.blob)
-
-            -- print(" UpdateBaseOverlayLayer ================== ")
-
-            -- print("albedoHash", albedoHash)
-            -- print("normalHash", normalHash)
-            -- print("materialHash", materialHash)
 
             clothingSystemPushRequest(ped, 'UpdateBaseOverlayLayer', {
                 albedo = albedoHash,

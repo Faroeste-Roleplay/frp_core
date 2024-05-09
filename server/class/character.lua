@@ -10,6 +10,7 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
     self.favoriteReserveType = favoriteReserveType
     self.deathState = deathState
     self.metaData = metaData or {}
+    self.outfitId = 0
 
     self.level = level or 1
     self.xp = xp or 0
@@ -30,6 +31,8 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
         if res.items then
             res.items = json.decode(res.items)
         end
+
+        self:GetCurrentOutfitOffline()
 
         self:GetMetadata()
 
@@ -137,6 +140,45 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
         return res
     end
 
+    self.GetCurrentOutfitOffline = function( this )
+        local res = MySQL.single.await([[
+            SELECT equippedOutfitId 
+            FROM character_appearance_customizable 
+            WHERE charId = ?
+        ]], {
+            self.id
+        })
+
+        self.outfitId = res.equippedOutfitId
+        return res.equippedOutfitId
+    end
+
+    self.SetCurrentOutfitOffline = function( this, outfitId )
+        local affectedRows = MySQL.update.await('UPDATE character_appearance_customizable SET equippedOutfitId = ? WHERE charId = ?', {
+            outfitId,
+            self.id, 
+        })
+
+        if affectedRows then
+            self.outfitId = outfitId
+        end
+
+        return affectedRows ~= nil
+    end
+
+    self.CreateCharacterOutfit = function( this, outfitData, name ) 
+        local res = MySQL.insert.await([[
+            INSERT INTO character_outfit 
+                (charId, apparels, name)
+            VALUES( ?, ?, ? )
+        ]], {
+            self.id,
+            json.encode(outfitData),
+            name
+        })
+        return res
+    end
+
     self.SetCharacterAppearanceOverlays = function( this, characterAppearanceOverlays )
         local res = MySQL.insert.await([[
             INSERT INTO character_appearance_overlays 
@@ -150,8 +192,68 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
         return res
     end
 
+    self.SetCharacterAppearanceOverlaysCustomizable = function( this, characterAppearanceOverlays )
+        local res = MySQL.insert.await([[
+            INSERT INTO character_appearance_overlays_customizable 
+                (charId, 
+                    hasFacialHair,
+                    headHairStyle,
+                    headHairOpacity,
+                    foundationColor,
+                    foundationOpacity,
+                    lipstickColor,
+                    lipstickOpacity,
+                    facePaintColor,
+                    facePaintOpacity,
+                    eyeshadowColor,
+                    eyeshadowOpacity,
+                    eyelinerColor,
+                    eyelinerOpacity,
+                    eyebrowsStyle,
+                    eyebrowsColor,
+                    eyebrowsOpacity,
+                    blusherStyle,
+                    blusherColor,
+                    blusherOpacity,
+                )
+            VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+        ]], {
+            self.id,
+            characterAppearanceOverlays.hasFacialHair,
+            characterAppearanceOverlays.headHairStyle,
+            characterAppearanceOverlays.headHairOpacity,
+            characterAppearanceOverlays.foundationColor,
+            characterAppearanceOverlays.foundationOpacity,
+            characterAppearanceOverlays.lipstickColor,
+            characterAppearanceOverlays.lipstickOpacity,
+            characterAppearanceOverlays.facePaintColor,
+            characterAppearanceOverlays.facePaintOpacity,
+            characterAppearanceOverlays.eyeshadowColor,
+            characterAppearanceOverlays.eyeshadowOpacity,
+            characterAppearanceOverlays.eyelinerColor,
+            characterAppearanceOverlays.eyelinerOpacity,
+            characterAppearanceOverlays.eyebrowsStyle,
+            characterAppearanceOverlays.eyebrowsColor,
+            characterAppearanceOverlays.eyebrowsOpacity,
+            characterAppearanceOverlays.blusherStyle,
+            characterAppearanceOverlays.blusherColor,
+            characterAppearanceOverlays.blusherOpacity,
+        })
+
+        return res
+    end
+
     self.SetCharacterExpessions = function( this, expressions )
-        
+        local res = MySQL.insert.await([[
+            INSERT INTO character_appearance 
+                (charId, expressions)
+            VALUES( ?, ? )
+        ]], {
+            self.id,
+            expressions
+        })
+
+        return res
     end
 
     self.SetCharacterWhistle = function(this, whistle)

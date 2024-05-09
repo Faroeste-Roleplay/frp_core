@@ -85,7 +85,7 @@ function API.User(playerId, id, ipAddress, identifiers)
         return false
     end
 
-    self.CreateCharacter = function(this, firstName, lastName, birthDate, playerProfileCreation)
+    self.CreateCharacter = function(this, firstName, lastName, birthDate, playerProfileCreation, equippedApparelsByType)
         local Character = nil
 
         local metaData = { position = Config.DefaultSpawnPosition }
@@ -119,11 +119,19 @@ function API.User(playerId, id, ipAddress, identifiers)
             ]], {
                 charId,
             })
-            playerProfileCreation.components.expressions = playerProfileCreation.faceFeatures
+            -- playerProfileCreation.components.expressions = playerProfileCreation.faceFeatures
             Character:SetCharacterAppearance(   playerProfileCreation.components    )
             Character:SetCharacterAppearanceCustomizable(    playerProfileCreation.componentsCustomizable    )
             Character:SetCharacterAppearanceOverlays(    playerProfileCreation.overlays    )
-            
+            Character:SetCharacterAppearanceOverlaysCustomizable(    playerProfileCreation.overlaysCustomizable    )
+
+            if equippedApparelsByType then
+                local outfitId = Character:CreateCharacterOutfit( equippedApparelsByType, i18n.translate("initial"))
+                if outfitId then
+                    Character:SetCurrentOutfitOffline(outfitId)
+                end
+            end
+
             API_Database.execute("FRP/CreateCharStatus", {
                 charId = charId,
                 statHunger = 0,

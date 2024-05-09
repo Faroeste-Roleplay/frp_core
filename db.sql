@@ -146,14 +146,13 @@ CREATE TABLE IF NOT EXISTS `character_inventory` (
   CONSTRAINT `FK_inventory_character` FOREIGN KEY (`charId`) REFERENCES `character` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
--- Copiando estrutura para tabela faroeste.character_outfit
-CREATE TABLE IF NOT EXISTS `character_outfit` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `apparels` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  PRIMARY KEY (`id`) USING BTREE,
-  CONSTRAINT `apparels` CHECK (json_valid(`apparels`))
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
--- Copiando dados para a tabela faroeste.character_outfit: ~0 rows (aproximadamente)
+CREATE TABLE `character_outfit` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`name` LONGTEXT NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
+	`apparels` LONGTEXT NOT NULL COLLATE 'utf8mb4_bin',
+	PRIMARY KEY (`id`) USING BTREE,
+	CONSTRAINT `apparels` CHECK (json_valid(`apparels`))
+) COLLATE='utf8mb4_general_ci' ENGINE=InnoDB AUTO_INCREMENT=3;
 
 -- Copiando estrutura para tabela faroeste.character_rpg_stats
 CREATE TABLE IF NOT EXISTS `character_rpg_stats` (

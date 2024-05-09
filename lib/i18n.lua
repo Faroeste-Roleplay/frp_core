@@ -109,7 +109,7 @@ RegisterNetEvent("FRP:SetLanguage", function(language)
 
 		if not IsDuplicityVersion() then
 			if language ~= GetResourceKvpString('frp:language') then
-				Core.Functions.Notify(i18n.translate('info.language_changed'), 'success')
+				cAPI.Notify(i18n.translate('info.language_changed'), 'success')
 			end
 		end
 	end

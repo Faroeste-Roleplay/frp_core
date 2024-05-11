@@ -186,7 +186,7 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
             VALUES( ?, ? )
         ]], {
             self.id,
-            characterAppearanceOverlays
+            json.encode(characterAppearanceOverlays)
         })
 
         return res
@@ -250,7 +250,7 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
             VALUES( ?, ? )
         ]], {
             self.id,
-            expressions
+            json.encode(expressions)
         })
 
         return res

@@ -255,9 +255,9 @@ function HANDLER_UPDATE_CURRENT_EXPRESION (pedId, data)
 
     expressionValue = expressionValue + 0.0001;
 
-    expressionValue = Math.min(1.0, expressionValue);
+    expressionValue = math.min(1.0, expressionValue);
 
-    expressionValue = Math.max(-1.0, expressionValue);
+    expressionValue = math.max(-1.0, expressionValue);
     local expressionTypeHash = MetapedExpressionToHash[expressionType];
 
     -- print(" expressionTypeHash :: 4 ", expressionTypeHash, expressionValue)

@@ -195,7 +195,7 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
     self.SetCharacterAppearanceOverlaysCustomizable = function( this, characterAppearanceOverlays )
         local res = MySQL.insert.await([[
             INSERT INTO character_appearance_overlays_customizable 
-                (charId, 
+                (   charId, 
                     hasFacialHair,
                     headHairStyle,
                     headHairOpacity,
@@ -214,30 +214,29 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
                     eyebrowsOpacity,
                     blusherStyle,
                     blusherColor,
-                    blusherOpacity,
-                )
+                    blusherOpacity )
             VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
         ]], {
             self.id,
-            characterAppearanceOverlays.hasFacialHair,
-            characterAppearanceOverlays.headHairStyle,
-            characterAppearanceOverlays.headHairOpacity,
-            characterAppearanceOverlays.foundationColor,
-            characterAppearanceOverlays.foundationOpacity,
-            characterAppearanceOverlays.lipstickColor,
-            characterAppearanceOverlays.lipstickOpacity,
-            characterAppearanceOverlays.facePaintColor,
-            characterAppearanceOverlays.facePaintOpacity,
-            characterAppearanceOverlays.eyeshadowColor,
-            characterAppearanceOverlays.eyeshadowOpacity,
-            characterAppearanceOverlays.eyelinerColor,
-            characterAppearanceOverlays.eyelinerOpacity,
-            characterAppearanceOverlays.eyebrowsStyle,
-            characterAppearanceOverlays.eyebrowsColor,
-            characterAppearanceOverlays.eyebrowsOpacity,
-            characterAppearanceOverlays.blusherStyle,
-            characterAppearanceOverlays.blusherColor,
-            characterAppearanceOverlays.blusherOpacity,
+            characterAppearanceOverlays?.hasFacialHair,
+            characterAppearanceOverlays?.headHairStyle,
+            characterAppearanceOverlays?.headHairOpacity,
+            characterAppearanceOverlays?.foundationColor,
+            characterAppearanceOverlays?.foundationOpacity,
+            characterAppearanceOverlays?.lipstickColor,
+            characterAppearanceOverlays?.lipstickOpacity,
+            characterAppearanceOverlays?.facePaintColor,
+            characterAppearanceOverlays?.facePaintOpacity,
+            characterAppearanceOverlays?.eyeshadowColor,
+            characterAppearanceOverlays?.eyeshadowOpacity,
+            characterAppearanceOverlays?.eyelinerColor,
+            characterAppearanceOverlays?.eyelinerOpacity,
+            characterAppearanceOverlays?.eyebrowsStyle,
+            characterAppearanceOverlays?.eyebrowsColor,
+            characterAppearanceOverlays?.eyebrowsOpacity,
+            characterAppearanceOverlays?.blusherStyle,
+            characterAppearanceOverlays?.blusherColor,
+            characterAppearanceOverlays?.blusherOpacity,
         })
 
         return res

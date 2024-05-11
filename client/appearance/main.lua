@@ -71,6 +71,10 @@ exports('handleStartEditor', handleStartEditor)
 AddEventHandler('appearance:handleStartEditor', handleStartEditor);
 
 
+exports("getEquippedMetapedClothing", function()
+    return equippedMetapedClothing
+end)
+
 function getPedEquippedApparels(pedId, pedIsMale)
     local numMetaAssets = N_0x90403e8107b60e81(pedId); 
 
@@ -208,11 +212,16 @@ function requestChangeApparatus(ped, request)
             equippedMetapedClothing.bodyApparatusId = bodyApparatusId
             equippedMetapedClothing.bodyApparatusStyleId = bodyApparatusStyleId
 
+            TriggerEvent("appearance:update:equippedMetapedBody", "set", {
+                bodyApparatusId = bodyApparatusId,
+                bodyApparatusStyleId = bodyApparatusStyleId
+            })
+
             clothingSystemPushRequest(ped, 'UpdateCurrentBody', {
                 id = bodyApparatusId,
                 styleId = bodyApparatusStyleId
             })
-        
+
             local isPedMale = IsPedMale(ped)
 
             local headApparatus = {

@@ -101,13 +101,13 @@ function OnPlayerConnecting(name, setKickReason, deferrals)
 	local mappedIdentifiers = MapIdentifiers(identifiers)
 
 	if mappedIdentifiers.steam == nil then
-		return setDeferralsDone( i18n.translate('info.steam_not_found') )
+		-- return setDeferralsDone( i18n.translate('error.steam_not_found') )
 	end
 
 	log_debug( ('mappedIdentifiers: %s'):format(json.encode(mappedIdentifiers, { indent = true })) )
 
 	if not IsAnyMappedIdentifierHighTrusted(mappedIdentifiers) then
-		return setDeferralsDone(i18n.translate('info.identifiers_not_found'))
+		return setDeferralsDone(i18n.translate('error.identifiers_not_found'))
 	end
 
 	---- ADICIONAR CHECAGEM DE BAN AQUI

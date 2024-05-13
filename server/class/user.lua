@@ -85,6 +85,29 @@ function API.User(playerId, id, ipAddress, identifiers)
         return false
     end
 
+    self.GetCharactersAppearance = function(this)
+        local rows = API_Database.query("FRP/GetCharacters", {userId = self.id})
+        local resData = {}
+
+        if #rows > 0 then
+            return resData
+        end
+
+        for _, char in pairs(rows) do 
+            local characterData = {}
+        
+            -- Adiciona os resultados de cada tabela ao objeto characterData
+            characterData.character_appearance = MySQL.single.await("SELECT * FROM character_appearance WHERE charId = ?", { char.charId })
+            characterData.character_appearance_customizable = MySQL.single.await("SELECT * FROM character_appearance_customizable WHERE charId = ?", { char.charId })
+            characterData.character_appearance_overlays = MySQL.single.await("SELECT * FROM character_appearance_overlays WHERE charId = ?", { char.charId })
+            characterData.character_appearance_overlays_customizable = MySQL.single.await("SELECT * FROM character_appearance_overlays_customizable WHERE charId = ?", { char.charId })
+        
+            resData[_] = characterData
+        end
+
+        return resData
+    end
+
     self.CreateCharacter = function(this, firstName, lastName, birthDate, playerProfileCreation, equippedApparelsByType)
         local Character = nil
 

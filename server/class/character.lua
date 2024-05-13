@@ -263,5 +263,22 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
         TriggerEvent("API:ReleaseCharacter", self.source)
     end
 
+    self.GetCharacterAppearanceOffline = function(this)
+        local characterData = {}
+    
+        -- Adiciona os resultados de cada tabela ao objeto characterData
+        characterData.character_appearance = MySQL.single.await("SELECT * FROM character_appearance WHERE charId = ?", { self.id })
+        characterData.character_appearance_customizable = MySQL.single.await("SELECT * FROM character_appearance_customizable WHERE charId = ?", { self.id })
+        characterData.character_appearance_overlays = MySQL.single.await("SELECT * FROM character_appearance_overlays WHERE charId = ?", { self.id })
+        characterData.character_appearance_overlays_customizable = MySQL.single.await("SELECT * FROM character_appearance_overlays_customizable WHERE charId = ?", { self.id })
+    
+        return characterData
+    end
+
+    self.SetClientAppearance = function(this)
+        local data = self:GetCharacterAppearanceOffline()
+        cAPI.ApplyCharacterAppearance(self.source, data)
+    end
+
     return self
 end

@@ -31,6 +31,7 @@ client_scripts {
 	"client/appearance/overlays.lua",
 	"client/appearance/main.lua",
 	"client/appearance/apparatusDatabase.lua",
+	"client/appearance/applyPersonaAppearance.lua",
 	"client/appearance/clothingSystemResolvers.lua",
 	"client/appearance/utils.lua",
 	"client/appearance/utils.js",

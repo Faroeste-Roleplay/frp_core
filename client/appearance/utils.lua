@@ -30,3 +30,39 @@ function removeDecimalZero(number)
 
     return tonumber(strippedNumber)
 end
+
+
+function UpdatePedVariation(ped)
+    Citizen.InvokeNative("0x704C908E9C405136", ped)
+    Citizen.InvokeNative("0xCC8CA3E88256E58F", ped, false, true, true, true, false)
+end
+
+function SetPedComponentEnabled(ped, componentHash, immediately, isMp)
+    Citizen.InvokeNative("0xD3A7B003ED343FD9", ped, componentHash, immediately, isMp, true)
+    
+    -- Não deveria estar aqui, mas tá, só pra garantir que será executado toda vez...
+    UpdatePedVariation(ped)
+end
+
+
+function setDefaultComponentsForPed(ped)
+    local isMale = IsPedMale(ped) == true
+    local defaultComponents = {}
+
+    if isMale then
+        defaultComponents = {
+            'CLOTHING_ITEM_M_HAIR_013_jet_black',
+            'CLOTHING_ITEM_M_HEAD_012_V_006'
+        }
+    else
+        defaultComponents = {
+            'CLOTHING_ITEM_f_HAIR_021_jet_black',
+            'CLOTHING_ITEM_F_HEAD_028_V_005'
+        }
+    end
+
+    for _, componentHashName in ipairs(defaultComponents) do
+        local componentHash = GetHashKey(componentHashName)
+        SetPedComponentEnabled(ped, componentHash, true, true)
+    end
+end

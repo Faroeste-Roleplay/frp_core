@@ -265,13 +265,22 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
 
     self.GetCharacterAppearanceOffline = function(this)
         local characterData = {}
-    
+
         -- Adiciona os resultados de cada tabela ao objeto characterData
-        characterData.character_appearance = MySQL.single.await("SELECT * FROM character_appearance WHERE charId = ?", { self.id })
-        characterData.character_appearance_customizable = MySQL.single.await("SELECT * FROM character_appearance_customizable WHERE charId = ?", { self.id })
-        characterData.character_appearance_overlays = MySQL.single.await("SELECT * FROM character_appearance_overlays WHERE charId = ?", { self.id })
-        characterData.character_appearance_overlays_customizable = MySQL.single.await("SELECT * FROM character_appearance_overlays_customizable WHERE charId = ?", { self.id })
+        characterData.appearance = MySQL.single.await("SELECT * FROM character_appearance WHERE charId = ?", { char.id })
+        characterData.appearanceCustomizable = MySQL.single.await("SELECT * FROM character_appearance_customizable WHERE charId = ?", { char.id })
+        characterData.appearanceOverlays = MySQL.single.await("SELECT * FROM character_appearance_overlays WHERE charId = ?", { char.id })
+        characterData.appearanceOverlaysCustomizable = MySQL.single.await("SELECT * FROM character_appearance_overlays_customizable WHERE charId = ?", { char.id })
     
+        local outfitRes = MySQL.single.await("SELECT * FROM character_outfit WHERE id = ?", { characterData.appearanceCustomizable.equippedOutfitId })
+        
+        if outfitRes then
+            characterData.appearanceCustomizable.equippedOutfitApparels = json.decode(outfitRes.apparels)
+        end
+        
+        characterData.appearanceOverlays.data =  json.decode(characterData.appearanceOverlays.data)
+        characterData.appearance.expressions = json.decode(characterData.appearance.expressions)
+
         return characterData
     end
 

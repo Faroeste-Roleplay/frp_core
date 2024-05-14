@@ -89,7 +89,9 @@ function API.User(playerId, id, ipAddress, identifiers)
         local rows = API_Database.query("FRP/GetCharacters", {userId = self.id})
         local resData = {}
 
-        if #rows > 0 then
+        print(" rows :: ", #rows)
+
+        if #rows <= 0 then
             return resData
         end
 
@@ -97,11 +99,19 @@ function API.User(playerId, id, ipAddress, identifiers)
             local characterData = {}
         
             -- Adiciona os resultados de cada tabela ao objeto characterData
-            characterData.character_appearance = MySQL.single.await("SELECT * FROM character_appearance WHERE charId = ?", { char.charId })
-            characterData.character_appearance_customizable = MySQL.single.await("SELECT * FROM character_appearance_customizable WHERE charId = ?", { char.charId })
-            characterData.character_appearance_overlays = MySQL.single.await("SELECT * FROM character_appearance_overlays WHERE charId = ?", { char.charId })
-            characterData.character_appearance_overlays_customizable = MySQL.single.await("SELECT * FROM character_appearance_overlays_customizable WHERE charId = ?", { char.charId })
+            characterData.appearance = MySQL.single.await("SELECT * FROM character_appearance WHERE charId = ?", { char.id })
+            characterData.appearanceCustomizable = MySQL.single.await("SELECT * FROM character_appearance_customizable WHERE charId = ?", { char.id })
+            characterData.appearanceOverlays = MySQL.single.await("SELECT * FROM character_appearance_overlays WHERE charId = ?", { char.id })
+            characterData.appearanceOverlaysCustomizable = MySQL.single.await("SELECT * FROM character_appearance_overlays_customizable WHERE charId = ?", { char.id })
         
+            local outfitRes = MySQL.single.await("SELECT * FROM character_outfit WHERE id = ?", { characterData.appearanceCustomizable.equippedOutfitId })
+            
+            if outfitRes then
+                characterData.appearanceCustomizable.equippedOutfitApparels = json.decode(outfitRes.apparels)
+            end
+            
+            characterData.appearanceOverlays.data =  json.decode(characterData.appearanceOverlays.data)
+            characterData.appearance.expressions = json.decode(characterData.appearance.expressions)
             resData[_] = characterData
         end
 
@@ -224,7 +234,7 @@ function API.User(playerId, id, ipAddress, identifiers)
         -- local character_stats = Character:GetCachedStats()
 
         if characters_appearence ~= nil then
-            cAPI.Initialize(self:GetSource(), character_model, characters_appearence, character_lastposition, character_stats)
+            cAPI.Initialize(self:GetSource(), character_model, character_lastposition)
         end
 
         -- cAPI.CWanted(Character:GetWanted())

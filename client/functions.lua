@@ -231,3 +231,47 @@ function cAPI.NotifyToast(type, text, quantity)
 
     TriggerEvent("FRP:TOAST:New", type, text, quantity)
 end
+
+
+
+local function GetCollisionBetweenPoints(pointFrom, pointTo, flags)
+    -- StartExpensiveSynchronousShapeTestLosProbe
+    local handle 
+
+    if IS_GTAV then
+        handle = StartExpensiveSynchronousShapeTestLosProbe(pointFrom.x, pointFrom.y, pointFrom.z, pointTo.x, pointTo.y, pointTo.z, flags, 0, 7)
+    elseif IS_RDR3 then
+        handle = Citizen.InvokeNative(0x377906D8A31E5586, pointFrom.x, pointFrom.y, pointFrom.z, pointTo.x, pointTo.y, pointTo.z, flags, 0, 7)
+    end
+
+    local _, hit, hitPos = GetShapeTestResult(handle)
+
+    return hit == 1, hitPos
+end
+
+function cAPI.getFromCoordsFromPlayer(position, ped, radius)
+	local r = radius or 0.8
+
+	local Cx = position.x
+	local Cy = position.y
+	local z = position.z
+
+    local playerPed = PlayerPedId()
+    local playerCoords = GetEntityCoords(playerPed)
+
+	local h = GetEntityHeading(ped or playerPed)
+
+	local i = math.rad(h + 90)
+	local X_deg0 = Cx + (r * math.cos(i))
+	local Y_deg0 = Cy + (r * math.sin(i))
+
+    local startPos = vec3(X_deg0, Y_deg0, z)
+    local hit, hitPos = GetCollisionBetweenPoints(position or playerCoords, startPos, 1 | 16)
+    local coords = hit and hitPos or startPos
+    
+    local _, groundZ, _ = GetGroundZAndNormalFor_3dCoord(coords.x ,coords.y, coords.z)
+    
+    local endCoords = vec3(coords.x, coords.y, groundZ + 0.10)
+
+	return endCoords
+end

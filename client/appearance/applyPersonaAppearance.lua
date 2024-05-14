@@ -61,7 +61,6 @@ function applyCharacterAppearance(pedId, data)
     N_0x9963681a8bc69bf3(pedId, 'Ped.WhistleClarity', whistleClarity);
     N_0x9963681a8bc69bf3(pedId, 'Ped.WhistleShape', whistleShape);
 
-
     -- console.log('applyCharacterAppearance :: body');
 
     applyCharacterAppearanceHandleBody(pedId, bodyApparatusId or 1, bodyApparatusStyleId or 1, height, bodyWeightOufitType, bodyKindType);

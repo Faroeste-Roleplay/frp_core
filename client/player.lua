@@ -58,11 +58,25 @@ function cAPI.Initialize(pedModel, lastPosition, stats)
     cAPI.VaryPlayerCore(0, pHealthCore)
     cAPI.VaryPlayerCore(1, pStaminaCore)
 
+    cAPI.SetPlayerWhistle()
+
     TriggerServerEvent("API:pre_OnUserCharacterInitialization")
 end
 
 function cAPI.SetPlayerAppearence()
     cAPI.ApplyCharacterAppearance(PlayerPedId(), gCharAppearence)
+end
+
+function cAPI.SetPlayerWhistle()
+    local pedId = PlayerPedId()
+    local whistlePitch, whistleClarity, whistleShape = 
+            gCharAppearence.appearanceCustomizable.whistlePitch, 
+            gCharAppearence.appearanceCustomizable.whistleClarity, 
+            gCharAppearence.appearanceCustomizable.whistleShape
+
+    N_0x9963681a8bc69bf3(pedId, 'Ped.WhistlePitch', whistlePitch);
+    N_0x9963681a8bc69bf3(pedId, 'Ped.WhistleClarity', whistleClarity);
+    N_0x9963681a8bc69bf3(pedId, 'Ped.WhistleShape', whistleShape);
 end
 
 function cAPI.SetPlayerDefaultModel()

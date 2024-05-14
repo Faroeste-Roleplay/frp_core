@@ -134,42 +134,6 @@ function cAPI.VaryPlayerCore(core, variation, variationTime, goldenEffect)
     cAPI.VaryPedCore(PlayerPedId(), core, variation, variationTime, goldenEffect)
 end
 
-
-function cAPI.GetMyOrg()
-    return Player.orgs
-end
-
-function cAPI.SetMyOrg(orgs)
-    Player.orgs = json.decode(orgs)
-end
-
-
-function cAPI.HasGroup(group)
-    local bit = config_file_GROUPS[group:lower()]
-
-    if bit ~= nil then
-        return (Player.role & bit) ~= 0
-    end
-
-    return false
-end
-
-function cAPI.HasGroupOrInheritance(group)
-    if cAPI.HasGroup(group) then
-        return true
-    else
-        for superGroup, childrenGroup in pairs(config_file_INHERITANCE) do
-            if childrenGroup == group then
-                if cAPI.HasGroup(superGroup) then
-                    return true
-                end
-            end
-        end
-    end
-
-    return false
-end
-
 function cAPI.AddWantedTime(wanted, time)
     if wanted then
         local add = 1000 * 60 * time
@@ -196,12 +160,6 @@ function cAPI.VarySickness(variation)
     Player.sickness = math.min(100, Player.sickness + variation)
 end
 
-function cAPI.OpioUse(variation)
-    variationTime = 10
-    for i = 0, 1 do
-        cAPI.VaryPedCore(PlayerPedId(), i, 100, variationTime, 1)
-    end
-end
 
 function cAPI.GetSickness()
     return Player.sickness

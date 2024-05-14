@@ -34,8 +34,3 @@ end)
 --     print(" ================================= ")
 --     print(" API identifiers :: ", json.encode(API.identifiers, {intent=true}))
 -- end)
-
-
--- RegisterCommand("hasGroup", function(playerId, args)
---     print(" API.IsPlayerAceAllowedGroup :: ", API.IsPlayerAceAllowedGroup(playerId, args[1]))
--- end)

@@ -1,4 +1,4 @@
-function cAPI.SetPlayerPed(model)
+function cAPI.SetPlayerPedModel(model)
     local modelHash = GetHashKey(model)
 
     if IsModelValid(modelHash) then
@@ -168,8 +168,6 @@ function cAPI.SetSkin(ped, componentArray)
             end
         end
     end
-
-
 end
 
 function cAPI.SetPedClothing(ped, clothingArray)
@@ -215,6 +213,13 @@ function cAPI.SetPedClothing(ped, clothingArray)
         end
     end
 end
+
+function cAPI.SetPedComponent(ped, componentId, drawableId, textureId, palleteId)
+    local isMale = IsPedMale(ped)
+
+end
+
+-- function cAPI.SetPedOverlay(ped)
 
 function cAPI.TaskAnimalInteraction(interaction)
     local ped = PlayerPedId()

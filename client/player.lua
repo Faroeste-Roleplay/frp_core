@@ -3,26 +3,29 @@ local gCharAppearence
 local gLastPosition
 local gStats
 
-function cAPI.SetDataAppearence(pedModel, charAppearence)
+function cAPI.SetDataAppearence(appearance)
+    local pedIsMale = appearance.appearance.isMale
+    local pedModel = pedIsMale and 'mp_male' or 'mp_female'
+    
+    if appearance?.overridePedModel and appearance?.overridePedModel ~= "" then
+        pedModel = appearance.overridePedModel
+    end
+
     gPedModel = pedModel
-    gCharAppearence = charAppearence
+    gCharAppearence = appearance
 end
 
 function cAPI.SetCharacterId(charId)
     LocalPlayer.state:set('characterId', charId, false)
 end
 
-function cAPI.Initialize(pedModel, charAppearence, lastPosition, stats)
-    charAppearence = charAppearence[1] 
-
-    gPedModel = pedModel
-    gCharAppearence = charAppearence
-    gLastPosition = lastPosition
-    gStats = stats   
+function cAPI.Initialize(pedModel, lastPosition, stats)
+    local decodedLastPosition
 
     if lastPosition == nil then
         lastPosition = Config.DefaultSpawnPosition
     end
+
     decodedLastPosition = lastPosition
     if type(lastPosition) ~= "vector3" then
         decodedLastPosition = json.decode(lastPosition)
@@ -31,17 +34,6 @@ function cAPI.Initialize(pedModel, charAppearence, lastPosition, stats)
     if decodedLastPosition.x ~= nil then
         decodedLastPosition = {decodedLastPosition.x, decodedLastPosition.y, decodedLastPosition.z}
     end
-
-    local pScale = gCharAppearence?.pedSize
-    -- local pClothing
-
-    -- if type(clothing) ~= "string" then
-    --     if clothing <= 100 then
-    --         pClothing = clothing
-    --     end
-    -- else
-    --     pClothing = json.decode(clothing)
-    -- end
 
     local pStats = stats
 
@@ -53,13 +45,6 @@ function cAPI.Initialize(pedModel, charAppearence, lastPosition, stats)
     else
         cAPI.PlayerAsInitialized(true)
     end
-
-    -- cAPI.ReplaceWeapons({})
-    
-    cAPI.SetPlayerPed('mp_male')
-
-    -- cAPI.SetPlayerAppearence(PlayerPedId())
-    --  cAPI.SetPedCloAthing(PlayerPedId(), pClothing)
 
     pHealth = pStats?[1] or 250
     pStamina = pStats?[2] or 34.0
@@ -76,28 +61,13 @@ function cAPI.Initialize(pedModel, charAppearence, lastPosition, stats)
     TriggerServerEvent("API:pre_OnUserCharacterInitialization")
 end
 
-function cAPI.SetPlayerAppearence(playerId)
-
-    --cAPI.SetPedBodyType(PlayerPedId(), pBodySize)    
-
-    cAPI.SetSkin(playerId, gCharAppearence?.enabledComponents)   
-
-    cAPI.SetPedFaceFeature(playerId, gCharAppearence?.faceFeatures)    
-
-    cAPI.SetPedScale(playerId, gCharAppearence?.pedHeight) 
-    
-    cAPI.SetPedOverlay(playerId, gCharAppearence?.overlays)
-    
-    local bodySize = json.decode(gCharAppearence?.enabledComponents)
-
-    cAPI.SetPedPortAndWeight(playerId, bodySize?['porte'] or 0, gCharAppearence?.pedWeight)
-
-    if gCharAppearence?.clothes ~= nil then
-        cAPI.SetSkin(playerId, gCharAppearence?.clothes)   
-    end
-    
+function cAPI.SetPlayerAppearence()
+    cAPI.ApplyCharacterAppearance(PlayerPedId(), gCharAppearence)
 end
 
+function cAPI.SetPlayerDefaultModel()
+    cAPI.SetPlayerPedModel(gPedModel)
+end
 
 function cAPI.PlayerAsInitialized(bool)
     initializedPlayer = bool

@@ -1,6 +1,10 @@
 function applyCharacterAppearance(pedId, data)
+    gMetapedClothingSystemOverlayHandler = MetapedClothingSystemOverlayHandler.createPlayer()
 
     setDefaultComponentsForPed(pedId);
+
+    -- print(" =========================================== ")
+    -- print(" data :: ", json.encode(data, {indent=true}))
 
     local 
         appearance,
@@ -60,19 +64,19 @@ function applyCharacterAppearance(pedId, data)
 
     -- console.log('applyCharacterAppearance :: body');
 
-    applyCharacterAppearanceHandleBody(pedId, bodyApparatusId, bodyApparatusStyleId, height, bodyWeightOufitType, bodyKindType);
+    applyCharacterAppearanceHandleBody(pedId, bodyApparatusId or 1, bodyApparatusStyleId or 1, height, bodyWeightOufitType, bodyKindType);
 
     -- console.log('applyCharacterAppearance :: head');
 
-    applyCharacterAppearanceHandleHead(pedId, headApparatusId, bodyApparatusStyleId);
+    applyCharacterAppearanceHandleHead(pedId, headApparatusId or 1, bodyApparatusStyleId or 1);
 
     -- console.log('applyCharacterAppearance :: eyes');
 
-    applyCharacterAppearanceHandleEyes(pedId, eyesApparatusId, eyesApparatusStyleId);
+    applyCharacterAppearanceHandleEyes(pedId, eyesApparatusId or 1, eyesApparatusStyleId or 1);
 
     -- console.log('applyCharacterAppearance :: teeth');
 
-    applyCharacterAppearanceHandleTeeth(pedId, teethApparatusStyleId);
+    applyCharacterAppearanceHandleTeeth(pedId, teethApparatusStyleId or 1);
 
     -- console.log('applyCharacterAppearance :: expressions');
 
@@ -219,7 +223,11 @@ function applyCharacterAppearanceHandleMustache(ped, mustacheApparatusId, mustac
 end
 
 function applyCharacterAppearanceHandleOutfit(ped, equippedOutfitApparels)
-    assert(equippedOutfitApparels, "equippedOutfitApparels empty")
+    -- assert(equippedOutfitApparels, "equippedOutfitApparels empty")
+
+    if not equippedOutfitApparels then 
+        return
+    end
 
     for t, apparelData in pairs(equippedOutfitApparels) do
         local type = tonumber(t)
@@ -236,7 +244,7 @@ function applyCharacterAppearanceHandleOutfit(ped, equippedOutfitApparels)
 end
 
 
-function ApplyCharacterAppearanceHandleOverlays(ped, headApparatusId, headApparatusStyleId, appearanceOverlays, appearanceOverlaysCustomizable)
+function applyCharacterAppearanceHandleOverlays(ped, headApparatusId, headApparatusStyleId, appearanceOverlays, appearanceOverlaysCustomizable)
     -- Criar a layer principal.
     clothingSystemPushRequest(ped, 'CreateHeadOverlay', { })
 

@@ -27,6 +27,9 @@ AddEventHandler("onResourceStop", function(resName)
     end
 end)
 
+SetConvarReplicated('ox:primaryColor', 'dark')
+SetConvarReplicated('ox:primaryShade', '9')
+
 -- RegisterCommand("debug_api", function()
 --     print(" API users :: ", json.encode(API.users, {intent=true}))
 --     print(" ================================= ")

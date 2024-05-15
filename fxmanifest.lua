@@ -9,32 +9,16 @@ shared_scripts {
 	"data/allowlistRoles.lua",
 	"data/permissions.lua",
 	---------------------
-	"lib/utils.lua",
-	"lib/i18n.lua",
-	"lib/dataview.lua",
+	"@frp_lib/lib/utils.lua",
+	"@frp_lib/modules/utils/i18n.lua",
+	"@frp_lib/modules/utils/dataview.lua",
 
 	"locale/*.lua"
 }
 
 client_scripts {
-	"data/components.lua",
-	"data/overlays.js",
-
-	"data/horses_components.lua",
-	"data/mp_overlay_layers.lua",
-	"data/mp_peds_components.lua",
-	---------------------
 	"client/_main.lua",
 	"client/functions.lua",
-	---------------------
-	"client/appearance/constants.lua",
-	"client/appearance/overlays.lua",
-	"client/appearance/main.lua",
-	"client/appearance/apparatusDatabase.lua",
-	"client/appearance/applyPersonaAppearance.lua",
-	"client/appearance/clothingSystemResolvers.lua",
-	"client/appearance/utils.lua",
-	"client/appearance/utils.js",
 	---------------------
 	"client/ped.lua",
 	"client/player.lua",
@@ -45,7 +29,7 @@ client_scripts {
 
 server_scripts {
 	'@oxmysql/lib/MySQL.lua',
-	"lib/deferalsCard.lua",
+	"@frp_lib/modules/utils/deferalsCard.lua",
 
     '@frp_logs/import.lua',
 	---------------------
@@ -76,11 +60,6 @@ files {
 	"data/horses_components.json",
 	"data/mp_overlay_layers.json",
 	"data/mp_peds_components.json",
-	-----------------------
-	"lib/utils.lua",
-	"lib/Tunnel.lua",
-	"lib/Proxy.lua",
-	"lib/Tools.lua",
 	-----------------------
 	"html/*",
 	"html/img/*",

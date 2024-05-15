@@ -1,5 +1,5 @@
-local Proxy = module("lib/Proxy")
-local Tunnel = module("lib/Tunnel")
+local Proxy = module("frp_lib", "lib/Proxy")
+local Tunnel = module("frp_lib", "lib/Tunnel")
 
 API = {}
 API.users = {} -- key: userId | value: User.class

@@ -9,6 +9,8 @@ An experimental framework for RedM. Limited support and breaking changes guarant
 1. Install all resource dependencies.
    - [oxmysql](https://overextended.dev/oxmysql)
    - [ox_lib](https://overextended.dev/ox_lib)
+   - [frp_lib](https://github.com/faroeste-roleplay/frp_lib)
+   - [frp_appearance](https://github.com/faroeste-roleplay/frp_appearance)
    - [frp_creator](https://github.com/faroeste-roleplay/frp_creator)
    - [frp_queue](https://github.com/faroeste-roleplay/frp_queue)
    - [frp_spawn_selector](https://github.com/faroeste-roleplay/frp_spawn_selector)

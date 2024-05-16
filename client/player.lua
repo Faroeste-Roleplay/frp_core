@@ -3,6 +3,7 @@ local gCharAppearence
 local gLastPosition
 local gStats
 
+
 function cAPI.SetDataAppearence(appearance)
     local pedIsMale = appearance.appearance.isMale
     local pedModel = pedIsMale and 'mp_male' or 'mp_female'
@@ -62,6 +63,8 @@ function cAPI.Initialize(pedModel, lastPosition, stats)
 
     TriggerServerEvent("API:pre_OnUserCharacterInitialization")
 end
+
+cAPI.ApplyCharacterAppearance = Appearance.ApplyCharacterAppearance
 
 function cAPI.SetPlayerAppearence()
     cAPI.ApplyCharacterAppearance(PlayerPedId(), gCharAppearence)

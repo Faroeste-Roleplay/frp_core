@@ -7,11 +7,10 @@ shared_scripts {
 	"config.lua",
 	
 	"data/allowlistRoles.lua",
-	"data/permissions.lua",
 	---------------------
 	"@frp_lib/lib/utils.lua",
-	"@frp_lib/modules/utils/i18n.lua",
-	"@frp_lib/modules/utils/dataview.lua",
+	"@frp_lib/lib/i18n.lua",
+	"@frp_lib/lib/dataview.lua",
 
 	"locale/*.lua"
 }
@@ -22,14 +21,17 @@ client_scripts {
 	---------------------
 	"client/ped.lua",
 	"client/player.lua",
-	"client/shared.lua",
 	"client/events.lua",
 	"client/wrapper.lua",
+
+	"data/horses_components.lua",
+	"data/mp_overlay_layers.lua",
+	"data/mp_peds_components.lua",
 }
 
 server_scripts {
 	'@oxmysql/lib/MySQL.lua',
-	"@frp_lib/modules/utils/deferalsCard.lua",
+	"@frp_lib/lib/deferalsCard.lua",
 
     '@frp_logs/import.lua',
 	---------------------
@@ -57,16 +59,17 @@ server_scripts {
 }
 
 files {
-	"data/horses_components.json",
-	"data/mp_overlay_layers.json",
-	"data/mp_peds_components.json",
+	"web/*",
+	"web/img/*",
+	"web/fonts/*",
 	-----------------------
-	"html/*",
-	"html/img/*",
-	"html/fonts/*"
+	-- "lib/utils.lua",
+	-- "lib/Tunnel.lua",
+	-- "lib/Proxy.lua",
+	-- "lib/Tools.lua",
 }
 
-ui_page "html/index.html"
+ui_page "web/index.html"
 
 exports {	
 	'setOverlayData',

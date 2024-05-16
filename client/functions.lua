@@ -110,7 +110,6 @@ function cAPI.GetServerIdFromUserId(userid)
 	return 0
 end
 
-
 function cAPI.DrawText(x, y, width, height, scale, r, g, b, a, text)
 	SetTextFont(4)
     SetTextProportional(0)

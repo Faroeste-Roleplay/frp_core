@@ -1,10 +1,10 @@
 window.addEventListener("load", function() {
 
     var wprompt = new WPrompt();
-    wprompt.onClose = function() { $.post("http://frp_core/prompt", JSON.stringify({ act: "close", result: wprompt.result })); }
+    wprompt.onClose = function() { $.post("http://frp_lib/prompt", JSON.stringify({ act: "close", result: wprompt.result })); }
 
     var requestmgr = new RequestManager();
-    requestmgr.onResponse = function(id, ok) { $.post("http://frp_core/request", JSON.stringify({ act: "response", id: id, ok: ok })); }
+    requestmgr.onResponse = function(id, ok) { $.post("http://frp_lib/request", JSON.stringify({ act: "response", id: id, ok: ok })); }
 
     //MESSAGES
     window.addEventListener("message", function(evt) { //lua actions

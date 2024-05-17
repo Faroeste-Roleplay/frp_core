@@ -44,6 +44,7 @@ function cAPI.Initialize(pedModel, lastPosition, stats)
             cAPI.PlayerAsInitialized(true)
         end)
     else
+        SetEntityCoords(PlayerPedId(), decodedLastPosition[1], decodedLastPosition[2], decodedLastPosition[3])
         cAPI.PlayerAsInitialized(true)
     end
 

@@ -8,9 +8,7 @@ shared_scripts {
 	
 	"data/allowlistRoles.lua",
 	---------------------
-	"@frp_lib/lib/utils.lua",
-	"@frp_lib/lib/i18n.lua",
-	"@frp_lib/lib/dataview.lua",
+	"@frp_lib/library/linker.lua",
 
 	"locale/*.lua"
 }
@@ -27,7 +25,6 @@ client_scripts {
 
 server_scripts {
 	'@oxmysql/lib/MySQL.lua',
-	"@frp_lib/lib/deferalsCard.lua",
 
     '@frp_logs/import.lua',
 	---------------------

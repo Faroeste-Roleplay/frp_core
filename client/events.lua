@@ -1,5 +1,5 @@
 
-RegisterNetEvent("API:UserLogout")
+RegisterNetEvent("API:onSessionStoppedPlaying")
 
 AddEventHandler("playerSpawned", function()
 	TriggerServerEvent("pre_playerSpawned")

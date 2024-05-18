@@ -263,7 +263,7 @@ function API.User(playerId, id, ipAddress, identifiers)
     
         self.Character = nil
         TriggerEvent("FRP:spawnSelector:DisplayCharSelection", self)
-        TriggerClientEvent("API:UserLogout", self.source)
+        TriggerClientEvent("API:onSessionStoppedPlaying", self.source)
     end
     
     self.Save = function(this)

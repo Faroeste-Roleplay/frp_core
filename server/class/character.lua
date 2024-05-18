@@ -32,7 +32,7 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
             res.items = json.decode(res.items)
         end
 
-        self:GetCurrentOutfitOffline()
+        self:GetCurrentOutfit()
 
         self:GetMetadata()
 
@@ -140,7 +140,7 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
         return res
     end
 
-    self.GetCurrentOutfitOffline = function( this )
+    self.GetCurrentOutfit = function( this )
         local res = MySQL.single.await([[
             SELECT equippedOutfitId 
             FROM character_appearance_customizable 
@@ -153,7 +153,7 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
         return res.equippedOutfitId
     end
 
-    self.SetCurrentOutfitOffline = function( this, outfitId )
+    self.SetCurrentOutfit = function( this, outfitId )
         local affectedRows = MySQL.update.await('UPDATE character_appearance_customizable SET equippedOutfitId = ? WHERE charId = ?', {
             outfitId,
             self.id, 
@@ -175,6 +175,18 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
             self.id,
             json.encode(outfitData),
             name
+        })
+        return res
+    end
+
+    self.UpdateCharacterOutfitData = function( this, outfitId, outfitData ) 
+        local res = MySQL.insert.await([[
+            UPDATE character_outfit 
+            SET apparels = ?
+            WHERE id = ?
+        ]], {
+            json.encode(outfitData),
+            outfitId
         })
         return res
     end

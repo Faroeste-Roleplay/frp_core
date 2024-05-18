@@ -176,16 +176,25 @@ function cAPI.SpawnVehicle(model, cb, coords, isnetworked)
     end
 end
 
-function cAPI.Notify(text, textype, length) -- [text] = message, [type] = primary | error | success, [length] = time till fadeout.
-    local ttype = textype ~= nil and textype or "primary"
-    local length = length ~= nil and length or 5000
-    SendNUIMessage({
-        action = "show",
-        type = ttype,
-        length = length,
-        text = text,
-    })
+function cAPI.Notify(type, text, quantity)
+    if type ~= nil and text == nil and quantity == nil then
+        text = type
+        type = "dev"
+    end
+
+    TriggerEvent("FRP:TOAST:New", type, text, quantity)
 end
+
+-- function cAPI.Notify(text, textype, length) -- [text] = message, [type] = primary | error | success, [length] = time till fadeout.
+--     local ttype = textype ~= nil and textype or "primary"
+--     local length = length ~= nil and length or 5000
+--     SendNUIMessage({
+--         action = "show",
+--         type = ttype,
+--         length = length,
+--         text = text,
+--     })
+-- end
 
 function cAPI.HasItem(source, cb, item)
 	local retval = false

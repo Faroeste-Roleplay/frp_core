@@ -52,14 +52,15 @@ server_scripts {
 }
 
 files {
-	"web/*",
-	"web/img/*",
-	"web/fonts/*",
+	"web/design.css",
+	"web/index.html",
+	"web/main.js",
+	"web/RequestManager.js",
+	"web/WPrompt.js",
 	-----------------------
-	-- "lib/utils.lua",
-	-- "lib/Tunnel.lua",
-	-- "lib/Proxy.lua",
-	-- "lib/Tools.lua",
+	"web/img/*.png",
+	"web/fonts/*.ttf",
+	-----------------------
 }
 
 ui_page "web/index.html"

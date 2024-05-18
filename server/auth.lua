@@ -54,8 +54,8 @@ end)
 
 RegisterNetEvent("FRP:OnUserSelectCharacter")
 
-RegisterNetEvent("API:OnUserCharacterInitialization")
-AddEventHandler("API:OnUserCharacterInitialization", function(User, character_id)
+RegisterNetEvent("API:onSessionStartedPlaying")
+AddEventHandler("API:onSessionStartedPlaying", function(User, character_id)
     TriggerClientEvent("FRP:EVENTS:CharacterSetRole", User:GetSource(), User:GetCharacter().role)
 end)
 
@@ -64,5 +64,5 @@ AddEventHandler("API:pre_OnUserCharacterInitialization", function()
     local _source = source
     local User = API.GetUserFromSource(_source)
     local Character = User:GetCharacter()
-    TriggerEvent("API:OnUserCharacterInitialization", User, Character:GetId())
+    TriggerEvent("API:onSessionStartedPlaying", User, Character:GetId())
 end)

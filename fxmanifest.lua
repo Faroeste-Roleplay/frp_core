@@ -22,11 +22,7 @@ client_scripts {
 	"client/ped.lua",
 	"client/player.lua",
 	"client/events.lua",
-	"client/wrapper.lua",
-
-	"data/horses_components.lua",
-	"data/mp_overlay_layers.lua",
-	"data/mp_peds_components.lua",
+	"client/wrapper.lua"
 }
 
 server_scripts {

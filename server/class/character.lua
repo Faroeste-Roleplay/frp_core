@@ -128,13 +128,13 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
             INSERT INTO character_appearance_customizable 
                 (charId, overridePedModel, overridePedIsMale, equippedOutfitId,
                 hairApparatusId, hairApparatusStyleId, mustacheApparatusId, 
-                mustacheApparatusStyleId, weightPercentage)
-            VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+                mustacheApparatusStyleId)
+            VALUES( ?, ?, ?, ?, ?, ?, ?, ? )
         ]], {
             self.id,
             characterAppearance.overridePedModel, characterAppearance.overridePedIsMale, characterAppearance.equippedOutfitId,
-            characterAppearance.hairApparatusId, characterAppearance.hairApparatusStyleId, characterAppearance.mustacheApparatusId, 
-            characterAppearance.mustacheApparatusStyleId, characterAppearance.weightPercentage or 0
+            characterAppearance.hairApparatusId or 0, characterAppearance.hairApparatusStyleId or 0, characterAppearance.mustacheApparatusId or 0, 
+            characterAppearance.mustacheApparatusStyleId or 0
         })
 
         return res
@@ -206,33 +206,33 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
 
     self.SetCharacterAppearanceOverlaysCustomizable = function( this, characterAppearanceOverlays )
         local res = MySQL.insert.await([[
-            INSERT INTO character_appearance_overlays_customizable 
-                (   charId, 
-                    hasFacialHair,
-                    headHairStyle,
-                    headHairOpacity,
-                    foundationColor,
-                    foundationOpacity,
-                    lipstickColor,
-                    lipstickOpacity,
-                    facePaintColor,
-                    facePaintOpacity,
-                    eyeshadowColor,
-                    eyeshadowOpacity,
-                    eyelinerColor,
-                    eyelinerOpacity,
-                    eyebrowsStyle,
-                    eyebrowsColor,
-                    eyebrowsOpacity,
-                    blusherStyle,
-                    blusherColor,
-                    blusherOpacity )
+            INSERT INTO `character_appearance_overlays_customizable` 
+                (   `charId`, 
+                    `hasFacialHair`,
+                    `headHairStyle`,
+                    `headHairOpacity`,
+                    `foundationColor`,
+                    `foundationOpacity`,
+                    `lipstickColor`,
+                    `lipstickOpacity`,
+                    `facePaintColor`,
+                    `facePaintOpacity`,
+                    `eyeshadowColor`,
+                    `eyeshadowOpacity`,
+                    `eyelinerColor`,
+                    `eyelinerOpacity`,
+                    `eyebrowsStyle`,
+                    `eyebrowsColor`,
+                    `eyebrowsOpacity`,
+                    `blusherStyle`,
+                    `blusherColor`,
+                    `blusherOpacity` )
             VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
         ]], {
             self.id,
-            characterAppearanceOverlays?.hasFacialHair,
-            characterAppearanceOverlays?.headHairStyle,
-            characterAppearanceOverlays?.headHairOpacity,
+            characterAppearanceOverlays?.hasFacialHair or 0,
+            characterAppearanceOverlays?.headHairStyle or 0,
+            characterAppearanceOverlays?.headHairOpacity or 0,
             characterAppearanceOverlays?.foundationColor or 0,
             characterAppearanceOverlays?.foundationOpacity or 0,
             characterAppearanceOverlays?.lipstickColor or 0,

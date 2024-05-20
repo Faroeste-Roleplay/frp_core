@@ -1,8 +1,8 @@
 
-RegisterNetEvent("FRP:onSessionStoppedPlaying")
+RegisterNetEvent("FRP:onCharacterLogout")
 
 AddEventHandler("playerSpawned", function()
-	TriggerServerEvent("pre_playerSpawned")
+	TriggerServerEvent("FRP:onPlayerSpawned")
 end)
 
 AddEventHandler("onClientResourceStart", function() -- Reveal whole map on spawn and enable pvp
@@ -37,28 +37,4 @@ end)
 RegisterNetEvent('FRP:_CORE:SetServerIdAsUserIdPacked', function(r)
 	gServerToUser        = r
 	gServerToUserChanged = true
-end)
-
-RegisterNetEvent("FRP:EVENTS:CharacterSetRole", function(_role)
-    Player.role = _role
-end)
-
-RegisterNetEvent("FRP:EVENTS:CharacterJoinedGroup", function(group)
-    if not cAPI.HasGroup(group) then
-        local bit = config_file_GROUPS[group:lower()]
-
-        if bit ~= nil then
-            Player.role = Player.role | bit
-        end
-    end
-end)
-
-RegisterNetEvent("FRP:EVENTS:CharacterLeftGroup", function(group)
-    if cAPI.HasGroup(group) then
-        local bit = config_file_GROUPS[group:lower()]
-
-        if bit ~= nil then
-            Player.role = Player.role & (~bit)
-        end
-    end
 end)

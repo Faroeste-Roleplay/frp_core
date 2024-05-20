@@ -11,11 +11,6 @@ Proxy.addInterface("API", cAPI)
 
 Appearance = Proxy.getInterface("frp_appearance")
 
-AddEventHandler("onResourceStart", function(resName)
-	if resName == "frp_appearance" then
-	end
-end)
-
 initializedPlayer = false
 
 gServerToUserChanged = false

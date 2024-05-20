@@ -205,7 +205,8 @@ function API.User(playerId, id, ipAddress, identifiers)
             )
 
             self.Character:Initialize(self.id, self.source)
-            TriggerEvent("FRP:onUserSelectCharacter", self, id)
+            TriggerEvent("FRP:onCharacterLoaded", self, id)
+            TriggerClientEvent("FRP:onCharacterLoaded", self.source, id)
             cAPI.SetCharacterId(self:GetSource(), id)
 
             return self.Character
@@ -260,11 +261,10 @@ function API.User(playerId, id, ipAddress, identifiers)
         if character then
             character:Release()
         end
-    
+
         self.Character = nil
-        TriggerEvent("FRP:spawnSelector:DisplayCharSelection", self)
-        TriggerClientEvent("FRP:onSessionStoppedPlaying", self.source)
-        TriggerEvent("FRP:onUserReleaseCharacter", self)
+        TriggerClientEvent("FRP:onCharacterLogout", self.source)
+        TriggerEvent("FRP:onCharacterLogout", self)
     end
     
     self.Save = function(this)
@@ -373,7 +373,7 @@ function API.User(playerId, id, ipAddress, identifiers)
             ACL.RemoveAce(playerPrincipal, flagAce, true)
         end
 
-        TriggerClientEvent("FRP:onGroupFlagsChanged", playerId, groupName)
+        TriggerClientEvent("FRP:onGroupFlagsChanged", playerId, groupName, flag, enabled)
     
         return true
     end

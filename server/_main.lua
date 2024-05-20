@@ -7,7 +7,6 @@ API.sources = {} -- key: source | value: userId
 API.identifiers = {} -- key: identifier | value: userId
 API.chars = {}
 
-API.onFirstSpawn = {}
 API.userIdLock = {}
 
 Proxy.addInterface("API", API)

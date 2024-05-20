@@ -21,6 +21,9 @@ function cAPI.SetCharacterId(charId)
 end
 
 function cAPI.Initialize(pedModel, lastPosition, stats)
+    TriggerServerEvent("FRP:preCharacterInitialization")
+    TriggerEvent("FRP:preCharacterInitialization")
+
     local decodedLastPosition
 
     if lastPosition == nil then
@@ -62,7 +65,8 @@ function cAPI.Initialize(pedModel, lastPosition, stats)
 
     cAPI.SetPlayerWhistle()
 
-    TriggerServerEvent("FRP:pre_OnUserCharacterInitialization")
+    TriggerEvent("FRP:postCharacterInitialization")
+    TriggerServerEvent("FRP:postCharacterInitialization")
 end
 
 cAPI.ApplyCharacterAppearance = Appearance.ApplyCharacterAppearance

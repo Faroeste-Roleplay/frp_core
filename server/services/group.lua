@@ -5,14 +5,14 @@ RegisterNetEvent("FRP:onUserStarted", function(user)
     groupSystem:LoadUserGroupMembership(user, 'USER_ONLY')
 end)
 
-RegisterNetEvent("FRP:onUserSelectCharacter", function(user)
+RegisterNetEvent("FRP:onCharacterLoaded", function(user)
     local groupSystem = API.groupSystem
 
     -- Carregar todos os grupos da persona dessa sessão.
     groupSystem:LoadUserGroupMembership(user)
 end)
 
-RegisterNetEvent("FRP:onUserReleaseCharacter", function (user)
+RegisterNetEvent("FRP:onCharacterLogout", function (user)
     local groupSystem = API.groupSystem
 
     -- Liberar todos os grupos da persona dessa sessão.

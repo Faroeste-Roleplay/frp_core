@@ -86,7 +86,6 @@ CREATE TABLE IF NOT EXISTS `character_appearance_customizable` (
   `hairApparatusStyleId` int(11) DEFAULT 0,
   `mustacheApparatusId` int(11) DEFAULT 0,
   `mustacheApparatusStyleId` int(11) DEFAULT 0,
-  `weightPercentage` float DEFAULT 1,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `charId` (`charId`) USING BTREE,
   CONSTRAINT `FK_character_appearance_customizable_character` FOREIGN KEY (`charId`) REFERENCES `character` (`id`) ON DELETE CASCADE ON UPDATE CASCADE

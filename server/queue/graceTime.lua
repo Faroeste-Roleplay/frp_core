@@ -40,7 +40,7 @@ function EnsureGraceTimeLifetimeCountdown()
 end
 
 AddEventHandler('FRP:playerDropped', function(user)
-    local userId = user.GetId()
+    local userId = user:GetId()
 
     gGraceTimeUsers[userId] = GetGameTimer()
 
@@ -48,7 +48,7 @@ AddEventHandler('FRP:playerDropped', function(user)
 end)
 
 AddEventHandler('FRP:playerLoaded', function(playerId, user)
-    local userId = user.GetId()
+    local userId = user:GetId()
 
     gGraceTimeUsers[userId] = nil
 end)

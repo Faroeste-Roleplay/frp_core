@@ -54,16 +54,6 @@ function API.GetUserFromSource(source)
     return API.users[API.sources[source]]
 end
 
-function API.GetUserIdFromSourceIdentifier(source)
-    if source ~= nil then
-        local ids = GetPlayerIdentifiers(source)
-        if ids ~= nil and #ids > 0 then
-            return API.users[ids[1]]
-        end
-    end
-    return nil
-end
-
 function API.GetUserFromCharId(charId)
     if API.users[API.chars[tonumber(charId)]] then
         return API.users[API.chars[tonumber(charId)]]
@@ -81,27 +71,6 @@ function API.GetUserIdFromCharId(charId)
         end
     end
     return nil
-end
-
-function API.GetUsersByGroup(group, checkForInheritance)
-    local ret = {}
-
-    for userId, User in pairs(API.GetUsers()) do
-        local Character = User:GetCharacter()
-        if Character ~= nil then
-            if checkForInheritance == nil or checkForInheritance == true then
-                if Character:HasGroupOrInheritance(group) then
-                    table.insert(ret, User)
-                end
-            else
-                if Character:HasGroup(group) then
-                    table.insert(ret, User)
-                end
-            end
-        end
-    end
-
-    return ret
 end
 
 function API.GetUsers()
@@ -130,32 +99,6 @@ function API.IsBanned(userId)
     else
         return false
     end
-end
-
-function API.IsWhitelisted(identifier)
-    local rows = API_Database.query("FRP/Whitelisted", {identifier = identifier})
-    
-    if #rows > 0 then        
-        return rows[1].whitelist
-    else
-        return false
-    end
-end
-
-function API.SetAsWhitelisted(userId, whitelisted)
-    if whitelisted then
-        if not API.IsWhitelisted(userId) then
-            API_Database.execute("AddIdentifierWhitelist", {userId = userId})
-            return true
-        end
-    else
-        if API.IsWhitelisted(userId) then
-            API_Database.execute("RemoveIdentifierWhitelist", {userId = userId})
-            return true
-        end
-    end
-
-    return false
 end
 
 function API.ClearUserFromCache(source, userId)

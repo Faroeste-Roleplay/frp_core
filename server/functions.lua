@@ -26,37 +26,3 @@ end
 function API.Kick(source, reason)
     API.DropPlayer(source, reason)
 end
-
-function API.NotifyUsersWithGroup(group, message, checkForInheritance)
-    for userId, User in pairs(API.users) do
-        local Character = User:GetCharacter()
-
-        if Character ~= nil then
-            if checkForInheritance == nil or checkForInheritance == true then
-                if Character:HasGroupOrInheritance(group) then
-                    User:Notify(message)
-                end
-            else
-                if Character:HasGroup(group) then
-                    User:Notify(message)
-                end
-            end
-        end
-    end
-end
-
-function API.NotifyUsersOrg(org_id, message)
-    local members = exports.orgs:GetMembersOrg(org_id)
-
-    for userId, User in pairs(API.users) do
-        local Character = User:GetCharacter()
-
-        if Character ~= nil and members[Character.id] ~= nil and members[Character.id].member_id ~= nil and members[Character.id].member_id > 0 then
-            User:Notify(message)
-        end
-    end
-end
-
-function API.GroupNameToBit(g)
-    return config_file_GROUPS[g] or 0
-end

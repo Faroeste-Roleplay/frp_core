@@ -1,4 +1,5 @@
 RegisterNetEvent("FRP:onCharacterLoaded")
+RegisterNetEvent("FRP:onPlayerDeath")
 
 AddEventHandler('playerDropped', function(reason)
 	local playerId = source

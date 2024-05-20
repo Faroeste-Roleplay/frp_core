@@ -315,6 +315,7 @@ function API.User(playerId, id, ipAddress, identifiers)
         end
 
         TriggerClientEvent("FRP:JoinedGroup", self.source, groupName)
+        TriggerEvent("FRP:JoinedGroup", self.source, groupName)
     end
 
     self.LeaveGroup = function(this, group)
@@ -334,6 +335,7 @@ function API.User(playerId, id, ipAddress, identifiers)
         ACL.RemovePrincipal(playerPrincipal, group:GetPrincipal())
 
         TriggerClientEvent("FRP:LeftGroup", self.source, groupName)
+        TriggerEvent("FRP:LeftGroup", self.source, groupName)
     end
 
     self.SetGroupFlagState = function(this, group, flag, enabled) 
@@ -374,6 +376,7 @@ function API.User(playerId, id, ipAddress, identifiers)
         end
 
         TriggerClientEvent("FRP:onGroupFlagsChanged", playerId, groupName, flag, enabled)
+        TriggerEvent("FRP:onGroupFlagsChanged", playerId, groupName, flag, enabled)
     
         return true
     end

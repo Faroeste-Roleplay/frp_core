@@ -16,13 +16,14 @@ AddEventHandler("onResourceStart", function(resName)
 	end
 end)
 
-
 initializedPlayer = false
 
 gServerToUserChanged = false
 gServerToUser = {}
 
 CreateThread(function()
+	Wait(5000)
+
 	if Config.DisableAutoSpawn then
 		exports.spawnmanager:setAutoSpawn(false)
 	end

@@ -39,7 +39,7 @@ function EnsureGraceTimeLifetimeCountdown()
     StartGraceTimeLifetimeCountdown()
 end
 
-AddEventHandler('FRP:playerDropped', function(user)
+AddEventHandler('FRP:playerDropped', function(playerId, user)
     local userId = user:GetId()
 
     gGraceTimeUsers[userId] = GetGameTimer()

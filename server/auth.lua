@@ -10,7 +10,7 @@ function API.ConnectUser(source, userId, identifiers)
 
     print(#GetPlayers() .. "/" .. GetConvarInt('sv_maxclients', 32) .. " | " .. GetPlayerName(source) .. " (" .. User:GetIpAddress() .. ") entrou (userId = " .. userId .. ", source = " .. source .. ")")
 
-    TriggerEvent("FRP:onUserInitialized", User)
+    TriggerEvent("FRP:onUserLoaded", User)
 
     TriggerClientEvent("FRP:_CORE:SetServerIdAsUserId", -1, source, userId)
     TriggerClientEvent("FRP:_CORE:SetServerIdAsUserIdPacked", source, API.sources)

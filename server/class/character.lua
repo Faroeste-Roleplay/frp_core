@@ -11,6 +11,7 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
     self.deathState = deathState
     self.metaData = metaData or {}
     self.outfitId = 0
+	self.session = {}
 
     self.level = level or 1
     self.xp = xp or 0
@@ -300,6 +301,16 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
         local data = self:GetCharacterAppearanceOffline()
         cAPI.ApplyCharacterAppearance(self.source, data)
     end
+
+	-- Session variables, handy for temporary variables attached to a player
+	self.SetSessionVar = function(this, key, value)
+		self.session[key] = value
+	end
+
+	-- Session variables, handy for temporary variables attached to a player
+	self.GetSessionVar = function(this, k)
+		return self.session[k]
+	end
 
     return self
 end

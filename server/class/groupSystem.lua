@@ -47,7 +47,6 @@ function API.GroupSystem()
                 local childPrincipal = child:GetPrincipal()
                 local parentPrincipal = parent:GetPrincipal()
 
-
                 ACL.AddPrincipal(childPrincipal, parentPrincipal)
 
                 print(string.format("[%s] Extends [%s]", name, parentName))
@@ -100,6 +99,29 @@ function API.GroupSystem()
             local group = self:GetGroup(groupId)
 
             self:AddUserToGroupLocally(user, group, groupMemberId)
+        end
+    end
+
+    self.UnloadUserGroupMemberships = function( this, user, view ) 
+        local userId = user:GetId()
+
+        local character = user:GetCharacter()
+        local characterId
+
+        if character then
+            characterId = character:GetId()
+        end
+
+        local characterId = view == "USER_ONLY" and nil or characterId;
+
+        local groupMembers = getGroupMembersAnyGroup(userId, characterId)
+
+        for _, groupMember in pairs(groupMembers) do 
+            local groupMemberId, groupId = groupMember.id, groupMember.groupId
+
+            local group = self:GetGroup(groupId)
+
+            self:RemoveUserFromGroupLocally(user, group, groupMemberId)
         end
     end
 

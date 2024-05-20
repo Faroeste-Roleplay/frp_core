@@ -5,11 +5,18 @@ RegisterNetEvent("FRP:onUserStarted", function(user)
     groupSystem:LoadUserGroupMembership(user, 'USER_ONLY')
 end)
 
-RegisterNetEvent("FRP:OnUserSelectCharacter", function(user)
+RegisterNetEvent("FRP:onUserSelectCharacter", function(user)
     local groupSystem = API.groupSystem
 
     -- Carregar todos os grupos da persona dessa sessão.
-    groupSystem:LoadUserGroupMembership(user, 'USER_ONLY')
+    groupSystem:LoadUserGroupMembership(user)
+end)
+
+RegisterNetEvent("FRP:onUserReleaseCharacter", function (user)
+    local groupSystem = API.groupSystem
+
+    -- Liberar todos os grupos da persona dessa sessão.
+    groupSystem:UnloadUserGroupMemberships(user)
 end)
 
 function API.IsPlayerAceAllowedGroup(playerId, groupName)

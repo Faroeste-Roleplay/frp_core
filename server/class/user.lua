@@ -205,7 +205,7 @@ function API.User(playerId, id, ipAddress, identifiers)
             )
 
             self.Character:Initialize(self.id, self.source)
-            TriggerEvent("FRP:OnUserSelectCharacter", self, id)
+            TriggerEvent("FRP:onUserSelectCharacter", self, id)
             cAPI.SetCharacterId(self:GetSource(), id)
 
             return self.Character
@@ -263,7 +263,8 @@ function API.User(playerId, id, ipAddress, identifiers)
     
         self.Character = nil
         TriggerEvent("FRP:spawnSelector:DisplayCharSelection", self)
-        TriggerClientEvent("API:onSessionStoppedPlaying", self.source)
+        TriggerClientEvent("FRP:onSessionStoppedPlaying", self.source)
+        TriggerEvent("FRP:onUserReleaseCharacter", self)
     end
     
     self.Save = function(this)

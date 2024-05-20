@@ -26,22 +26,22 @@ AddEventHandler("pre_playerSpawned", function()
 
     if userId then
         local isFirstSpawn = API.onFirstSpawn[userId]
-        TriggerEvent("API:playerSpawned", playerId, userId, isFirstSpawn)
+        TriggerEvent("FRP:playerSpawned", playerId, userId, isFirstSpawn)
         if isFirstSpawn then
             API.onFirstSpawn[userId] = nil
         end
     end
 end)
 
-RegisterNetEvent("API:playerSpawned") -- Use this one !!!!!!!!!!!!!!!!!
-AddEventHandler("API:playerSpawned", function(source, userId, isFirstSpawn)
+RegisterNetEvent("FRP:playerSpawned") -- Use this one !!!!!!!!!!!!!!!!!
+AddEventHandler("FRP:playerSpawned", function(source, userId, isFirstSpawn)
     if isFirstSpawn then
         API.ConnectUser(source, userId)
         -- API.onFirstSpawn[userId] = nil
     end
 end)
 
-RegisterNetEvent("API:addReconnectPlayer", function()
+RegisterNetEvent("FRP:addReconnectPlayer", function()
     local playerId = source
     local identifiers = GetPlayerIdentifiers(playerId)
 
@@ -52,17 +52,17 @@ RegisterNetEvent("API:addReconnectPlayer", function()
     end
 end)
 
-RegisterNetEvent("FRP:OnUserSelectCharacter")
+RegisterNetEvent("FRP:onUserSelectCharacter")
 
-RegisterNetEvent("API:onSessionStartedPlaying")
-AddEventHandler("API:onSessionStartedPlaying", function(User, character_id)
+RegisterNetEvent("FRP:onSessionStartedPlaying")
+AddEventHandler("FRP:onSessionStartedPlaying", function(User, character_id)
     TriggerClientEvent("FRP:EVENTS:CharacterSetRole", User:GetSource(), User:GetCharacter().role)
 end)
 
-RegisterNetEvent("API:pre_OnUserCharacterInitialization")
-AddEventHandler("API:pre_OnUserCharacterInitialization", function()
+RegisterNetEvent("FRP:pre_OnUserCharacterInitialization")
+AddEventHandler("FRP:pre_OnUserCharacterInitialization", function()
     local _source = source
     local User = API.GetUserFromSource(_source)
     local Character = User:GetCharacter()
-    TriggerEvent("API:onSessionStartedPlaying", User, Character:GetId())
+    TriggerEvent("FRP:onSessionStartedPlaying", User, Character:GetId())
 end)

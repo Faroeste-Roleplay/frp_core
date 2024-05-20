@@ -1,5 +1,5 @@
 
-RegisterNetEvent("API:onSessionStoppedPlaying")
+RegisterNetEvent("FRP:onSessionStoppedPlaying")
 
 AddEventHandler("playerSpawned", function()
 	TriggerServerEvent("pre_playerSpawned")
@@ -26,7 +26,7 @@ AddEventHandler("onResourceStart",	function(resourceName)
 		return
 	end
 
-	TriggerServerEvent("API:addReconnectPlayer")
+	TriggerServerEvent("FRP:addReconnectPlayer")
 end)
 
 RegisterNetEvent('FRP:_CORE:SetServerIdAsUserId', function(serverid, userid)

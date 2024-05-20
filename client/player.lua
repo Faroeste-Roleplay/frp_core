@@ -62,7 +62,7 @@ function cAPI.Initialize(pedModel, lastPosition, stats)
 
     cAPI.SetPlayerWhistle()
 
-    TriggerServerEvent("API:pre_OnUserCharacterInitialization")
+    TriggerServerEvent("FRP:pre_OnUserCharacterInitialization")
 end
 
 cAPI.ApplyCharacterAppearance = Appearance.ApplyCharacterAppearance

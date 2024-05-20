@@ -5,7 +5,6 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
     self.firstName = firstName
     self.lastName = lastName
     self.birthDate = birthDate
-    -- self.inventoryId = 0
     self.Inventory = {}
     self.favoriteReserveType = favoriteReserveType
     self.deathState = deathState
@@ -273,7 +272,7 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
     end
 
     self.Release = function(this)
-        TriggerEvent("API:ReleaseCharacter", self.source)
+        TriggerEvent("FRP:ReleaseCharacter", self.source)
     end
 
     self.GetCharacterAppearanceOffline = function(this)

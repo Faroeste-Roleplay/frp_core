@@ -161,7 +161,7 @@ function API.User(playerId, id, ipAddress, identifiers)
             if equippedApparelsByType then
                 local outfitId = Character:CreateCharacterOutfit( equippedApparelsByType, i18n.translate("initial"))
                 if outfitId then
-                    Character:SetCurrentOutfitOffline(outfitId)
+                    Character:SetCurrentOutfit(outfitId)
                 end
             end
 

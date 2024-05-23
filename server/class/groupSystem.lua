@@ -138,12 +138,9 @@ function API.GroupSystem()
         self.groupMemberIdToGroupId[groupMemberId] = nil
     end
 
-    self.AddUserToGroup = function(this, user, group)
+    self.AddUserToGroup = function(this, user, group, characterId)
         local groupId = group:GetId()
-        local character = user:GetChatacter()
-
         local userId = user:GetId()
-        local characterId = character:GetId() -- Vai ficar undefined caso a sessão não esteja jogando ainda.
 
         local groupMember = addGroupMember(groupId, userId, characterId)
 
@@ -155,10 +152,8 @@ function API.GroupSystem()
 
         self:AddUserToGroupLocally(user, group, groupMemberId)
     end
-    self.RemoveUserFromGroup = function(this, user, group)
-        local character = user:GetChatacter()
+    self.RemoveUserFromGroup = function(this, user, group, characterId)
         local userId = user:GetId()
-        local characterId = character:GetId() -- Vai ficar undefined caso a sessão não esteja jogando ainda.
 
         local success, groupMemberId = deleteGroupMember(group:GetId(), userId, characterId)
 
@@ -171,23 +166,23 @@ function API.GroupSystem()
         return success
     end
 
-    self.AddUserToGroupByName = function(this, user, groupName)
+    self.AddUserToGroupByName = function(this, user, groupName, characterId)
         local group = self:GetGroupByName(groupName)
 
         if not group then
             return false
         end
 
-        return self:AddUserToGroup(user, group)
+        return self:AddUserToGroup(user, group, characterId)
     end
-    self.RemoveUserToGroupByName = function(this, user, groupName)
+    self.RemoveUserFromGroupByName = function(this, user, groupName, characterId)
         local group = self:GetGroupByName(groupName)
 
         if not group then
             return false
         end
 
-        return self:RemoveUserFromGroup(user, group)
+        return self:RemoveUserFromGroup(user, group, characterId)
     end
 
     self.AddUserToGroupById = function(this, user, groupId)
@@ -199,7 +194,7 @@ function API.GroupSystem()
 
         return self:AddUserToGroup(user, group)
     end
-    self.RemoveUserToGroupById = function(this, user, groupId)
+    self.RemoveUserFromGroupById = function(this, user, groupId)
         local group = self:GetGroup(groupId)
 
         if not group then

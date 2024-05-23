@@ -22,7 +22,3 @@ function API.DropPlayer(source, reason)
         User:Drop(reason)
     end
 end
-
-function API.Kick(source, reason)
-    API.DropPlayer(source, reason)
-end

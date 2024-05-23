@@ -67,8 +67,8 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
         return string.format("%s %s", self.firstName, self.lastName)
     end
 
-    self.GetAge = function()
-        return self.charAge
+    self.GetBirthDate = function()
+        return self.birthDate
     end
 
     self.GetMetadata = function(this, key)
@@ -275,7 +275,7 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
         TriggerEvent("FRP:ReleaseCharacter", self.source)
     end
 
-    self.GetCharacterAppearanceOffline = function(this)
+    self.GetAppearance = function(this)
         local characterData = {}
 
         -- Adiciona os resultados de cada tabela ao objeto characterData
@@ -296,8 +296,8 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
         return characterData
     end
 
-    self.SetClientAppearance = function(this)
-        local data = self:GetCharacterAppearanceOffline()
+    self.SetGameAppearance = function(this)
+        local data = self:GetAppearance()
         cAPI.ApplyCharacterAppearance(self.source, data)
     end
 

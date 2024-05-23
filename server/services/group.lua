@@ -19,12 +19,71 @@ RegisterNetEvent("FRP:onCharacterLogout", function (user)
     groupSystem:UnloadUserGroupMemberships(user)
 end)
 
+function API.AddUserToGroupByName( userId, groupName )
+    local groupSystem = API.groupSystem
+    local User = API.GetUserFromUserId( userId )
+
+    groupSystem:AddUserToGroupByName( User, groupName )
+end
+
+function API.RemoveUserFromGroupByName( userId, groupName )
+    local User = API.GetUserFromUserId( userId )
+    local groupSystem = API.groupSystem
+
+    groupSystem:RemoveUserFromGroupByName( User, groupName )
+end
+
+function API.AddCharacterToGroupByName( charId, groupName )
+    local User = API.GetUserFromCharId( charId )
+    local character = User:GetCharacter()
+    assert(character, "Where character??")
+
+    local groupSystem = API.groupSystem
+
+    groupSystem:AddUserToGroupByName( User, groupName, character:GetId() )
+end
+
+
+function API.RemoveCharacterFromGroupByName( charId, groupName )
+    local User = API.GetUserFromCharId( charId )
+    local character = User:GetCharacter()
+    assert(character, "Where character??")
+
+    local groupSystem = API.groupSystem
+
+    groupSystem:RemoveUserFromGroupByName( User, groupName, character:GetId() )
+end
+
+function API.IsUserAceAllowedGroup( userId, groupName )
+    local User = API.GetUserFromUserId( userId )
+    
+    return API.IsPlayerAceAllowedGroup( User:GetSource(), groupName )
+end
+
+function API.IsCharacterAceAllowedGroup( charId, groupName )
+    local User = API.GetUserFromCharId( charId )
+    
+    return API.IsPlayerAceAllowedGroup( User:GetSource(), groupName )
+end
+
 function API.IsPlayerAceAllowedGroup(playerId, groupName)
     if not playerId then
         return false
     end
 
     return IsPlayerAceAllowed(playerId, string.format("group.%s", groupName)) == 1
+end
+
+function API.IsUserAceAllowedGroupFlag( userId, groupName, groupFlagName )
+    local User = API.GetUserFromUserId( userId )
+    
+    return API.IsPlayerAceAllowedGroupFlag( User:GetSource(), groupName, groupFlagName )
+end
+
+function API.IsCharacterAceAllowedGroupFlag( charId, groupName, groupFlagName )
+    local User = API.GetUserFromCharId( charId )
+    
+    return API.IsPlayerAceAllowedGroupFlag( User:GetSource(), groupName, groupFlagName )
 end
 
 function API.IsPlayerAceAllowedGroupFlag(playerId, groupName, groupFlagName)

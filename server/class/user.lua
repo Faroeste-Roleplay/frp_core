@@ -5,7 +5,6 @@
 -- IsPrincipalAceAllowed('identifier.aaa', 'group.admin')
 -- (IsPlayerAceAllowed(player.id, `group.${groupName}`) as number | boolean) == 1; 
 
-
 function API.User(playerId, id, ipAddress, identifiers)
     local self = {}
 
@@ -39,15 +38,13 @@ function API.User(playerId, id, ipAddress, identifiers)
         self.numMaxSlots = res.numCharSlots
 
         TriggerEvent("FRP:onUserStarted", self)
-    end
 
-    self.UserLoadded = function(this)
         self:UpdateName( GetPlayerName(self.source) )
     end
 
     self.UpdateName = function( this, name )
         self.name = name
-        API_Database.query("FRP/SetUsername", {id = self.id, name = name})
+        -- API_Database.query("FRP/SetUsername", {id = self.id, name = name})
     end
 
     -- @return The source or player server id
@@ -213,10 +210,6 @@ function API.User(playerId, id, ipAddress, identifiers)
         end
     end
 
-    -- GetCharacter()
-    --
-    -- @return Character Object of the actual selected character
-
     self.GetCharacter = function(this)
         return self.Character
     end
@@ -241,10 +234,6 @@ function API.User(playerId, id, ipAddress, identifiers)
         -- cAPI.CWanted(Character:GetWanted())
     end
 
-    self.Disconnect = function(this, reason)
-        DropPlayer(self:GetSource(), reason)
-    end
-
     self.Notify = function(this, type, text, quantity)
         -- Notify(self:GetSource(), v)
         if type ~= nil and text == nil and quantity == nil then
@@ -266,17 +255,12 @@ function API.User(playerId, id, ipAddress, identifiers)
         TriggerClientEvent("FRP:onCharacterLogout", self.source)
         TriggerEvent("FRP:onCharacterLogout", self)
     end
-    
-    self.Save = function(this)
-        
-    end
 
     self.Drop = function(reason)
         DropPlayer(self.source, reason)
 
         print(#GetPlayers() .. "/".. GetConvarInt('sv_maxclients', 32) .."| " .. self.name .. " (" .. self.ipAddress .. ") desconectou (motivo = " .. reason .. ")")
     end
-    
     
     self.GetGroups = function(this)
         return self.groups

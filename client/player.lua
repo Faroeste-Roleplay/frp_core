@@ -65,6 +65,11 @@ function cAPI.Initialize(pedModel, lastPosition, stats)
 
     cAPI.SetPlayerWhistle()
 
+    local playerPed = PlayerPedId()
+
+    SetEntityVisible(playerPed, true)
+    SetEntityInvincible(playerPed, false)
+
     TriggerEvent("FRP:postCharacterInitialization")
     TriggerServerEvent("FRP:postCharacterInitialization")
 end

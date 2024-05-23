@@ -2,6 +2,11 @@
 RegisterNetEvent("FRP:onCharacterLogout")
 
 AddEventHandler("playerSpawned", function()
+	local playerPed = PlayerPedId()
+
+    SetEntityVisible(playerPed, false)
+    SetEntityInvincible(playerPed, true)
+
 	TriggerServerEvent("FRP:onPlayerSpawned")
 end)
 
@@ -25,6 +30,10 @@ AddEventHandler("onResourceStart",	function(resourceName)
 	if (GetCurrentResourceName() ~= resourceName) then
 		return
 	end
+
+	local playerPed = PlayerPedId()
+    SetEntityVisible(playerPed, false)
+    SetEntityInvincible(playerPed, true)
 
 	TriggerServerEvent("FRP:addReconnectPlayer")
 end)

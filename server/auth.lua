@@ -31,7 +31,7 @@ function API.DropUser(playerId, playerPosition, reason)
     local wasReleased, userRef = ReleasePlayerUserAsDisconnected(playerId, reason)
 
 	if wasReleased then
-        API.ClearUserFromCache(playerId, userId)
 		TriggerEvent("FRP:playerDropped", playerId, User)
+        API.ClearUserFromCache(playerId, userId)
 	end
 end

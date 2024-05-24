@@ -291,8 +291,6 @@ function ReleasePlayerUserAsDisconnected(playerId, reason)
 		return
 	end
 
-	User:Save()
-
 	SetUserIdLock(userId, false)
 
 	ConnectionLog( ('Player(%s) UserId(%s):'):format(GetPlayerName(playerId), userId and tostring(userId) or '?') , ('se desconectou, motivo: %s'):format(reason or '?'))

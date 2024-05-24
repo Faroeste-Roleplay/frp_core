@@ -79,16 +79,26 @@ function cAPI.RequestAnimDict(dictionary)
 	end
 end
 
-function cAPI.StartFade(timer)
+function cAPI.StartFade(timer, effect)
 	DoScreenFadeOut(timer)
+
+	if effect then
+		AnimpostfxPlay("SkyTL_2100_04Storm_nofade");
+	end
+
 	while IsScreenFadingOut() do
 		Citizen.Wait(1)
 	end
 end
 
-function cAPI.EndFade(timer)
+function cAPI.EndFade(timer, effect)
 	ShutdownLoadingScreen()
 	DoScreenFadeIn(timer)
+
+	if effect or AnimpostfxIsRunning("SkyTL_2100_04Storm_nofade") then
+		AnimpostfxStop("SkyTL_2100_04Storm_nofade")
+	end
+
 	while IsScreenFadingIn() do
 		Citizen.Wait(1)
 	end

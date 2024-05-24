@@ -6,7 +6,8 @@ AddEventHandler("playerSpawned", function()
 
     SetEntityVisible(playerPed, false)
     SetEntityInvincible(playerPed, true)
-
+    NetworkSetEntityInvisibleToNetwork(playerPed, true)
+	
 	TriggerServerEvent("FRP:onPlayerSpawned")
 end)
 
@@ -34,6 +35,7 @@ AddEventHandler("onResourceStart",	function(resourceName)
 	local playerPed = PlayerPedId()
     SetEntityVisible(playerPed, false)
     SetEntityInvincible(playerPed, true)
+    NetworkSetEntityInvisibleToNetwork(playerPed, true)
 
 	TriggerServerEvent("FRP:addReconnectPlayer")
 end)

@@ -21,6 +21,7 @@ function cAPI.SetCharacterId(charId)
 end
 
 function cAPI.Initialize(pedModel, lastPosition, stats)
+    cAPI.StartFade(500, true)
     TriggerServerEvent("FRP:preCharacterInitialization")
     TriggerEvent("FRP:preCharacterInitialization")
 
@@ -47,7 +48,7 @@ function cAPI.Initialize(pedModel, lastPosition, stats)
             cAPI.PlayerAsInitialized(true)
         end)
     else
-        SetEntityCoords(PlayerPedId(), decodedLastPosition[1], decodedLastPosition[2], decodedLastPosition[3])
+        cAPI.TeleportPlayer( vec3(decodedLastPosition[1], decodedLastPosition[2], decodedLastPosition[3]) )
         cAPI.PlayerAsInitialized(true)
     end
 
@@ -69,15 +70,46 @@ function cAPI.Initialize(pedModel, lastPosition, stats)
 
     SetEntityVisible(playerPed, true)
     SetEntityInvincible(playerPed, false)
+    NetworkSetEntityInvisibleToNetwork(playerPed, false)
 
     TriggerEvent("FRP:postCharacterInitialization")
     TriggerServerEvent("FRP:postCharacterInitialization")
+    
+    cAPI.EndFade(500, true)
 end
 
 cAPI.ApplyCharacterAppearance = Appearance.ApplyCharacterAppearance
 
 function cAPI.SetPlayerAppearence()
     cAPI.ApplyCharacterAppearance(PlayerPedId(), gCharAppearence)
+end
+
+function cAPI.TeleportPlayer(position, variation)
+    local findCollisionLand = false
+    local xAdd = math.random(-(variation or 0), variation or 0)
+    local yAdd = math.random(-(variation or 0), variation or 0)
+
+    -- DEBUG(" position :: ", position)
+
+    local newCoords = vec3(position.x + xAdd, position.y + yAdd, position.z)
+    local _, groundZ, normal = GetGroundZAndNormalFor_3dCoord(newCoords.x, newCoords.y, newCoords.z)
+
+    if _ then
+        newCoords = vec3(newCoords.xy, groundZ)
+    end
+
+    -- DEBUG(" newCoords :: ", newCoords)
+    RequestCollisionAtCoord(newCoords)
+
+    local playerId = PlayerId();
+    StartPlayerTeleport(playerId, newCoords.x + 0.0001, newCoords.y + 0.0001, newCoords.z + 0.0001, (position?.w or 0) + 0.0001, true, true, true);
+
+    while IsPlayerTeleportActive() do
+        Citizen.InvokeNative(0xC39DCE4672CBFBC1, playerId)
+        Wait(500)
+    end
+    
+    StopPlayerTeleport()
 end
 
 function cAPI.SetPlayerWhistle()

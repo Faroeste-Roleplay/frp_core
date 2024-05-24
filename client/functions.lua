@@ -65,8 +65,10 @@ function cAPI.PlaySkyCameraAnimationAtCoords(coords)
 	local cam3 = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", vecPosition.xy, vecPosition.z + 200, 300.00, 0.00, 0.00, 100.00, false, 0)
 	PointCamAtCoord(cam3, vecPosition.xy, vecPosition.z + 200)
 	SetCamActiveWithInterp(cam3, cam, 8000, true, true)
+    
 	Citizen.Wait(8000)
-	cam2 = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", coords[1], coords[2], coords[3] + 200, 300.00, 0.00, 0.00, 100.00, false, 0)
+
+	local cam2 = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", coords[1], coords[2], coords[3] + 200, 300.00, 0.00, 0.00, 100.00, false, 0)
 	PointCamAtCoord(cam2, vecPosition.xy, vecPosition.z + 2)
 	SetCamActiveWithInterp(cam2, cam3, 5000, true, true)
 	RenderScriptCams(false, true, 500, true, true)
@@ -77,11 +79,13 @@ function cAPI.PlaySkyCameraAnimationAtCoords(coords)
 		vecPosition = vec3(vecPosition.xy, groundZ)
 	end
 
-	SetEntityCoords(PlayerPedId(), vecPosition)
+    cAPI.TeleportPlayer( vecPosition )
 
 	Citizen.Wait(5000)
 
-	DestroyAllCams(true)
+    DestroyCam( cam, true)
+    DestroyCam( cam2, true)
+    DestroyCam( cam3, true)
 end
 
 function cAPI.IsPlayingAnimation(dict, anim)
@@ -257,7 +261,7 @@ local function GetCollisionBetweenPoints(pointFrom, pointTo, flags)
     return hit == 1, hitPos
 end
 
-function cAPI.getFromCoordsFromPlayer(position, ped, radius)
+function cAPI.GetFromCoordsFromPlayer(position, ped, radius)
 	local r = radius or 0.8
 
 	local Cx = position.x
@@ -282,4 +286,61 @@ function cAPI.getFromCoordsFromPlayer(position, ped, radius)
     local endCoords = vec3(coords.x, coords.y, groundZ + 0.10)
 
 	return endCoords
+end
+
+function cAPI.GetTownNameAtCoords(coords)
+    local town_hash = Citizen.InvokeNative(0x43AD8FC02B429D33, coords, 1)
+    if town_hash == GetHashKey("Annesburg") then
+        return "Annesburg"
+    elseif town_hash == GetHashKey("Annesburg") then
+        return "Annesburg"
+    elseif town_hash == GetHashKey("Armadillo") then
+        return "Armadillo"
+    elseif town_hash == GetHashKey("Blackwater") then
+        return "Blackwater"
+    elseif town_hash == GetHashKey("BeechersHope") then
+        return "BeechersHope"
+    elseif town_hash == GetHashKey("Braithwaite") then
+        return "Braithwaite"
+    elseif town_hash == GetHashKey("Butcher") then
+        return "Butcher"
+    elseif town_hash == GetHashKey("Caliga") then
+        return "Caliga"
+    elseif town_hash == GetHashKey("cornwall") then
+        return "Cornwall"
+    elseif town_hash == GetHashKey("Emerald") then
+        return "Emerald"
+    elseif town_hash == GetHashKey("lagras") then
+        return "lagras"
+    elseif town_hash == GetHashKey("Manzanita") then
+        return "Manzanita"
+    elseif town_hash == GetHashKey("Rhodes") then
+        return "Rhodes"
+    elseif town_hash == GetHashKey("Siska") then
+        return "Siska"
+    elseif town_hash == GetHashKey("StDenis") then
+        return "Saint Denis"
+    elseif town_hash == GetHashKey("Strawberry") then
+        return "Strawberry"
+    elseif town_hash == GetHashKey("Tumbleweed") then
+        return "Tumbleweed"
+    elseif town_hash == GetHashKey("valentine") then
+        return "Valentine"
+    elseif town_hash == GetHashKey("VANHORN") then
+        return "Vanhorn"
+    elseif town_hash == GetHashKey("Wallace") then
+        return "Wallace"
+    elseif town_hash == GetHashKey("wapiti") then
+        return "Wapiti"
+    elseif town_hash == GetHashKey("AguasdulcesFarm") then
+        return "Aguasdulces Farm"
+    elseif town_hash == GetHashKey("AguasdulcesRuins") then
+        return "Aguasdulces Ruins"
+    elseif town_hash == GetHashKey("AguasdulcesVilla") then
+        return "Aguasdulces Villa"
+    elseif town_hash == GetHashKey("Manicato") then
+        return "Manicato"
+    else
+        return "Other place"
+    end
 end

@@ -45,6 +45,7 @@ server_scripts {
 	"server/class/user.lua",
 	"server/class/group.lua",
 	"server/class/groupSystem.lua",
+	"server/class/virtualWorld.lua",
 	-----------------------
 	"server/services/acl.lua",
 	"server/services/user.lua",

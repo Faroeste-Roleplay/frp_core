@@ -13,6 +13,9 @@ Proxy.addInterface("API", API)
 Tunnel.bindInterface("API", API)
 Proxy.addInterface("API_DB", API_Database)
 
+Tunnel.bindInterface("virtual_world", VirtualWorld)
+Proxy.addInterface("virtual_world", VirtualWorld)
+
 cAPI = Tunnel.getInterface("API")
 
 CreateThread(function()

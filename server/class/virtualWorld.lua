@@ -2,8 +2,6 @@ local VirtualWorlds = {}
 
 local Players = {}
 
-VirtualWorld = {}
-
 local globalWorldId = 0
 
 function VirtualWorld:Create( players )
@@ -66,6 +64,7 @@ function VirtualWorld:AddPlayerOnVirtualWorld( playerId, virtualWorldId )
     SetPlayerRoutingBucket(playerId, virtualWorldId)
     Players[playerId] = virtualWorldId
     table.insert(virtualWorld.players, playerId)
+    TriggerEvent("VirtualWorld:PlayerAddedToWorld", playerId, virtualWorldId)
 end
 
 function VirtualWorld:RemovePlayerFromVirtualWorld( playerId )
@@ -77,8 +76,10 @@ function VirtualWorld:RemovePlayerFromVirtualWorld( playerId )
 
     for _, pId in pairs(playerVirtualWorld.players) do 
         if playerId == pId then
+            local currentVirtualWorld = Players[playerId]
             playerVirtualWorld[_] = nil
             Players[playerId] = nil
+            TriggerEvent("VirtualWorld:PlayerLeftFromWorld", playerId, currentVirtualWorld)
         end
     end
 end

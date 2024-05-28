@@ -1,6 +1,7 @@
 local Proxy = module("frp_lib", "lib/Proxy")
 local Tunnel = module("frp_lib", "lib/Tunnel")
 
+VirtualWorld = {}
 API = {}
 API.users = {} -- key: userId | value: User.class
 API.sources = {} -- key: source | value: userId
@@ -12,8 +13,6 @@ API.userIdLock = {}
 Proxy.addInterface("API", API)
 Tunnel.bindInterface("API", API)
 Proxy.addInterface("API_DB", API_Database)
-
-Tunnel.bindInterface("virtual_world", VirtualWorld)
 Proxy.addInterface("virtual_world", VirtualWorld)
 
 cAPI = Tunnel.getInterface("API")

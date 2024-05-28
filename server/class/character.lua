@@ -279,10 +279,10 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
         local characterData = {}
 
         -- Adiciona os resultados de cada tabela ao objeto characterData
-        characterData.appearance = MySQL.single.await("SELECT * FROM character_appearance WHERE charId = ?", { char.id })
-        characterData.appearanceCustomizable = MySQL.single.await("SELECT * FROM character_appearance_customizable WHERE charId = ?", { char.id })
-        characterData.appearanceOverlays = MySQL.single.await("SELECT * FROM character_appearance_overlays WHERE charId = ?", { char.id })
-        characterData.appearanceOverlaysCustomizable = MySQL.single.await("SELECT * FROM character_appearance_overlays_customizable WHERE charId = ?", { char.id })
+        characterData.appearance = MySQL.single.await("SELECT * FROM character_appearance WHERE charId = ?", { self.id })
+        characterData.appearanceCustomizable = MySQL.single.await("SELECT * FROM character_appearance_customizable WHERE charId = ?", { self.id })
+        characterData.appearanceOverlays = MySQL.single.await("SELECT * FROM character_appearance_overlays WHERE charId = ?", { self.id })
+        characterData.appearanceOverlaysCustomizable = MySQL.single.await("SELECT * FROM character_appearance_overlays_customizable WHERE charId = ?", { self.id })
     
         local outfitRes = MySQL.single.await("SELECT * FROM character_outfit WHERE id = ?", { characterData.appearanceCustomizable.equippedOutfitId })
         
@@ -298,7 +298,9 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
 
     self.SetGameAppearance = function(this)
         local data = self:GetAppearance()
-        cAPI.ApplyCharacterAppearance(self.source, data)
+        cAPI.SetDataAppearence(self.source, data)
+        cAPI.SetPlayerDefaultModel(self.source)
+        cAPI.SetPlayerAppearence(self.source)
     end
 
 	-- Session variables, handy for temporary variables attached to a player

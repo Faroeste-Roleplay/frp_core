@@ -1,11 +1,13 @@
-local VirtualWorlds = {}
+
+local globalWorldId = 0
+local VirtualWorlds = {
+    [globalWorldId] = { players = {} }
+}
 
 local Players = {}
 
-local globalWorldId = 0
-
-function VirtualWorld:Create( players )
-    local virtualWorldId = #VirtualWorlds + 1
+function VirtualWorld:Create( players, virtualWorldId )
+    local virtualWorldId = virtualWorldId or #VirtualWorlds + 1
 
     local virtualWorld = {
         id = virtualWorldId,
@@ -54,7 +56,7 @@ function VirtualWorld:AddPlayerOnVirtualWorld( playerId, virtualWorldId )
     local playerOnVirtualWorld = VirtualWorld:GetPlayerVirtualWorld( playerId )
 
     if not virtualWorld then
-        return VirtualWorld:Create( { playerId } )
+        return VirtualWorld:Create( { playerId }, virtualWorldId)
     end
 
     if playerOnVirtualWorld then

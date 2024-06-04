@@ -94,6 +94,17 @@ function API.IsPlayerAceAllowedGroupFlag(playerId, groupName, groupFlagName)
     return IsPlayerAceAllowed(playerId, string.format("group_flag.%s.%s", groupName, groupFlagName)) == 1
 end
 
+function API.GetPlayersByGroup(g)
+    local groupSystem = API.groupSystem
+    local group = g
+
+    if type(g) == "string" then
+        groupByName = groupSystem:GetGroupByName(g)
+    end
+
+    return group:GetMembersId()
+end
+
 function getGroupByName(groupName)
     return MySQL.single.await('SELECT * FROM `group` WHERE `groupName` = ? LIMIT 1', {
         groupName

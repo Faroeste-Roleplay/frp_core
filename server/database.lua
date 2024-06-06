@@ -171,7 +171,7 @@ API_Database.prepare("RemoveIdentifierWhitelist", "UPDATE user SET whitelist = 0
 API_Database.prepare("FRP/CreateCharacter", "INSERT INTO `character` (userId, firstName, lastName, metaData) VALUES(@userId, @firstName, @lastName, @metaData)")
 API_Database.prepare("FRP/CharacterAppearence", "INSERT INTO characters_appearence (charId, isMale, model, enabledComponents, faceFeatures, overlays, clothes, pedHeight) VALUES (@charId, @isMale, @model, '{}', '{}', '{}', '{}', 1.0)")
 
-API_Database.prepare("FRP/CreateCharStatus", "INSERT INTO `character_rpg_stats` (charId, statHunger, statThirst, statHealth, statHealthCore, statStamina, statStaminaCore, statDrunk, statStress, statDrugs) VALUES(@charId, @statHunger, @statThirst, @statHealth, @statHealthCore, @statStamina, @statStaminaCore, @statDrunk, @statStress, @statDrugs)")
+API_Database.prepare("FRP/CreateCharStatus", "INSERT INTO `character_rpg_stats` (charId, hunger, thirst, health, health_core, stamina, stamina_core, drunk, fatigue, drugs, sick) VALUES(@charId, @hunger, @thirst, @health, @health_core, @stamina, @stamina_core, @drunk, @fatigue, @drugs, @sick)")
 
 API_Database.prepare("FRP/GetCharacters", "SELECT * FROM `character` WHERE `userId` = @userId")
 API_Database.prepare("FRP/GetCharacter", "SELECT * FROM `character` WHERE `id` = @charId")

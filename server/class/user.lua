@@ -11,6 +11,7 @@ function API.User(playerId, id, ipAddress, identifiers)
     self.source = playerId
     self.id = id
     self.Character = nil
+    self.CharId = nil
     self.ipAddress = ipAddress or "0.0.0.0"
     self.numMaxSlots = 1
     self.name = "Unknown"
@@ -55,6 +56,16 @@ function API.User(playerId, id, ipAddress, identifiers)
     -- @return the userId
     self.GetId = function(this)
         return self.id
+    end
+
+    self.GetCharacterId = function(this)
+        return self.CharId
+        -- local Character = self:GetCharacter()
+        -- if not Character then
+        --     return
+        -- end
+
+        -- return Character:GetId()
     end
 
     self.GetIpAddress = function(this)
@@ -139,7 +150,8 @@ function API.User(playerId, id, ipAddress, identifiers)
                 birthDate,
                 metaData,
                 nil, 
-                'Alive'
+                'Alive',
+                nil
             )
 
             MySQL.insert.await([[
@@ -164,15 +176,17 @@ function API.User(playerId, id, ipAddress, identifiers)
 
             API_Database.execute("FRP/CreateCharStatus", {
                 charId = charId,
-                statHunger = 0,
-                statThirst = 0,
-                statHealth = 200,
-                statHealthCore = 100,
-                statStamina = 200,
-                statStaminaCore = 100,
-                statDrunk = 0,
-                statStress = 0,
-                statDrugs = 0,
+
+                hunger = 100,
+                thirst = 100,
+                health = 200,
+                health_core = 100,
+                stamina = 200,
+                stamina_core = 100,
+                drunk = 0,
+                fatigue = 0,
+                drugs = 0,
+                sick = 0,
             })
         end
 
@@ -198,13 +212,16 @@ function API.User(playerId, id, ipAddress, identifiers)
                 charData.birthDate,
                 charData.metaData,
                 charData.favoriteReserveType, 
-                charData.deathState
+                charData.deathState,
+                charData.favouriteHorseTransportId
             )
 
             self.Character:Initialize(self.id, self.source)
             TriggerEvent("FRP:onCharacterLoaded", self, id)
             TriggerClientEvent("FRP:onCharacterLoaded", self.source, id)
             cAPI.SetCharacterId(self:GetSource(), id)
+
+            self.CharId = id
 
             return self.Character
         end

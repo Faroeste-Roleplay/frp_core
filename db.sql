@@ -32,24 +32,25 @@ CREATE TABLE IF NOT EXISTS `ban_batch` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 -- Copiando dados para a tabela faroeste.ban_batch: ~0 rows (aproximadamente)
 
--- Copiando estrutura para tabela faroeste.character
-CREATE TABLE IF NOT EXISTS `character` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `userId` int(11) NOT NULL,
-  `firstName` varchar(50) NOT NULL,
-  `lastName` varchar(50) NOT NULL,
-  `birthDate` date DEFAULT current_timestamp(),
-  `metaData` text DEFAULT '{}',
-  `favoriteReserveType` int(11) DEFAULT NULL,
-  `deathState` enum('Alive','Incapacitated','Wounded','Dead','Respawning') NOT NULL DEFAULT 'Alive',
-  `updatedAt` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `createdAt` timestamp NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`) USING BTREE,
-  KEY `FK_characters_users` (`userId`) USING BTREE,
-  KEY `FK_characters_reserve_type` (`favoriteReserveType`),
-  CONSTRAINT `FK_character_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_characters_reserve_type` FOREIGN KEY (`favoriteReserveType`) REFERENCES `reserve_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+CREATE TABLE `character` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`userId` INT(11) NOT NULL,
+	`firstName` VARCHAR(50) NOT NULL COLLATE 'utf8mb3_general_ci',
+	`lastName` VARCHAR(50) NOT NULL COLLATE 'utf8mb3_general_ci',
+	`birthDate` DATE NULL DEFAULT current_timestamp(),
+	`metaData` TEXT NULL DEFAULT '{}' COLLATE 'utf8mb3_general_ci',
+	`favoriteReserveType` INT(11) NULL DEFAULT NULL,
+	`favouriteHorseTransportId` INT(11) NULL DEFAULT NULL,
+	`deathState` ENUM('Alive','Incapacitated','Wounded','Dead','Respawning') NOT NULL DEFAULT 'Alive' COLLATE 'utf8mb3_general_ci',
+	`updatedAt` TIMESTAMP NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+	`createdAt` TIMESTAMP NULL DEFAULT current_timestamp(),
+	PRIMARY KEY (`id`) USING BTREE,
+	INDEX `FK_characters_users` (`userId`) USING BTREE,
+	INDEX `FK_characters_reserve_type` (`favoriteReserveType`) USING BTREE,
+	CONSTRAINT `FK_character_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
+	CONSTRAINT `FK_characters_reserve_type` FOREIGN KEY (`favoriteReserveType`) REFERENCES `reserve_type` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
+	CONSTRAINT `FK_character_transport` FOREIGN KEY (`favouriteHorseTransportId`) REFERENCES `transport` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+) COLLATE='utf8mb3_general_ci' ENGINE=InnoDB AUTO_INCREMENT=0;
 
 -- Copiando estrutura para tabela faroeste.character_appearance
 CREATE TABLE IF NOT EXISTS `character_appearance` (
@@ -159,22 +160,24 @@ CREATE TABLE IF NOT EXISTS `character_inventory` (
   CONSTRAINT `FK_inventory_character` FOREIGN KEY (`charId`) REFERENCES `character` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
--- Copiando estrutura para tabela faroeste.character_rpg_stats
-CREATE TABLE IF NOT EXISTS `character_rpg_stats` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `charId` int(11) DEFAULT NULL,
-  `statHunger` int(11) NOT NULL DEFAULT 0,
-  `statThirst` int(11) NOT NULL DEFAULT 0,
-  `statHealth` int(11) NOT NULL DEFAULT 200,
-  `statHealthCore` int(11) NOT NULL DEFAULT 100,
-  `statStamina` int(11) NOT NULL DEFAULT 200,
-  `statStaminaCore` int(11) NOT NULL DEFAULT 100,
-  `statDrunk` int(11) NOT NULL DEFAULT 0,
-  `statStress` int(11) NOT NULL DEFAULT 0,
-  `statDrugs` int(11) NOT NULL DEFAULT 0,
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `charId` (`charId`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `character_rpg_stats` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`charId` INT(11) NULL DEFAULT NULL,
+	`statHunger` INT(11) NOT NULL DEFAULT '0',
+	`statThirst` INT(11) NOT NULL DEFAULT '0',
+	`statHealth` INT(11) NOT NULL DEFAULT '200',
+	`statHealthCore` INT(11) NOT NULL DEFAULT '100',
+	`statStamina` INT(11) NOT NULL DEFAULT '200',
+	`statStaminaCore` INT(11) NOT NULL DEFAULT '100',
+	`statDrunk` INT(11) NOT NULL DEFAULT '0',
+	`statStress` INT(11) NOT NULL DEFAULT '0',
+	`statDrugs` INT(11) NOT NULL DEFAULT '0',
+	PRIMARY KEY (`id`) USING BTREE,
+	UNIQUE INDEX `charId` (`charId`) USING BTREE,
+	CONSTRAINT `FK_character_rpg_stats_character` FOREIGN KEY (`charId`) REFERENCES `character` (`id`) ON UPDATE CASCADE ON DELETE NO ACTION
+) COLLATE='utf8mb4_general_ci' ENGINE=InnoDB AUTO_INCREMENT=1 ;
+
 
 -- Copiando estrutura para tabela faroeste.group
 CREATE TABLE IF NOT EXISTS `group` (

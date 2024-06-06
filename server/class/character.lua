@@ -1,4 +1,4 @@
-function API.Character(id, firstName, lastName, birthDate, metaData, favoriteReserveType, deathState)
+function API.Character(id, firstName, lastName, birthDate, metaData, favoriteReserveType, deathState, favouriteHorseTransportId)
     local self = {}
 
     self.id = id
@@ -7,6 +7,7 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
     self.birthDate = birthDate
     self.Inventory = {}
     self.favoriteReserveType = favoriteReserveType
+    self.favouriteHorseTransportId = favouriteHorseTransportId
     self.deathState = deathState
     self.metaData = metaData or {}
     self.outfitId = 0
@@ -47,28 +48,32 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
         self.source = v
     end
 
-    self.GetUserId = function()
+    self.GetUserId = function(this )
         return self.userId
     end
 
-    self.GetSource = function()
+    self.GetSource = function(this)
         return self.source
     end
 
-    self.GetInventory = function()
+    self.GetInventory = function(this)
         return self.Inventory
     end
 
-    self.GetId = function()
+    self.GetId = function(this)
         return self.id
     end
 
-    self.GetFullName = function()
+    self.GetFullName = function(this)
         return string.format("%s %s", self.firstName, self.lastName)
     end
 
-    self.GetBirthDate = function()
+    self.GetBirthDate = function(this)
         return self.birthDate
+    end
+
+    self.GetFavouriteHorse = function(this)
+        return self.favouriteHorseTransportId
     end
 
     self.GetMetadata = function(this, key)
@@ -95,6 +100,10 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
         return rows
     end
 
+    self.SetFavouriteHorse = function(this, transportId )
+        self.favouriteHorseTransportId = transportId
+    end
+    
     self.SavePosition = function(this, position)
         self:SetMetadata("position", position)
     end

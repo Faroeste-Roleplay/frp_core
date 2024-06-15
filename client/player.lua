@@ -20,6 +20,10 @@ function cAPI.SetCharacterId(charId)
     LocalPlayer.state:set('characterId', charId, false)
 end
 
+function cAPI.SetCurrentCharacterData(data)
+    LocalPlayer.state:set('activeCharacter', data, true)
+end
+
 function cAPI.Initialize(pedModel, lastPosition, stats)
     cAPI.StartFade(500, true)
     TriggerServerEvent("FRP:preCharacterInitialization")

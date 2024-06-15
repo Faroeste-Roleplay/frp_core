@@ -37,6 +37,12 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
 
         self:GetMetadata()
 
+        cAPI.SetCurrentCharacterData(self:GetSource(), {
+            id = self.id,
+            name = self:GetFullName(),
+            outfit = self:GetCurrentOutfit() 
+        })
+
         self.Inventory = res
     end
 

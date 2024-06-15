@@ -221,6 +221,7 @@ function API.User(playerId, id, ipAddress, identifiers)
             TriggerClientEvent("FRP:onCharacterLoaded", self.source, id)
             cAPI.SetCharacterId(self:GetSource(), id)
 
+
             self.CharId = id
 
             return self.Character
@@ -231,7 +232,7 @@ function API.User(playerId, id, ipAddress, identifiers)
         return self.Character
     end
 
-    self.DrawCharacter = function(this)
+    self.DrawCharacter = function(this, newPosition)
         local Character = self:GetCharacter()
 
         -- local character_model = Character:GetModel()
@@ -245,7 +246,7 @@ function API.User(playerId, id, ipAddress, identifiers)
         -- local character_stats = Character:GetCachedStats()
 
         if characters_appearence ~= nil then
-            cAPI.Initialize(self:GetSource(), character_model, character_lastposition)
+            cAPI.Initialize(self:GetSource(), character_model, newPosition or character_lastposition)
         end
 
         -- cAPI.CWanted(Character:GetWanted())

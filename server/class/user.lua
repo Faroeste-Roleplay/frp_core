@@ -270,8 +270,8 @@ function API.User(playerId, id, ipAddress, identifiers)
         end
 
         self.Character = nil
-        TriggerClientEvent("FRP:onCharacterLogout", self.source)
-        TriggerEvent("FRP:onCharacterLogout", self)
+        TriggerClientEvent("FRP:onCharacterLogout", self.source, self.CharId)
+        TriggerEvent("FRP:onCharacterLogout", self, self.CharId)
     end
 
     self.Drop = function(reason)

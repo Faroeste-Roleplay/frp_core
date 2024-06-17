@@ -1,7 +1,8 @@
-function API.Character(id, firstName, lastName, birthDate, metaData, favoriteReserveType, deathState, favouriteHorseTransportId)
+function API.Character(id, citizenId, firstName, lastName, birthDate, metaData, favoriteReserveType, deathState, favouriteHorseTransportId)
     local self = {}
 
     self.id = id
+    self.citizenId = citizenId
     self.firstName = firstName
     self.lastName = lastName
     self.birthDate = birthDate
@@ -40,7 +41,8 @@ function API.Character(id, firstName, lastName, birthDate, metaData, favoriteRes
         cAPI.SetCurrentCharacterData(self:GetSource(), {
             id = self.id,
             name = self:GetFullName(),
-            outfit = self:GetCurrentOutfit() 
+            outfit = self:GetCurrentOutfit(),
+            citizenId = self.citizenId,
         })
 
         self.Inventory = res

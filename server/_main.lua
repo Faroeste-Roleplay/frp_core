@@ -7,6 +7,7 @@ API.users = {} -- key: userId | value: User.class
 API.sources = {} -- key: source | value: userId
 API.identifiers = {} -- key: identifier | value: userId
 API.chars = {}
+API.citizen = {}
 
 API.userIdLock = {}
 

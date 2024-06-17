@@ -55,10 +55,11 @@ function API.GetUserFromSource(source)
 end
 
 function API.GetUserFromCharId(charId)
-    if API.users[API.chars[tonumber(charId)]] then
-        return API.users[API.chars[tonumber(charId)]]
-    end
-    return nil
+    return API.users[API.chars[tonumber(charId)]]
+end
+
+function API.GetUserFromCitizenId( citizenId )
+    return API.users[API.citizen[citizenId]]
 end
 
 function API.GetUserIdFromCharId(charId)
@@ -109,4 +110,38 @@ function API.ClearUserFromCache(source, userId)
     API.sources[source] = nil
     API.users[userId] = nil
     API.identifiers[User.primaryIdentifier] = nil
+end
+
+function API.CreateCitizenId()
+	local isUnique = false
+	local citizenId = nil
+
+    repeat
+        citizenId = ("%s%s"):format(RandomStr(1), RandomInt(4)):upper()
+
+		local result = MySQL.Sync.prepare('SELECT COUNT(*) as count FROM character WHERE citizenId = ?', { citizenId })
+
+		if result == 0 then
+			isUnique = true
+		end
+    until isUnique
+
+	return citizenId
+end
+
+function API.GenerateCharFingerPrint()
+	local isUnique = false
+	local fingerId = nil
+
+    repeat
+        fingerId = tostring(RandomStr(2) .. RandomInt(3) .. RandomStr(1) .. RandomInt(2) .. RandomStr(3) .. RandomInt(4))
+
+		local result = MySQL.prepare.await('SELECT EXISTS(SELECT 1 FROM players WHERE JSON_UNQUOTE(JSON_EXTRACT(metaData, "$.fingerprint")) = ?) AS uniqueCheck', { FingerId })
+
+		if result == 0 then
+			isUnique = true
+		end
+    until isUnique
+
+	return fingerId
 end

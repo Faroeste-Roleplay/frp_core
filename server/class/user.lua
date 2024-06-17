@@ -129,10 +129,12 @@ function API.User(playerId, id, ipAddress, identifiers)
     self.CreateCharacter = function(this, firstName, lastName, birthDate, playerProfileCreation, equippedApparelsByType)
         local Character = nil
 
-        local metaData = { position = Config.DefaultSpawnPosition }
+        local metaData = { position = Config.DefaultSpawnPosition, fingerprint = API.GenerateCharFingerPrint() }
+        local citizenId = API.CreateCitizenId()
 
         local rows = API_Database.query("FRP/CreateCharacter", {
             userId = self:GetId(),
+            citizenId = citizenId,
             firstName = firstName,
             lastName = lastName,
             -- birthDate = birthDate,
@@ -145,6 +147,7 @@ function API.User(playerId, id, ipAddress, identifiers)
 
             Character = API.Character(
                 charId,
+                citizenId,
                 firstName,
                 lastName,
                 birthDate,
@@ -207,6 +210,7 @@ function API.User(playerId, id, ipAddress, identifiers)
 
             self.Character = API.Character(
                 id,
+                charData.citizenId,
                 charData.firstName,
                 charData.lastName,
                 charData.birthDate,
@@ -221,7 +225,7 @@ function API.User(playerId, id, ipAddress, identifiers)
             TriggerClientEvent("FRP:onCharacterLoaded", self.source, id)
             cAPI.SetCharacterId(self:GetSource(), id)
 
-
+            API.citizen[charData.citizenId] = self:GetId()
             self.CharId = id
 
             return self.Character
@@ -267,6 +271,9 @@ function API.User(playerId, id, ipAddress, identifiers)
 
         if character then
             character:Release()
+    
+            API.citizen[character.citizenId] = nil
+            API.chars[character.id] = nil
         end
 
         self.Character = nil

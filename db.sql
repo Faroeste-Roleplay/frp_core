@@ -397,3 +397,7 @@ ALTER TABLE `group`
 
 ALTER TABLE `group_member`
 	CHANGE COLUMN `createdAt` `createdAt` DATETIME NULL DEFAULT CURDATE() AFTER `characterId`;
+
+ALTER TABLE `character`
+	ADD COLUMN `citizenId` VARCHAR(50) NOT NULL AFTER `userId`,
+	ADD UNIQUE INDEX `citizenId` (`citizenId`);

@@ -196,6 +196,45 @@ function API.Character(id, citizenId, firstName, lastName, birthDate, metaData, 
         return res
     end
 
+    self.DeleteOutfitFromId = function( this, outfitId )
+
+        local outfits = MySQL.query.await([[
+            SELECT * FROM character_outfit 
+            WHERE charId = ?
+        ]], {
+            self.id
+        })
+
+        if #outfits <= 1 then
+            cAPI.Notify("error", "Você não pode deletar seu único outfit", 5000)
+            return
+        end
+
+        local res = MySQL.query.await([[
+            DELETE FROM character_outfit 
+            WHERE id = ?
+        ]], {
+            outfitId
+        })
+
+
+        if res then
+            for _, outfit in pairs( outfits ) do
+                if outfit.id ~= outfitId then
+                    self:SetCurrentOutfit( outfitId )
+                    cAPI.Notify("success", "Outfit deletado com sucesso", 6000)
+                    break 
+                end
+            end
+         end
+
+        return res
+    end
+
+    self.DefineAvailableOutfitPlayer = function( this ) 
+
+    end
+
     self.UpdateCharacterOutfitData = function( this, outfitId, outfitData ) 
         local res = MySQL.insert.await([[
             UPDATE character_outfit 
@@ -301,16 +340,22 @@ function API.Character(id, citizenId, firstName, lastName, birthDate, metaData, 
         characterData.appearanceOverlays = MySQL.single.await("SELECT * FROM character_appearance_overlays WHERE charId = ?", { self.id })
         characterData.appearanceOverlaysCustomizable = MySQL.single.await("SELECT * FROM character_appearance_overlays_customizable WHERE charId = ?", { self.id })
     
-        local outfitRes = MySQL.single.await("SELECT * FROM character_outfit WHERE id = ?", { characterData.appearanceCustomizable.equippedOutfitId })
-        
-        if outfitRes then
-            characterData.appearanceCustomizable.equippedOutfitApparels = json.decode(outfitRes.apparels)
-        end
+        characterData.appearanceCustomizable.equippedOutfitApparels =  self:GetOutfitDataFromDB( characterData.appearanceCustomizable.equippedOutfitId )
         
         characterData.appearanceOverlays.data =  json.decode(characterData.appearanceOverlays.data)
         characterData.appearance.expressions = json.decode(characterData.appearance.expressions)
 
         return characterData
+    end
+
+    self.GetOutfitDataFromDB = function(this, outfitId)
+        local outfitRes = MySQL.single.await("SELECT * FROM character_outfit WHERE id = ?", { outfitId })
+        
+        if outfitRes then
+            return json.decode(outfitRes.apparels)
+        end
+
+        return {}
     end
 
     self.SetGameAppearance = function(this)

@@ -36,7 +36,7 @@ function API.User(playerId, id, ipAddress, identifiers)
             self.id
         })
 
-        self.numMaxSlots = res.numCharSlots
+        self.numMaxSlots = res?.numCharSlots or Config.DefaultCharsSlotsAmount
 
         TriggerEvent("FRP:onUserStarted", self)
 

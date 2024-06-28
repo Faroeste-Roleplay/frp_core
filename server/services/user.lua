@@ -119,7 +119,7 @@ function API.CreateCitizenId()
     repeat
         citizenId = ("%s%s"):format(RandomStr(1), RandomInt(4)):upper()
 
-		local result = MySQL.Sync.prepare('SELECT COUNT(*) as count FROM character WHERE citizenId = ?', { citizenId })
+		local result = MySQL.prepare.await('SELECT COUNT(*) as count FROM `character` WHERE `citizenId` = ?', { citizenId })
 
 		if result == 0 then
 			isUnique = true
@@ -136,7 +136,7 @@ function API.GenerateCharFingerPrint()
     repeat
         fingerId = tostring(RandomStr(2) .. RandomInt(3) .. RandomStr(1) .. RandomInt(2) .. RandomStr(3) .. RandomInt(4))
 
-		local result = MySQL.prepare.await('SELECT EXISTS(SELECT 1 FROM players WHERE JSON_UNQUOTE(JSON_EXTRACT(metaData, "$.fingerprint")) = ?) AS uniqueCheck', { FingerId })
+		local result = MySQL.prepare.await('SELECT EXISTS(SELECT 1 FROM `character` WHERE JSON_UNQUOTE(JSON_EXTRACT(metaData, "$.fingerprint")) = ?) AS uniqueCheck', { fingerId })
 
 		if result == 0 then
 			isUnique = true

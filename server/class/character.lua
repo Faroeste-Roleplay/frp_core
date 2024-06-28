@@ -196,14 +196,17 @@ function API.Character(id, citizenId, firstName, lastName, birthDate, metaData, 
         return res
     end
 
-    self.DeleteOutfitFromId = function( this, outfitId )
-
-        local outfits = MySQL.query.await([[
+    self.GetOutfitList = function( this )
+        return MySQL.query.await([[
             SELECT * FROM character_outfit 
             WHERE charId = ?
         ]], {
             self.id
         })
+    end
+
+    self.DeleteOutfitFromId = function( this, outfitId )
+        local outfits = self:GetOutfitList()
 
         if #outfits <= 1 then
             cAPI.Notify("error", "Você não pode deletar seu único outfit", 5000)

@@ -46,6 +46,10 @@ function cAPI.Initialize(pedModel, lastPosition, stats)
 
     local pStats = stats
 
+
+    local playerPed = PlayerPedId()
+    FreezeEntityPosition(playerPed, true)
+
     if Config.SkyCamSpawnEffect then
         CreateThread(function()
             cAPI.PlaySkyCameraAnimationAtCoords(decodedLastPosition)
@@ -70,11 +74,10 @@ function cAPI.Initialize(pedModel, lastPosition, stats)
 
     cAPI.SetPlayerWhistle()
 
-    local playerPed = PlayerPedId()
-
     SetEntityVisible(playerPed, true)
     SetEntityInvincible(playerPed, false)
     NetworkSetEntityInvisibleToNetwork(playerPed, false)
+    FreezeEntityPosition(playerPed, false)
 
     TriggerEvent("FRP:postCharacterInitialization")
     TriggerServerEvent("FRP:postCharacterInitialization")
@@ -83,6 +86,8 @@ function cAPI.Initialize(pedModel, lastPosition, stats)
 end
 
 cAPI.ApplyCharacterAppearance = Appearance.ApplyCharacterAppearance
+cAPI.GetPedOverlayInstance = Appearance.GetPedOverlayInstance
+cAPI.SetPedOverlayInstance = Appearance.SetPedOverlayInstance
 
 function cAPI.SetPlayerAppearence()
     cAPI.ApplyCharacterAppearance(PlayerPedId(), gCharAppearence)

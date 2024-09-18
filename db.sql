@@ -401,3 +401,15 @@ ALTER TABLE `group_member`
 ALTER TABLE `character`
 	ADD COLUMN `citizenId` VARCHAR(50) NOT NULL AFTER `userId`,
 	ADD UNIQUE INDEX `citizenId` (`citizenId`);
+
+ALTER TABLE `character_rpg_stats`
+	CHANGE COLUMN `statHunger` `hunger` INT(11) NOT NULL DEFAULT '0' AFTER `charId`,
+	CHANGE COLUMN `statThirst` `thirst` INT(11) NOT NULL DEFAULT '0' AFTER `hunger`,
+	CHANGE COLUMN `statHealth` `health` INT(11) NOT NULL DEFAULT '200' AFTER `thirst`,
+	CHANGE COLUMN `statHealthCore` `health_core` INT(11) NOT NULL DEFAULT '100' AFTER `health`,
+	CHANGE COLUMN `statStamina` `stamina` INT(11) NOT NULL DEFAULT '200' AFTER `health_core`,
+	CHANGE COLUMN `statStaminaCore` `stamina_core` INT(11) NOT NULL DEFAULT '100' AFTER `stamina`,
+	CHANGE COLUMN `statDrunk` `drunk` INT(11) NOT NULL DEFAULT '0' AFTER `stamina_core`,
+	CHANGE COLUMN `statStress` `fatigue` INT(11) NOT NULL DEFAULT '0' AFTER `drunk`,
+	CHANGE COLUMN `statDrugs` `drugs` INT(11) NOT NULL DEFAULT '0' AFTER `fatigue`,
+	ADD COLUMN `sick` INT(11) NOT NULL DEFAULT '0' AFTER `drugs`;

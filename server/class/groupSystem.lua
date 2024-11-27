@@ -91,10 +91,10 @@ function API.GroupSystem()
         for _, groupMember in pairs(groupMembers) do 
             local groupMemberId, groupId = groupMember.id, groupMember.groupId
 
-            -- local isGroupMemberAPrimePrivilege, primeId = isGroupMemberAPrimePrivilege(groupMemberId)
-            -- if isGroupMemberAPrimePrivilege then
+            local isGroupMemberAPrimePrivilege, primeId = IsGroupMemberAPrimePrivilege(groupMemberId)
+            if isGroupMemberAPrimePrivilege then
                 -- primeService.isPrimeActive(primeId)
-            -- end
+            end
 
             local group = self:GetGroup(groupId)
 

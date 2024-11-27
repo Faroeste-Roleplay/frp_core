@@ -139,7 +139,7 @@ function getGroupMembersAnyGroup(userId, characterId)
     })
 end
 
-function isGroupMemberAPrimePrivilege(groupMemberId)
+function IsGroupMemberAPrimePrivilege(groupMemberId)
 
 end
 

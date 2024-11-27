@@ -25,7 +25,10 @@ i18n.importData("pt", {
         checking_allowlist = "Verificando sua Allowlist...",
         authenticated = "Autenticado",
         connection_canceled = 'Cancelou a conexão antes do Queue',
-        your_account = '%s \n\n Sua conta: %s'
+        your_account = '%s \n\n Sua conta: %s',
+        language_changed = 'O idioma foi alterado',
+        select_language = "Selecione o idioma",
+        language = "idioma"
     },
 })
 

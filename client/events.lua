@@ -9,7 +9,35 @@ AddEventHandler("playerSpawned", function()
     NetworkSetEntityInvisibleToNetwork(playerPed, true)
 	
 	TriggerServerEvent("FRP:onPlayerSpawned")
+
+
+    if Config.EnablePlayerSelectLanguage then
+        local kvpLang = GetExternalKvpString('frp_lib', 'frp_language')
+        
+        if not kvpLang or kvpLang == "" then
+            TriggerEvent('FRP:OpenRequestMenuToChangeLanguage')
+        end
+    end
 end)
+
+
+function OpenRequestMenuToChangeLanguage()
+    local input = lib.inputDialog(i18n.translate('info.select_language'), {
+        { type = 'select', label = i18n.translate('info.language'), options = {
+            { value = 'en', label = 'English' },
+            { value = 'pt', label = 'Português' },
+            { value = 'es', label = 'Español'}
+        }},
+    })
+
+    local languageResult = input[1]
+
+    if languageResult then
+        TriggerEvent('FRP:SetLanguage', languageResult)
+    end
+end
+
+RegisterNetEvent("FRP:OpenRequestMenuToChangeLanguage", OpenRequestMenuToChangeLanguage)
 
 AddEventHandler("onClientResourceStart", function() -- Reveal whole map on spawn and enable pvp
     if Config.RevealMap then

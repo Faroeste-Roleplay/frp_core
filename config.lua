@@ -1,6 +1,6 @@
 Config = {}
 
-Config.Allowlist = false
+Config.Allowlist = true
 Config.RevealMap = true
 Config.SkyCamSpawnEffect = false
 
@@ -12,7 +12,7 @@ Config.PrimaryIdentifier = "steam"
 
 Config.DefaultCharsSlotsAmount = 1
 
-Config.DiscordGuildId = GetConvarInt("discord_guild_id", 412627639380213760)
+Config.DiscordGuildId = GetConvar("discord_guild_id", 412627639380213760)
 Config.DiscordInvite = "https://discord.gg/uVDf5kGbB8"
 
 Config.EnablePlayerSelectLanguage = true

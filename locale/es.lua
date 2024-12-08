@@ -1,5 +1,6 @@
 i18n.importData("es", {
     error = {
+        internal_error = "Se ha producido un error desconocido, comuníquese con el personal.",
         create_user = 'No se puede crear su usuario, ¡contacte a un desarrollador!',
         user_connected = 'Su usuario ya está conectado al servidor. ¡Inténtalo de nuevo más tarde!',
         identifiers_not_found = 'No hay identificadores confiables :/',

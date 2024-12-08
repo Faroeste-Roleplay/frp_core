@@ -47,7 +47,7 @@ function IsAllowlisted(playerId, userGroup, mappedIdentifiers)
 		local errMeaning = err
 
 		if errCode == 400 then
-			errMeaning = 'BAD_REQUEST'
+			errMeaning = i18n.translate("error.internal_error")
 		elseif errCode == 401 then
 			errMeaning = i18n.translate("error.join_discord")
 		elseif errCode == 403 then

@@ -31,7 +31,7 @@ function IsAllowlisted(playerId, userGroup, mappedIdentifiers)
 	local discordIdentifier = mappedIdentifiers.discord
 
 	if not discordIdentifier then
-		return false, -1, i18n.translate("discord_not_found")
+		return false, -1, i18n.translate("error.discord_not_found")
 	end
 
 	--[[ Vamos lidar com o error gerado pelo request ]]
@@ -49,11 +49,11 @@ function IsAllowlisted(playerId, userGroup, mappedIdentifiers)
 		if errCode == 400 then
 			errMeaning = 'BAD_REQUEST'
 		elseif errCode == 401 then
-			errMeaning = i18n.translate("join_discord")
+			errMeaning = i18n.translate("error.join_discord")
 		elseif errCode == 403 then
-			errMeaning = i18n.translate("auth_code_invalid")
+			errMeaning = i18n.translate("error.auth_code_invalid")
 		elseif errCode == 429 then
-			errMeaning = i18n.translate("requests_exceeded")
+			errMeaning = i18n.translate("error.requests_exceeded")
 		end
 
 		error = errCode and errMeaning or err
@@ -78,7 +78,7 @@ function IsAllowlisted(playerId, userGroup, mappedIdentifiers)
 
 				if disabledByTimeOfDay then
 					priority = -1 --[[ Invalidar a prioridade, deixar para o próximo cargo dizer qual seria ]]
-					error = i18n.translate("not_priority_role")
+					error = i18n.translate("error.not_priority_role")
 				else
 					priority = registeredRole.priority
 				end
@@ -89,7 +89,7 @@ function IsAllowlisted(playerId, userGroup, mappedIdentifiers)
 	local isAllowlisted = priority >= 0
 
 	if not isAllowlisted and not error then
-		error = i18n.translate("not_allowed")
+		error = i18n.translate("error.not_allowed")
 	end
 
 	error = isAllowlisted and nil or error
@@ -108,13 +108,17 @@ function FetchGuildMemberObject(discordUserId)
 			return p:reject(tostring(status))
 		end
 
+		print(" body :: ", body)
+
 		local response = json.decode(body)
+
+		print(" response :: ", response)
 
 		p:resolve(response)
 	end
 
 	PerformHttpRequest( 
-		('https://discord.com/api/v8/guilds/%s/members/%s'):format(Config.DiscordGuildId, discordUserId),
+		('https://discord.com/api/v10/guilds/%s/members/%s'):format(Config.DiscordGuildId, discordUserId),
 		onResponse,
 		'GET',
 		request,

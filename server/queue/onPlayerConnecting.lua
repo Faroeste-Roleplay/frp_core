@@ -28,6 +28,35 @@ function OnPlayerConnecting(name, setKickReason, deferrals)
 		end
 	end
 
+	local function updateDeferrals(...)
+		local params = { ... }
+
+		local message = params[1]
+
+		local cardOne = DeferralCards.Card:Create({
+			body = {
+				DeferralCards.CardElement:TextBlock({
+					size = 'extraLarge',
+					weight = 'Bolder',
+					text = i18n.translate('info.connecting'),
+					horizontalAlignment = 'center'
+				}),
+				DeferralCards.CardElement:TextBlock({
+					size = 'medium',
+					weight = 'default',
+					text = message,
+					horizontalAlignment = 'center'
+				})
+			}
+		})
+
+		deferrals.presentCard(cardOne, function(data, rawData)
+			deferrals.update(message)
+		end)
+
+		log(...)
+	end
+
 	local function setDeferralsDone(...)
 		local params = { ... }
 
@@ -58,6 +87,8 @@ function OnPlayerConnecting(name, setKickReason, deferrals)
 		if wasDeniedConnection then
 			log(('Conexão terminada. Motivo: %s'):format(denyReason))
 
+			SetUserIdLock(userId, false)
+
 			deferrals.presentCard(cardOne, function(data, rawData)
 				deferrals.done(denyReason)
 			end)
@@ -66,35 +97,6 @@ function OnPlayerConnecting(name, setKickReason, deferrals)
 		end
 
 		deferrals.done()
-	end
-
-	local function updateDeferrals(...)
-		local params = { ... }
-
-		local message = params[1]
-
-		local cardOne = DeferralCards.Card:Create({
-			body = {
-				DeferralCards.CardElement:TextBlock({
-					size = 'extraLarge',
-					weight = 'Bolder',
-					text = i18n.translate('info.connecting'),
-					horizontalAlignment = 'center'
-				}),
-				DeferralCards.CardElement:TextBlock({
-					size = 'medium',
-					weight = 'default',
-					text = message,
-					horizontalAlignment = 'center'
-				})
-			}
-		})
-
-		deferrals.presentCard(cardOne, function(data, rawData)
-			deferrals.update(message)
-		end)
-
-		log(...)
 	end
 
 	local identifiers = GetPlayerIdentifiers(playerId)
@@ -197,7 +199,7 @@ function OnPlayerConnecting(name, setKickReason, deferrals)
 		if not wasAuthenticated then
 			local errorMessage = error or ''
 
-			return setDeferralsDone((i18n.translate('your_account')):format(errorMessage, playerSteamNickname), false)
+			return setDeferralsDone((i18n.translate('info.your_account')):format(errorMessage, playerSteamNickname), false)
 		end
 	end
 
@@ -300,7 +302,7 @@ function ReleasePlayerUserAsDisconnected(playerId, reason)
 end
 
 function SetUserIdLock(userId, locked)
-	API.userIdLock[userId] = locked and true or nil
+	API.userIdLock[userId] = locked == true and true or nil
 
 	if DEBUG_LOGS then
 

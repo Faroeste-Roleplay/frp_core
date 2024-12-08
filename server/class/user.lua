@@ -68,6 +68,10 @@ function API.User(playerId, id, ipAddress, identifiers)
         -- return Character:GetId()
     end
 
+    self.GetMaxCharSlotsAvailable = function(this)
+        return self.numMaxSlots
+    end
+
     self.GetIpAddress = function(this)
         return ipAddress
     end

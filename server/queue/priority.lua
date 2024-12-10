@@ -108,11 +108,7 @@ function FetchGuildMemberObject(discordUserId)
 			return p:reject(tostring(status))
 		end
 
-		print(" body :: ", body)
-
 		local response = json.decode(body)
-
-		print(" response :: ", response)
 
 		p:resolve(response)
 	end

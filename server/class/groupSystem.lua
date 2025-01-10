@@ -9,7 +9,6 @@ function API.GroupSystem()
     self.groupMemberIdToGroupId = {}
 
     self.groupService = {}
-    self.primeService = {}
 
     self.Initialize = function(this)
         local groupModels = MySQL.query.await("SELECT * FROM `group`")
@@ -91,9 +90,13 @@ function API.GroupSystem()
         for _, groupMember in pairs(groupMembers) do 
             local groupMemberId, groupId = groupMember.id, groupMember.groupId
 
-            local isGroupMemberAPrimePrivilege, primeId = IsGroupMemberAPrimePrivilege(groupMemberId)
+            local isGroupMemberAPrimePrivilege, primeId = PrimeService.isGroupMemberAPrimePrivilege(groupMemberId)
+
             if isGroupMemberAPrimePrivilege then
-                -- primeService.isPrimeActive(primeId)
+                local isPrimeActive = PrimeService.isPrimeActive(primeId)
+                if not isPrimeActive then
+                    break
+                end
             end
 
             local group = self:GetGroup(groupId)

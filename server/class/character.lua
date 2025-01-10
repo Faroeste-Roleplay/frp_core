@@ -48,6 +48,10 @@ function API.Character(id, citizenId, firstName, lastName, birthDate, metaData, 
         self.Inventory = res
     end
 
+    self.GetCitizenId = function(this)
+        return self.citizenId
+    end
+
     self.SetUserId = function(this, v)
         self.userId = v
     end
@@ -118,7 +122,7 @@ function API.Character(id, citizenId, firstName, lastName, birthDate, metaData, 
 
     self.GetLastPosition = function(this)
         local lastPositionFromDb = self:GetMetadata("position")
-        return lastPositionFromDb ~= nil and vector3(lastPositionFromDb.x, lastPositionFromDb.y, lastPositionFromDb.z) or vector3(-329.9, 775.11, 121.74)
+        return lastPositionFromDb ~= nil and vector3(lastPositionFromDb.x, lastPositionFromDb.y, lastPositionFromDb.z) or nil
     end
 
     self.SetCharacterAppearance = function( this, characterAppearance )

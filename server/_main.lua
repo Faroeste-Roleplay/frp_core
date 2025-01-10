@@ -8,8 +8,12 @@ API.sources = {} -- key: source | value: userId
 API.identifiers = {} -- key: identifier | value: userId
 API.chars = {}
 API.citizen = {}
-
 API.userIdLock = {}
+API.groupSystem = {}
+
+exports("API", function()
+    return API
+end)
 
 Proxy.addInterface("API", API)
 Tunnel.bindInterface("API", API)
@@ -17,10 +21,60 @@ Proxy.addInterface("API_DB", API_Database)
 Proxy.addInterface("virtual_world", VirtualWorld)
 
 cAPI = Tunnel.getInterface("API")
+PrimeService = Proxy.getInterface("prime")
+
+
+API.GetGroup = function()
+    return API.groupSystem
+end
 
 CreateThread(function()
     API.groupSystem = API.GroupSystem()
     API.groupSystem:Initialize()
+    
+    AddEventHandler("prime:onPrimeExpired", function( prime )
+        -- Obter o privGroupMember (simulado como parte do 'prime')
+        local groupMemberId = prime.groupMemberId
+        local userId = API.groupSystem.groupMemberIdToUserId[groupMemberId]
+
+        local function removeUserFromGroupAreOnline(userId)
+            -- Simulando um mapeamento de groupMemberId para sessionId
+        
+            if not userId then
+                return
+            end
+
+            local user = API.GetUserFromUserId( userId )
+        
+            -- Obter o groupId com base no groupMemberId
+            local groupId = API.groupSystem.groupMemberIdToGroupId[groupMemberId]
+        
+            if not groupId then
+                return
+            end
+        
+            -- Obter o grupo
+            local group = API.groupSystem:GetGroup(groupId)
+        
+            -- Remover o membro do grupo localmente
+            group:RemoveUserFromGroupLocally(user, group, groupMemberId)
+        
+            print("Remove group member from group because prime expired!")
+        end
+
+        local function removeUserOfflineFromGroup( groupMemberId )
+            deleteGroupMemberFromId( groupMemberId )
+        end
+
+
+        local isOnline = userId ~= nil
+
+        if isOnline then
+            removeUserFromGroupAreOnline(userId)
+        end
+
+        -- removeUserOfflineFromGroup( groupMemberId )
+    end)
 end)
 
 AddEventHandler("onResourceStop", function(resName)

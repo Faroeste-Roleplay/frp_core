@@ -31,8 +31,13 @@ function cAPI.Initialize(pedModel, lastPosition, stats)
 
     local decodedLastPosition
 
-    if lastPosition == nil then
-        lastPosition = Config.DefaultSpawnPosition
+    local getFirstCoords = function()
+        local random = Config.DefaultFirstSpawnCoords[math.random(1, #Config.DefaultFirstSpawnCoords)]
+        return random
+    end
+
+    if lastPosition == nil or lastPosition.x == 0 then
+        lastPosition = getFirstCoords()
     end
 
     decodedLastPosition = lastPosition
@@ -45,7 +50,6 @@ function cAPI.Initialize(pedModel, lastPosition, stats)
     end
 
     local pStats = stats
-
 
     local playerPed = PlayerPedId()
     FreezeEntityPosition(playerPed, true)

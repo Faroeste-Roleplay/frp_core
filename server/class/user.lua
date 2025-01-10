@@ -18,6 +18,10 @@ function API.User(playerId, id, ipAddress, identifiers)
     self.identifiers = identifiers or MapIdentifiers( GetPlayerIdentifiers(self.source) )
     self.primaryIdentifier = nil
     self.groups = {}
+    self.createdAt = nil
+
+    self.loggedIn = nil
+    self.isNewbie = false
 
     self.Initialize = function(this)
         local mappedIdentifiers =  self.identifiers
@@ -36,9 +40,19 @@ function API.User(playerId, id, ipAddress, identifiers)
             self.id
         })
 
+        self.createdAt = res.createdAt / 1000
+
         self.numMaxSlots = res?.numCharSlots or Config.DefaultCharsSlotsAmount
 
         TriggerEvent("FRP:onUserStarted", self)
+
+        local daysAtCreation, hoursAtCreation = self:sinceCreation()
+        
+        self.isNewbie = daysAtCreation <= 7
+        self.isSteakFresh = hoursAtCreation <= 3
+
+        Player(self.source).state:set('isNewbie', self.isNewbie, true)
+        Player(self.source).state:set('isSteakFresh', self.isSteakFresh, true)
 
         self:UpdateName( GetPlayerName(self.source) )
     end
@@ -51,6 +65,11 @@ function API.User(playerId, id, ipAddress, identifiers)
     -- @return The source or player server id
     self.GetSource = function(this)
         return self.source
+    end
+
+    -- @return The user name
+    self.GetName = function(this)
+        return self.name
     end
 
     -- @return the userId
@@ -70,6 +89,23 @@ function API.User(playerId, id, ipAddress, identifiers)
 
     self.GetMaxCharSlotsAvailable = function(this)
         return self.numMaxSlots
+    end
+
+    self.UpdateMaxCharSlots = function( this, slots )
+
+        local affectedRows = MySQL.update.await([[
+            UPDATE user 
+            SET numCharSlots = ? 
+            WHERE id = ?
+        ]], {   
+            slots,
+            self.id,
+        })
+
+        if affectedRows ~= nil then
+            self.numMaxSlots = slots
+        end
+    
     end
 
     self.GetIpAddress = function(this)
@@ -101,8 +137,6 @@ function API.User(playerId, id, ipAddress, identifiers)
         local rows = API_Database.query("FRP/GetCharacters", {userId = self.id})
         local resData = {}
 
-        print(" rows :: ", #rows)
-
         if #rows <= 0 then
             return resData
         end
@@ -133,7 +167,7 @@ function API.User(playerId, id, ipAddress, identifiers)
     self.CreateCharacter = function(this, firstName, lastName, birthDate, playerProfileCreation, equippedApparelsByType)
         local Character = nil
 
-        local metaData = { position = Config.DefaultSpawnPosition, fingerprint = API.GenerateCharFingerPrint() }
+        local metaData = { fingerprint = API.GenerateCharFingerPrint() }
         local citizenId = API.CreateCitizenId()
 
         local rows = API_Database.query("FRP/CreateCharacter", {
@@ -197,6 +231,15 @@ function API.User(playerId, id, ipAddress, identifiers)
             })
         end
 
+        exports['fm-logs']:createLog({
+            LogType = "User", -- The log type
+            Message = ("Criou Personagem (%s): %s %s"):format(self.name, firstName, lastName), -- The message of the log
+            Level = "info", -- The level of the log (can be filtered on Fivemerr) (info by default)
+            Resource = "core", -- Resource where the log is coming from (If not provided, `fm-logs` will be set by default)
+            Source = self.userId, -- Server id for player (Required for Player Attributes to be pulled)
+            Metadata = {} -- Custom attributes to be added
+        })
+
         return charId
     end
 
@@ -231,6 +274,22 @@ function API.User(playerId, id, ipAddress, identifiers)
 
             API.citizen[charData.citizenId] = self:GetId()
             self.CharId = id
+
+            self.loggedIn = os.time(os.date("*t"))
+            Player(self.source).state:set('loggedIn', os.time(), true)
+
+            
+            local isStaff = API.IsPlayerAceAllowedGroup( self.source, 'staff' )
+            Player(playerId).state:set('staff', isStaff, true)
+
+            exports['fm-logs']:createLog({
+                LogType = "User", -- The log type
+                Message = ("Logou - %s : %s %s"):format(self.name, charData.firstName, charData.lastName), -- The message of the log
+                Level = "info", -- The level of the log (can be filtered on Fivemerr) (info by default)
+                Resource = "core", -- Resource where the log is coming from (If not provided, `fm-logs` will be set by default)
+                Source = self.userId, -- Server id for player (Required for Player Attributes to be pulled)
+                Metadata = {} -- Custom attributes to be added
+            })
 
             return self.Character
         end
@@ -280,9 +339,29 @@ function API.User(playerId, id, ipAddress, identifiers)
             API.chars[character.id] = nil
         end
 
+
+        if self.loggedIn then
+            local sessionTime, sessionTimeInMillisec = self:calculeSessionTime()
+            
+            print(" sessionTime  :: ", sessionTime, sessionTimeInMillisec)
+            self:UpdatePlayedTime(sessionTimeInMillisec)
+
+            self.loggedIn = nil
+        end
+
         self.Character = nil
         TriggerClientEvent("FRP:onCharacterLogout", self.source, self.CharId)
         TriggerEvent("FRP:onCharacterLogout", self, self.CharId)
+    end
+
+    self.UpdatePlayedTime = function(this, playedTime)
+        local query = "UPDATE user SET sessionDuration = IFNULL(SEC_TO_TIME(TIME_TO_SEC(sessionDuration) + SEC_TO_TIME(@tempo)), '00:00:00') WHERE id = @id"
+        local params = {
+            ['@tempo'] = playedTime,
+            ['@id'] = self.id
+        }
+        
+        MySQL.execute(query, params)
     end
 
     self.Drop = function(reason)
@@ -412,6 +491,44 @@ function API.User(playerId, id, ipAddress, identifiers)
         end
 
         return {}
+    end
+
+    self.calculeSessionTime = function(this)
+        local date = os.date("*t")
+        local tempoAtual = os.time(date) -- Timestamp atual
+        local tempoDeSessao = tempoAtual - self.loggedIn  -- Tempo jogado em segundos
+    
+        -- Converte segundos para o formato TIME
+        local horas = math.floor(tempoDeSessao / 3600)
+        local minutos = math.floor((tempoDeSessao % 3600) / 60)
+        local segundos = tempoDeSessao % 60
+    
+        -- Formata como "HH:MM:SS"
+        return string.format("%02d:%02d:%02d", horas, minutos, segundos), tempoDeSessao
+    end
+
+    self.sinceCreation = function(this)
+        local createdAt = self.createdAt
+
+        -- Converter 'createdAt' para timestamp, se for uma string
+        if type(createdAt) == "string" then
+            local pattern = "(%d+)-(%d+)-(%d+) (%d+):(%d+):(%d+)"
+            local year, month, day, hour, min, sec = createdAt:match(pattern)
+            createdAt = os.time({year = year, month = month, day = day, hour = hour, min = min, sec = sec})
+        end
+    
+        -- Obter o timestamp atual
+        local date = os.date("*t")
+        local currentTime = os.time(date)
+    
+        -- Calcular a diferença em segundos
+        local diffInSeconds = currentTime - createdAt
+    
+        -- Converter segundos para dias
+        local diffInDays = math.floor(diffInSeconds / (24 * 60 * 60))
+        local diffInHours = math.floor(diffInSeconds / (60 * 60))
+    
+        return diffInDays, diffInHours
     end
 
     return self

@@ -99,7 +99,7 @@ function API.GetPlayersByGroup(g)
     local group = g
 
     if type(g) == "string" then
-        groupByName = groupSystem:GetGroupByName(g)
+        group = groupSystem:GetGroupByName(g)
     end
 
     return group:GetMembersId()
@@ -139,15 +139,18 @@ function getGroupMembersAnyGroup(userId, characterId)
     })
 end
 
-function IsGroupMemberAPrimePrivilege(groupMemberId)
-
-end
 
 function addGroupMember(groupId, userId, characterId)
-    return  MySQL.insert.await('INSERT INTO `group_member` (groupId, userId, characterId) VALUES (?, ?, ?)', {
+    return MySQL.insert.await('INSERT INTO `group_member` (groupId, userId, characterId) VALUES (?, ?, ?)', {
         groupId,
         userId,
         characterId
+    })
+end
+
+function deleteGroupMemberFromId( groupMemberId )
+    return MySQL.query.await('DELETE FROM `group_member` WHERE `id` = ? ', {
+        groupMemberId,
     })
 end
 
@@ -160,9 +163,5 @@ function deleteGroupMember(groupId, userId, characterId)
 
     local groupMemberId = groupMember.id
 
-    local res = MySQL.query.await('DELETE FROM `group_member` WHERE `groupMemberId` = ? ', {
-        groupMemberId,
-    })
-
-    return res
+    return deleteGroupMemberFromId( groupMemberId )
 end

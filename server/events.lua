@@ -31,3 +31,7 @@ RegisterNetEvent("FRP:addReconnectPlayer", function()
         API.ConnectUser(playerId, userId)
     end
 end)
+
+RegisterNetEvent('FRP:sv_playAmbSpeech', function(pedNet, line)
+    TriggerClientEvent('FRP:cl_onPlayAmbSpeech', -1, pedNet, line)
+end)

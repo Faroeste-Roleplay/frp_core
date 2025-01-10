@@ -77,3 +77,8 @@ RegisterNetEvent('FRP:_CORE:SetServerIdAsUserIdPacked', function(r)
 	gServerToUser        = r
 	gServerToUserChanged = true
 end)
+
+RegisterNetEvent("FRP:cl_onPlayAmbSpeech", function(pedNet, line)
+	local ped = NetToPed(pedNet)
+	PlayAmbientSpeechFromEntity(ped, "", line, "speech_params_force", 0)
+end)

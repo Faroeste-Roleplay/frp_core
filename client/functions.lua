@@ -212,27 +212,7 @@ function cAPI.HasItem(source, cb, item)
 end
 
 function cAPI.Progressbar(name, label, duration, useWhileDead, canCancel, disableControls, animation, prop, propTwo, onFinish, onCancel)
-    exports['progressbar']:Progress({
-        name = name:lower(),
-        duration = duration,
-        label = label,
-        useWhileDead = useWhileDead,
-        canCancel = canCancel,
-        controlDisables = disableControls,
-        animation = animation,
-        prop = prop,
-        propTwo = propTwo,
-    }, function(cancelled)
-        if not cancelled then
-            if onFinish ~= nil then
-                onFinish()
-            end
-        else
-            if onCancel ~= nil then
-                onCancel()
-            end
-        end
-    end)
+    Progressbar(name, label, duration, useWhileDead, canCancel, disableControls, animation, prop, propTwo, onFinish, onCancel)
 end
 
 function cAPI.NotifyToast(type, text, quantity)
@@ -343,4 +323,9 @@ function cAPI.GetTownNameAtCoords(coords)
     else
         return "Other place"
     end
+end
+
+
+function cAPI.PlayAmbientSpeech(ped, speech)
+	TriggerServerEvent('FRP:sv_playAmbSpeech', PedToNet(ped), speech)
 end

@@ -1,6 +1,16 @@
 
 RegisterNetEvent("FRP:onCharacterLogout")
 
+local shouldHideLoadscreen = false
+
+RegisterNetEvent('FRP:DisableLoading', function()
+    shouldHideLoadscreen = true
+end)
+
+RegisterNUICallback('loadscreen-shutdown-check', function(data, cb)
+    cb({ shutdown = shouldHideLoadscreen });
+end)
+
 AddEventHandler("playerSpawned", function()
 	local playerPed = PlayerPedId()
 
@@ -10,6 +20,7 @@ AddEventHandler("playerSpawned", function()
 	
 	TriggerServerEvent("FRP:onPlayerSpawned")
 
+    shouldHideLoadscreen = true
 
     if Config.EnablePlayerSelectLanguage then
         local kvpLang = GetExternalKvpString('frp_lib', 'frp_language')
@@ -19,7 +30,6 @@ AddEventHandler("playerSpawned", function()
         end
     end
 end)
-
 
 function OpenRequestMenuToChangeLanguage()
     local input = lib.inputDialog(i18n.translate('info.select_language'), {

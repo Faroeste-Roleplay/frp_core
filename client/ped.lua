@@ -213,3 +213,23 @@ function cAPI.VaryPedCore(ped, core, variation, variationTime, goldenEffect)
         )
     end
 end
+
+function cAPI.IsModelMp(ped) 
+    local pedModel = GetEntityModel(ped)
+
+    return pedModel == `mp_male` or `mp_female`
+end
+
+function cAPI.FixStuckAmmoClothingPiece()
+    local playerPed = PlayerPedId()
+
+    if cAPI.IsModelMp(playerPed) then
+        -- #TODO: Usar o MPCS para remover.
+
+        -- RemoveTagFromMetaPed
+        N_0xd710a5007c2ac539(playerPed, GetHashKey('AMMO_PISTOLS'), 0);
+
+        -- UpdatePedVariation
+        N_0xcc8ca3e88256e58f(playerPed, 0, 1, 1, 1, 0);
+    end
+end

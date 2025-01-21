@@ -16,6 +16,11 @@ function cAPI.SetDataAppearence(appearance)
     gCharAppearence = appearance
 end
 
+function cAPI.SetPlayerScale()
+    local height = gCharAppearence.appearance.height
+    setPlayerPedScale( height )
+end
+
 function cAPI.SetCharacterId(charId)
     LocalPlayer.state:set('characterId', charId, false)
 end
@@ -95,6 +100,8 @@ cAPI.SetPedOverlayInstance = Appearance.SetPedOverlayInstance
 
 function cAPI.SetPlayerAppearence()
     cAPI.ApplyCharacterAppearance(PlayerPedId(), gCharAppearence)
+
+    cAPI.FixStuckAmmoClothingPiece()
 end
 
 function cAPI.TeleportPlayer(position, variation)

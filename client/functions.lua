@@ -225,7 +225,6 @@ function cAPI.NotifyToast(type, text, quantity)
 end
 
 
-
 local function GetCollisionBetweenPoints(pointFrom, pointTo, flags)
     -- StartExpensiveSynchronousShapeTestLosProbe
     local handle 
@@ -325,7 +324,35 @@ function cAPI.GetTownNameAtCoords(coords)
     end
 end
 
-
 function cAPI.PlayAmbientSpeech(ped, speech)
 	TriggerServerEvent('FRP:sv_playAmbSpeech', PedToNet(ped), speech)
+end
+
+function setPlayerPedScale(height)
+    local isPositive = height > 185;
+    local variation = (math.abs(185 - height) * 0.005333)
+
+    if not isPositive then
+        variation = -(variation)
+    end
+
+    SetPedScale(PlayerPedId(), 1.0 + variation);
+end
+
+function cAPI.enterDimension(dimensionId)
+    -- GetTransportPedIsSeatedOn
+    local transportEntityId = N_0x849bd6c6314793d0( PlayerPedId() );
+
+    local transportEntityNetworkId = transportEntityId ~= 0 and NetworkGetNetworkIdFromEntity(transportEntityId) or nil;
+        
+    TriggerEvent('net.session.requestEnterDimension', dimensionId, transportEntityNetworkId);
+end
+
+function cAPI.leaveDimension(dimensionId)
+    -- GetTransportPedIsSeatedOn
+    local transportEntityId = N_0x849bd6c6314793d0( PlayerPedId() );
+
+    local transportEntityNetworkId = transportEntityId ~= 0 and NetworkGetNetworkIdFromEntity(transportEntityId) or nil;
+        
+    TriggerEvent('net.session.requestEnterDimension', dimensionId, transportEntityNetworkId);
 end

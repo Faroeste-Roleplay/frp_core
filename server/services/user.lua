@@ -1,10 +1,11 @@
 function API.CreateUser(playerId, mappedIdentifiers)
+    local playerName = GetPlayerName(playerId)
     local userId = MySQL.insert.await(
         [[
             INSERT INTO user (name) VALUES(?)
         ]], 
         {            
-            GetPlayerName(playerId)
+            playerName
         })
 
     if userId then
@@ -25,6 +26,8 @@ function API.CreateUser(playerId, mappedIdentifiers)
         })
     end
 
+	lib.logger(playerId, 'User', ("Usuário CRIADO - %s (%s) - Discord:%s - Steam:%s"):format(playerName, userId, mappedIdentifiers.discord, mappedIdentifiers.steam))
+    
     return userId
 end
 

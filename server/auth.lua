@@ -12,6 +12,8 @@ function API.ConnectUser(source, userId, identifiers)
 
     TriggerEvent("FRP:onUserLoaded", User)
 
+    lib.logger(source, 'User', ("CONECTOU - %s - source %s - UserId - %s "):format(User:GetName(), source, userId))
+
     TriggerClientEvent("FRP:_CORE:SetServerIdAsUserId", -1, source, userId)
     TriggerClientEvent("FRP:_CORE:SetServerIdAsUserIdPacked", source, API.sources)
 
@@ -25,8 +27,11 @@ function API.DropUser(playerId, playerPosition, reason)
 	local Character = User:GetCharacter()
 
 	if Character then
+        User:Logout()
 		Character:SavePosition( playerPosition )
 	end
+    
+    lib.logger(source, 'User', ("DESCONECTOU - %s - source %s - UserId - %s "):format(User:GetName(), source, userId))
 
     local wasReleased, userRef = ReleasePlayerUserAsDisconnected(playerId, reason)
 

@@ -222,6 +222,8 @@ function OnPlayerConnecting(name, setKickReason, deferrals)
 
 	API.sources[playerId] = userId
 
+	lib.logger(playerId, 'User', ("AUTENTICADO - %s - source %s - uId %s"):format(GetPlayerName( playerId ), playerId, userId))
+
 	TriggerEvent('playerConnectionAuthenticated', playerId, updateDeferrals, setDeferralsDone, queuePriority)
 
 	--[[ O Queue vai cancelar esse evento caso ele esteja ativo. ]]

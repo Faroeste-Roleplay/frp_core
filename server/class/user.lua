@@ -230,21 +230,14 @@ function API.User(playerId, id, ipAddress, identifiers)
                 sick = 0,
             })
         end
-
-        exports['fm-logs']:createLog({
-            LogType = "User", -- The log type
-            Message = ("Criou Personagem (%s): %s %s"):format(self.name, firstName, lastName), -- The message of the log
-            Level = "info", -- The level of the log (can be filtered on Fivemerr) (info by default)
-            Resource = "core", -- Resource where the log is coming from (If not provided, `fm-logs` will be set by default)
-            Source = self.userId, -- Server id for player (Required for Player Attributes to be pulled)
-            Metadata = {} -- Custom attributes to be added
-        })
+        
+        lib.logger(self.source, 'User', ("Criou Personagem (%s): %s %s"):format(self.userId, firstName, lastName))
 
         return charId
     end
 
     self.DeleteCharacter = function(this, id)
-        API_Database.execute("FRP/DeleteCharacter", {charId = id})
+        API_Database.execute("FRP/DeleteCharacter", {charId = id, userId = self.id})
     end
 
     self.SetCharacter = function(this, id)
@@ -281,15 +274,8 @@ function API.User(playerId, id, ipAddress, identifiers)
             
             local isStaff = API.IsPlayerAceAllowedGroup( self.source, 'staff' )
             Player(playerId).state:set('staff', isStaff, true)
-
-            exports['fm-logs']:createLog({
-                LogType = "User", -- The log type
-                Message = ("Logou - %s : %s %s"):format(self.name, charData.firstName, charData.lastName), -- The message of the log
-                Level = "info", -- The level of the log (can be filtered on Fivemerr) (info by default)
-                Resource = "core", -- Resource where the log is coming from (If not provided, `fm-logs` will be set by default)
-                Source = self.userId, -- Server id for player (Required for Player Attributes to be pulled)
-                Metadata = {} -- Custom attributes to be added
-            })
+            
+            lib.logger(self.source, 'User', ("Logou - %s[%s] : %s %s"):format(self.userId, self.name, charData.firstName, charData.lastName))
 
             return self.Character
         end

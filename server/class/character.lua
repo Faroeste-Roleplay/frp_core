@@ -133,12 +133,47 @@ function API.Character(id, citizenId, firstName, lastName, birthDate, metaData, 
                 whistleShape, whistlePitch, whistleClarity,
                 eyesApparatusStyleId, height, bodyWeightOufitType, bodyKindType)
             VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+            ON DUPLICATE KEY UPDATE  
+                isMale = VALUES(isMale),  
+                expressions = VALUES(expressions),  
+                bodyApparatusId = VALUES(bodyApparatusId),  
+                bodyApparatusStyleId = VALUES(bodyApparatusStyleId),  
+                headApparatusId = VALUES(headApparatusId),  
+                teethApparatusStyleId = VALUES(teethApparatusStyleId),  
+                eyesApparatusId = VALUES(eyesApparatusId),  
+                whistleShape = VALUES(whistleShape),  
+                whistlePitch = VALUES(whistlePitch),  
+                whistleClarity = VALUES(whistleClarity),  
+                eyesApparatusStyleId = VALUES(eyesApparatusStyleId),  
+                height = VALUES(height),  
+                bodyWeightOufitType = VALUES(bodyWeightOufitType),  
+                bodyKindType = VALUES(bodyKindType)  
         ]], {
             self.id,
             characterAppearance.isMale, json.encode(characterAppearance.expressions), characterAppearance.bodyApparatusId, characterAppearance.bodyApparatusStyleId,
             characterAppearance.headApparatusId, characterAppearance.teethApparatusStyleId, characterAppearance.eyesApparatusId, 
             characterAppearance.whistleShape or 0, characterAppearance.whistlePitch or 0, characterAppearance.whistleClarity or 0,
             characterAppearance.eyesApparatusStyleId, characterAppearance.height, characterAppearance.bodyWeightOufitType, characterAppearance.bodyKindType
+        })
+
+        return res
+    end
+
+    self.SetCharacterFaceHairAppearanceCustomizable = function( this, characterAppearance )
+        local res = MySQL.insert.await([[
+            INSERT INTO character_appearance_customizable 
+                (charId, hairApparatusId, hairApparatusStyleId, mustacheApparatusId, 
+                mustacheApparatusStyleId)
+            VALUES( ?, ?, ?, ?, ? )
+            ON DUPLICATE KEY UPDATE  
+                hairApparatusId = VALUES(hairApparatusId),  
+                hairApparatusStyleId = VALUES(hairApparatusStyleId),  
+                mustacheApparatusId = VALUES(mustacheApparatusId),  
+                mustacheApparatusStyleId = VALUES(mustacheApparatusStyleId)
+        ]], {
+            self.id,
+            characterAppearance.hairApparatusId or 0, characterAppearance.hairApparatusStyleId or 0, characterAppearance.mustacheApparatusId or 0, 
+            characterAppearance.mustacheApparatusStyleId or 0
         })
 
         return res
@@ -151,6 +186,14 @@ function API.Character(id, citizenId, firstName, lastName, birthDate, metaData, 
                 hairApparatusId, hairApparatusStyleId, mustacheApparatusId, 
                 mustacheApparatusStyleId)
             VALUES( ?, ?, ?, ?, ?, ?, ?, ? )
+            ON DUPLICATE KEY UPDATE  
+                overridePedModel = VALUES(overridePedModel),  
+                overridePedIsMale = VALUES(overridePedIsMale),  
+                equippedOutfitId = VALUES(equippedOutfitId),  
+                hairApparatusId = VALUES(hairApparatusId),  
+                hairApparatusStyleId = VALUES(hairApparatusStyleId),  
+                mustacheApparatusId = VALUES(mustacheApparatusId),  
+                mustacheApparatusStyleId = VALUES(mustacheApparatusStyleId)
         ]], {
             self.id,
             characterAppearance.overridePedModel, characterAppearance.overridePedIsMale, characterAppearance.equippedOutfitId,
@@ -269,29 +312,34 @@ function API.Character(id, citizenId, firstName, lastName, birthDate, metaData, 
 
     self.SetCharacterAppearanceOverlaysCustomizable = function( this, characterAppearanceOverlays )
         local res = MySQL.insert.await([[
-            INSERT INTO `character_appearance_overlays_customizable` 
-                (   `charId`, 
-                    `hasFacialHair`,
-                    `headHairStyle`,
-                    `headHairOpacity`,
-                    `foundationColor`,
-                    `foundationOpacity`,
-                    `lipstickColor`,
-                    `lipstickOpacity`,
-                    `facePaintColor`,
-                    `facePaintOpacity`,
-                    `eyeshadowColor`,
-                    `eyeshadowOpacity`,
-                    `eyelinerColor`,
-                    `eyelinerOpacity`,
-                    `eyebrowsStyle`,
-                    `eyebrowsColor`,
-                    `eyebrowsOpacity`,
-                    `blusherStyle`,
-                    `blusherColor`,
-                    `blusherOpacity` )
-            VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
-        ]], {
+            INSERT INTO `character_appearance_overlays_customizable`  
+                (`charId`, `hasFacialHair`, `headHairStyle`, `headHairOpacity`,  
+                `foundationColor`, `foundationOpacity`, `lipstickColor`, `lipstickOpacity`,  
+                `facePaintColor`, `facePaintOpacity`, `eyeshadowColor`, `eyeshadowOpacity`,  
+                `eyelinerColor`, `eyelinerOpacity`, `eyebrowsStyle`, `eyebrowsColor`,  
+                `eyebrowsOpacity`, `blusherStyle`, `blusherColor`, `blusherOpacity`)  
+            VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )  
+            ON DUPLICATE KEY UPDATE  
+                hasFacialHair = VALUES(hasFacialHair),  
+                headHairStyle = VALUES(headHairStyle),  
+                headHairOpacity = VALUES(headHairOpacity),  
+                foundationColor = VALUES(foundationColor),  
+                foundationOpacity = VALUES(foundationOpacity),  
+                lipstickColor = VALUES(lipstickColor),  
+                lipstickOpacity = VALUES(lipstickOpacity),  
+                facePaintColor = VALUES(facePaintColor),  
+                facePaintOpacity = VALUES(facePaintOpacity),  
+                eyeshadowColor = VALUES(eyeshadowColor),  
+                eyeshadowOpacity = VALUES(eyeshadowOpacity),  
+                eyelinerColor = VALUES(eyelinerColor),  
+                eyelinerOpacity = VALUES(eyelinerOpacity),  
+                eyebrowsStyle = VALUES(eyebrowsStyle),  
+                eyebrowsColor = VALUES(eyebrowsColor),  
+                eyebrowsOpacity = VALUES(eyebrowsOpacity),  
+                blusherStyle = VALUES(blusherStyle),  
+                blusherColor = VALUES(blusherColor),  
+                blusherOpacity = VALUES(blusherOpacity)  
+        ]], {  
             self.id,
             characterAppearanceOverlays?.hasFacialHair or 0,
             characterAppearanceOverlays?.headHairStyle or 0,

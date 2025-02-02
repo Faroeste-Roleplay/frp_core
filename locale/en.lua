@@ -15,6 +15,7 @@ i18n.importData("en", {
         join_discord = "To gain access to our server you need to join our discord. \n\nSearch for the room #how-to-join-the-server",
         auth_code_invalid = 'The Authorization code used in the Discord API is invalid, inform a Developer!',
         requests_exceeded = 'Exceeded number of requests, please try again later!',
+        banned = "You are banned: "
     },
     success = {},
     info = {
@@ -29,7 +30,8 @@ i18n.importData("en", {
         your_account = '%s \n\n Your account: %s',
         language_changed = 'The language has changed',
         select_language = "Select the language",
-        language = "language"
+        language = "language",
+        checking_ban = "Checking ban"
     },
 })
 

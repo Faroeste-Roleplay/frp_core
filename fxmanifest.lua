@@ -50,6 +50,7 @@ server_scripts {
 	"server/services/acl.lua",
 	"server/services/user.lua",
 	"server/services/group.lua",
+	"server/CommandDenylist.lua",
 }
 
 files {

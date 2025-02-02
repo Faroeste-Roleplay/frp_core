@@ -112,8 +112,6 @@ function OnPlayerConnecting(name, setKickReason, deferrals)
 		return setDeferralsDone(i18n.translate('error.identifiers_not_found'))
 	end
 
-	---- ADICIONAR CHECAGEM DE BAN AQUI
-
 	updateDeferrals( i18n.translate('info.searching_user') )
 
 	local matchingUser = GetUserFromIdentifiersRepository(mappedIdentifiers)
@@ -128,6 +126,49 @@ function OnPlayerConnecting(name, setKickReason, deferrals)
 	end
 
 	local shouldCreateUser = false
+
+	if userId then
+		
+		updateDeferrals( i18n.translate('info.checking_ban') )
+
+		local denylistBatch = DenylistBatchRepository:GetBanFromUserId( userId )
+
+		if denylistBatch then
+			local batchId 		= denylistBatch.id
+			local denyReason 	= denylistBatch.reason
+			local denyExpiresAt = denylistBatch.expiresAt
+			local denyDuration  = denylistBatch.duration
+	
+			local isPermanentlyBeingDeniedEntry = denyDuration == nil
+	
+			if isPermanentlyBeingDeniedEntry then
+				return setDeferralsDone( ('\nVocê foi banido do servidor permanentemente.\nO ID do seu ban é %d'):format(batchId) )
+			end
+	
+			denyExpiresAt = denylistBatch.expiresAt / 1000
+	
+			local timestamp = os.time()
+	
+			local secondsTillExpiration = os.difftime(denyExpiresAt, timestamp)
+	
+			if secondsTillExpiration > 0 then
+				local dateTillExpiration = seconds_to_days_hours_minutes_seconds(secondsTillExpiration)
+	
+				local shouldIncludeReason = denyDuration <= 7 --[[ Banimentos de 7 dias ou menos vão incluir o motivo. ]]
+	
+				return setDeferralsDone(
+					('\nVocê foi banido do servidor%s. Esse ban vai se expirar em %s.\nO ID do seu ban é %d'):format(
+						shouldIncludeReason and (' por: %s'):format(denyReason) or '',
+						dateTillExpiration,
+						batchId
+					)
+				)
+			end
+	
+			--[[ Desativar o baninmento, já passou do tempo de expiração... ]]
+			DenylistBatchRepository:SetIsDeactivated(batchId, true)
+		end
+	end
 
 	if matchingUser then
 

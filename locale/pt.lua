@@ -15,6 +15,7 @@ i18n.importData("pt", {
         join_discord = "Para conseguir acesso ao nosso servidor você precisa entrar em nosso discord. \n\n Procure pela sala #como-entrar-no-servidor",
         auth_code_invalid = 'O código de Autorização usado na API no Discord é inválido, informe um Desenvolvedor!',
         requests_exceeded = 'Excedido o número de requests, tente novamente mais tarde!',
+        banned = "Você está banido: "
     },
     success = {},
     info = {
@@ -29,7 +30,8 @@ i18n.importData("pt", {
         your_account = '%s \n\n Sua conta: %s',
         language_changed = 'O idioma foi alterado',
         select_language = "Selecione o idioma",
-        language = "idioma"
+        language = "idioma",
+        checking_ban = "Checando banimento"
     },
 })
 

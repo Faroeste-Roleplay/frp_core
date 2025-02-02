@@ -145,15 +145,15 @@ end)
 API_Database.prepare("FRP/CreateUser", "INSERT INTO `user` (identifier, name, createdAt, banned) VALUES(@identifier, @name, @createdAt, 0)")
 -- API_Database.prepare("FRP/SelectUser", "SELECT * from user WHERE identifier = @identifier")
 
-API_Database.prepare("FRP/SetUsername", "UPDATE user SET name = @name, WHERE id = @userId")
+-- API_Database.prepare("FRP/SetUsername", "UPDATE user SET name = @name, WHERE id = @userId")
 
-API_Database.prepare("FRP/BannedUser", "SELECT banned from user WHERE userId = @userId")
-API_Database.prepare("FRP/SetBanned", "UPDATE user SET banned = 1, reason = @reason WHERE userId = @userId")
-API_Database.prepare("FRP/UnBan", 'UPDATE user SET banned = 0, reason = "" WHERE userId = @userId')
-API_Database.prepare("FRP/Whitelisted", "SELECT whitelist from user WHERE identifier = @identifier")
+-- API_Database.prepare("FRP/BannedUser", "SELECT banned from user WHERE userId = @userId")
+-- API_Database.prepare("FRP/SetBanned", "UPDATE user SET banned = 1, reason = @reason WHERE userId = @userId")
+-- API_Database.prepare("FRP/UnBan", 'UPDATE user SET banned = 0, reason = "" WHERE userId = @userId')
+-- API_Database.prepare("FRP/Whitelisted", "SELECT whitelist from user WHERE identifier = @identifier")
 
-API_Database.prepare("AddIdentifierWhitelist", "UPDATE user SET whitelist = 1 where userId = @userId")
-API_Database.prepare("RemoveIdentifierWhitelist", "UPDATE user SET whitelist = 0 where userId = @userId")
+-- API_Database.prepare("AddIdentifierWhitelist", "UPDATE user SET whitelist = 1 where userId = @userId")
+-- API_Database.prepare("RemoveIdentifierWhitelist", "UPDATE user SET whitelist = 0 where userId = @userId")
 
 -------- CHARACTER QUERIES -----------
 API_Database.prepare("FRP/CreateCharacter", "INSERT INTO `character` (userId, citizenId, firstName, lastName, metaData) VALUES(@userId, @citizenId, @firstName, @lastName, @metaData)")
@@ -166,6 +166,7 @@ API_Database.prepare("FRP/GetCharacter", "SELECT * FROM `character` WHERE `id` =
 API_Database.prepare("FRP/GetCharacterAppearence", "SELECT * from characters_appearence WHERE id = @charId")
 API_Database.prepare("FRP/DeleteCharacter", "DELETE FROM `character` WHERE id = @charId and userId = @userId")
 API_Database.prepare("FRP/GetUserIdByCharId", "SELECT userId from `character` WHERE id = @charId")
+API_Database.prepare("FRP/GetUserIdFromUserId", "SELECT * from `user` WHERE id = @userId")
 API_Database.prepare("FRP/GetCharNameByCharId", "SELECT characterName from `character` WHERE id = @charId")
 API_Database.prepare("FRP/UpdateLevel", "UPDATE `character` SET level = @level WHERE id = @charId")
 API_Database.prepare("FRP/UpdateXP", "UPDATE `character` SET xp = @xp WHERE id = @charId")

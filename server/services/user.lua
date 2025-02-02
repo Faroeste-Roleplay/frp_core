@@ -49,6 +49,10 @@ function API.GetUserIdByIdentifiers(identifiers, name)
     end
 end
 
+function API.GetUserFromUserIdOffline( userId )
+    return MySQL.single.await("SELECT * from `user` WHERE id = ? LIMIT 1", { userId })
+end
+
 function API.GetUserFromUserId(userId)
     return API.users[userId]
 end

@@ -145,13 +145,11 @@ function API.GroupSystem()
         local groupId = group:GetId()
         local userId = user:GetId()
 
-        local groupMember = addGroupMember(groupId, userId, characterId)
+        local groupMemberId = addGroupMember(groupId, userId, characterId)
 
-        if not groupMember then
+        if not groupMemberId then
             return
         end
-        
-        local groupMemberId = groupMember.id
 
         self:AddUserToGroupLocally(user, group, groupMemberId)
     end

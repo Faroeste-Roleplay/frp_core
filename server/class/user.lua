@@ -225,7 +225,7 @@ function API.User(playerId, id, ipAddress, identifiers)
                 stamina = 200,
                 stamina_core = 100,
                 drunk = 0,
-                fatigue = 0,
+                fatigue = 100,
                 drugs = 0,
                 sick = 0,
             })
@@ -325,7 +325,6 @@ function API.User(playerId, id, ipAddress, identifiers)
             API.chars[character.id] = nil
         end
 
-
         if self.loggedIn then
             local sessionTime, sessionTimeInMillisec = self:calculeSessionTime()
             
@@ -350,8 +349,12 @@ function API.User(playerId, id, ipAddress, identifiers)
         MySQL.execute(query, params)
     end
 
-    self.Drop = function(reason)
+    self.Drop = function(this, reason)
+        local currentPosition = GetEntityCoords( GetPlayerPed( self.source ))
+
         DropPlayer(self.source, reason)
+
+        cAPI.ForceLightningFlashAtCoords( -1, currentPosition.x, currentPosition.y, currentPosition.z + 10 )
 
         print(#GetPlayers() .. "/".. GetConvarInt('sv_maxclients', 32) .."| " .. self.name .. " (" .. self.ipAddress .. ") desconectou (motivo = " .. reason .. ")")
     end

@@ -62,12 +62,12 @@ function cAPI.Initialize(pedModel, lastPosition, stats)
     if Config.SkyCamSpawnEffect then
         CreateThread(function()
             cAPI.PlaySkyCameraAnimationAtCoords(decodedLastPosition)
-            cAPI.PlayerAsInitialized(true)
         end)
     else
         cAPI.TeleportPlayer( vec3(decodedLastPosition[1], decodedLastPosition[2], decodedLastPosition[3]) )
-        cAPI.PlayerAsInitialized(true)
     end
+
+    cAPI.PlayerAsInitialized(true)
 
     pHealth = pStats?[1] or 250
     pStamina = pStats?[2] or 34.0
@@ -252,6 +252,32 @@ function cAPI.IsPlayerLassoed()
     end
 
     return true
+end
+
+local playerStatus = {}
+
+function cAPI.SaveHealth()
+	local playerPed = PlayerPedId()
+
+	local hCore = GetAttributeCoreValue(playerPed, 0)
+	local hNormal = Citizen.InvokeNative(0x0317C947D062854E, PlayerId(), Citizen.ResultAsFloat()) --[[ Porque tem que calcular vezes 6????????? ]]
+	local sCore = GetAttributeCoreValue(playerPed, 1)
+	local sNormal = Citizen.InvokeNative(0x22F2A386D43048A9, playerPed, Citizen.ResultAsFloat())
+
+    playerStatus.hCore = hCore
+    playerStatus.hNormal = hNormal
+    playerStatus.sCore = sCore
+    playerStatus.sNormal = sNormal
+end
+
+function cAPI.ReturnLastStatus()
+    local ped = PlayerPedId()
+    
+    SetEntityHealth(ped, playerStatus.hNormal)
+    SetAttributeCoreValue(ped, 0, playerStatus.hCore)
+
+    ChangePedStamina(ped, playerStatus.sNormal)
+    SetAttributeCoreValue(ped, 1, playerStatus.sCore)
 end
 
 

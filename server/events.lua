@@ -36,7 +36,9 @@ RegisterNetEvent('FRP:sv_playAmbSpeech', function(pedNet, line)
     TriggerClientEvent('FRP:cl_onPlayAmbSpeech', -1, pedNet, line)
 end)
 
-AddEventHandler("net.session.requestEnterDimension", function(playerId, dimensionId, transportEntityNetworkId)
+RegisterNetEvent("net.session.requestEnterDimension", function(dimensionId, transportEntityNetworkId)
+    local playerId = source
+
     -- Garantir que a dimensão corresponde ao jogador
     if tonumber(dimensionId) ~= tonumber(playerId) then
         return
@@ -56,7 +58,9 @@ AddEventHandler("net.session.requestEnterDimension", function(playerId, dimensio
 end)
 
 
-AddEventHandler("net.session.requestEnterDimension", function(playerId, dimensionId, transportEntityNetworkId)
+RegisterNetEvent("net.session.requestLeaveDimension", function(dimensionId, transportEntityNetworkId)
+    local playerId = source
+
     -- Garantir que o jogador está em uma dimensão (não na padrão)
     if GetPlayerRoutingBucket(playerId) == 0 then
         return

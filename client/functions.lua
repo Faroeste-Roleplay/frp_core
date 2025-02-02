@@ -44,6 +44,10 @@ end
 
 local Invinsible
 
+function cAPI.ForceLightningFlashAtCoords( x, y, z )
+    return ForceLightningFlashAtCoords( x, y, z )
+end 
+
 function cAPI.ToggleInvinsible()
 	Invinsible = not Invinsible
 	if Invinsible then
@@ -200,15 +204,11 @@ end
 --     })
 -- end
 
-function cAPI.HasItem(source, cb, item)
-	local retval = false
-	cAPI.TriggerCallback('FRPCore:HasItem', function(result)
-		if result then
-			retval = true
-		end
-		return retval
-	end, item)
-	return retval
+function cAPI.HasItem( item, amount )
+    local playerId = GetPlayerServerId(PlayerId())
+    local itemCount = Inventory.GetItem(playerId, item, nil, true)
+    
+    return itemCount >= ( amount or 1 )
 end
 
 function cAPI.Progressbar(name, label, duration, useWhileDead, canCancel, disableControls, animation, prop, propTwo, onFinish, onCancel)
@@ -345,7 +345,7 @@ function cAPI.enterDimension(dimensionId)
 
     local transportEntityNetworkId = transportEntityId ~= 0 and NetworkGetNetworkIdFromEntity(transportEntityId) or nil;
         
-    TriggerEvent('net.session.requestEnterDimension', dimensionId, transportEntityNetworkId);
+    TriggerServerEvent('net.session.requestEnterDimension', dimensionId, transportEntityNetworkId);
 end
 
 function cAPI.leaveDimension(dimensionId)
@@ -354,5 +354,5 @@ function cAPI.leaveDimension(dimensionId)
 
     local transportEntityNetworkId = transportEntityId ~= 0 and NetworkGetNetworkIdFromEntity(transportEntityId) or nil;
         
-    TriggerEvent('net.session.requestEnterDimension', dimensionId, transportEntityNetworkId);
+    TriggerServerEvent('net.session.requestLeaveDimension', dimensionId, transportEntityNetworkId);
 end

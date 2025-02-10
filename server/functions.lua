@@ -92,3 +92,15 @@ function seconds_to_days_hours_minutes_seconds(secondsArg)
 
     return ('%d dia%s + %02d:%02d:%02d'):format(days, days ~= 1 and 's' or '', hours, minutes, seconds)
 end
+
+function API.TimestampToDate(timestamp)
+    local pastDate = timestamp / 1000 -- Converter milissegundos para segundos
+    local dateTable = os.date("*t", pastDate)
+
+    if not dateTable then
+        print("Erro: os.date retornou nil para o timestamp:", pastDate)
+        return "Data inválida"
+    end
+
+    return string.format("%02d/%02d/%d", dateTable.day, dateTable.month, dateTable.year)
+end

@@ -185,6 +185,10 @@ function cAPI.SpawnVehicle(model, cb, coords, isnetworked)
 end
 
 function cAPI.Notify(type, text, quantity)
+    TriggerEvent("FRP:NOTIFY:Simple", text, quantity)
+end
+
+function cAPI.NotifyToast(type, text, quantity)
     if type ~= nil and text == nil and quantity == nil then
         text = type
         type = "dev"
@@ -193,16 +197,6 @@ function cAPI.Notify(type, text, quantity)
     TriggerEvent("FRP:TOAST:New", type, text, quantity)
 end
 
--- function cAPI.Notify(text, textype, length) -- [text] = message, [type] = primary | error | success, [length] = time till fadeout.
---     local ttype = textype ~= nil and textype or "primary"
---     local length = length ~= nil and length or 5000
---     SendNUIMessage({
---         action = "show",
---         type = ttype,
---         length = length,
---         text = text,
---     })
--- end
 
 function cAPI.HasItem( item, amount )
     local playerId = GetPlayerServerId(PlayerId())
@@ -213,15 +207,6 @@ end
 
 function cAPI.Progressbar(name, label, duration, useWhileDead, canCancel, disableControls, animation, prop, propTwo, onFinish, onCancel)
     Progressbar(name, label, duration, useWhileDead, canCancel, disableControls, animation, prop, propTwo, onFinish, onCancel)
-end
-
-function cAPI.NotifyToast(type, text, quantity)
-    if type ~= nil and text == nil and quantity == nil then
-        text = type
-        type = "dev"
-    end
-
-    TriggerEvent("FRP:TOAST:New", type, text, quantity)
 end
 
 

@@ -267,8 +267,6 @@ function API.User(playerId, id, ipAddress, identifiers)
 
             local memberDiscordId = self.identifiers['discord']
 
-            API.GetDiscordMemberName( memberDiscordId )
-
             API.DefineDiscordMemberName( memberDiscordId, ("#%s - %s %s"):format(self.id, charData.firstName, charData.lastName) )
             API.DefineDiscordMemberRole( memberDiscordId, Config.LoggedInDiscordRole )
 

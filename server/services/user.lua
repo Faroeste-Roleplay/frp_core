@@ -31,6 +31,36 @@ function API.CreateUser(playerId, mappedIdentifiers)
     return userId
 end
 
+function API.GetUserIdentifiersByIdentifier(identifier, identifierKey)
+    local res = MySQL.single.await([[
+        SELECT * 
+        FROM user_credentials 
+        WHERE ?? = ?
+    ]], {
+        identifierKey,
+        identifier
+    })
+    
+    if res then 
+        return res
+    end
+end
+
+function API.GetUserIdByIdentifier(identifier, identifierKey)
+    local res = MySQL.single.await([[
+        SELECT * 
+        FROM user_credentials 
+        WHERE ?? = ?
+    ]], {
+        identifierKey,
+        identifier
+    })
+    
+    if res then 
+        return res.userId
+    end
+end
+
 function API.GetUserIdByIdentifiers(identifiers, name)
     local mappedIdentifiers =  MapIdentifiers( identifiers )
     local identiferKey = Config.PrimaryIdentifier
@@ -56,6 +86,12 @@ end
 function API.GetUserFromUserId(userId)
     return API.users[userId]
 end
+
+function API.GetUserIdFromServerId( source ) 
+    local user = API.GetUserFromSource(source)
+    if not user then return nil end
+    return user:GetId()
+end 
 
 function API.GetUserFromSource(source)
     return API.users[API.sources[source]]

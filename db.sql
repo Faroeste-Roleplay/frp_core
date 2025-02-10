@@ -198,7 +198,7 @@ INSERT INTO `group` (`id`, `parentId`, `name`, `fullName`) VALUES
 	(6, 5, 'prime_silver', 'Prime Prata'),
 	(7, 6, 'prime_gold', 'Prime Ouro'),
 	(8, 7, 'prime_platinum', 'Prime Platina'),
-	(9, 8, 'prime_texas', 'Prime Texas'),
+	(9, 8, 'prime_diamond', 'Prime Diamante'),
 	(10, NULL, 'law', NULL),
 	(11, 10, 'law_aspirant', 'Aspirant'),
 	(12, 11, 'law_offficer', 'Officer'),

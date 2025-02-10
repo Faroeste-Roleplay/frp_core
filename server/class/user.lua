@@ -164,10 +164,15 @@ function API.User(playerId, id, ipAddress, identifiers)
         return resData
     end
 
-    self.CreateCharacter = function(this, firstName, lastName, birthDate, playerProfileCreation, equippedApparelsByType)
+    self.CreateCharacter = function(this, firstName, lastName, birthDate, playerProfileCreation, equippedApparelsByType, metadata)
         local Character = nil
 
-        local metaData = { fingerprint = API.GenerateCharFingerPrint() }
+        if not metadata then
+            metadata = { }
+        end
+
+        metadata.fingerprint = API.GenerateCharFingerPrint()
+
         local citizenId = API.CreateCitizenId()
 
         local rows = API_Database.query("FRP/CreateCharacter", {
@@ -175,8 +180,8 @@ function API.User(playerId, id, ipAddress, identifiers)
             citizenId = citizenId,
             firstName = firstName,
             lastName = lastName,
-            -- birthDate = birthDate,
-            metaData = json.encode(metaData)
+            birthDate = birthDate,
+            metaData = json.encode(metadata)
         })
 
         local charId = rows?.insertId
@@ -189,7 +194,7 @@ function API.User(playerId, id, ipAddress, identifiers)
                 firstName,
                 lastName,
                 birthDate,
-                metaData,
+                metadata,
                 nil, 
                 'Alive',
                 nil
@@ -260,6 +265,13 @@ function API.User(playerId, id, ipAddress, identifiers)
                 charData.favouriteHorseTransportId
             )
 
+            local memberDiscordId = self.identifiers['discord']
+
+            API.GetDiscordMemberName( memberDiscordId )
+
+            API.DefineDiscordMemberName( memberDiscordId, ("#%s - %s %s"):format(self.id, charData.firstName, charData.lastName) )
+            API.DefineDiscordMemberRole( memberDiscordId, Config.LoggedInDiscordRole )
+
             self.Character:Initialize(self.id, self.source)
             TriggerEvent("FRP:onCharacterLoaded", self, id)
             TriggerClientEvent("FRP:onCharacterLoaded", self.source, id)
@@ -299,7 +311,7 @@ function API.User(playerId, id, ipAddress, identifiers)
         -- local character_stats = Character:GetCachedStats()
 
         if characters_appearence ~= nil then
-            cAPI.Initialize(self:GetSource(), character_model, newPosition or character_lastposition)
+            cAPI.Initialize(self:GetSource(), character_model, newPosition or character_lastposition, Character:GetMetadata())
         end
 
         -- cAPI.CWanted(Character:GetWanted())
@@ -327,12 +339,15 @@ function API.User(playerId, id, ipAddress, identifiers)
 
         if self.loggedIn then
             local sessionTime, sessionTimeInMillisec = self:calculeSessionTime()
-            
-            print(" sessionTime  :: ", sessionTime, sessionTimeInMillisec)
             self:UpdatePlayedTime(sessionTimeInMillisec)
 
             self.loggedIn = nil
         end
+        
+        local memberDiscordId = self.identifiers['discord']
+
+        API.DefineDiscordMemberName( memberDiscordId )
+        API.RemoveDiscordMemberRole( memberDiscordId, Config.LoggedInDiscordRole )
 
         self.Character = nil
         TriggerClientEvent("FRP:onCharacterLogout", self.source, self.CharId)

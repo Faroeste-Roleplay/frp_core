@@ -29,7 +29,7 @@ function cAPI.SetCurrentCharacterData(data)
     LocalPlayer.state:set('activeCharacter', data, true)
 end
 
-function cAPI.Initialize(pedModel, lastPosition, stats)
+function cAPI.Initialize(pedModel, lastPosition, stats, metadata)
     cAPI.StartFade(500, true)
     TriggerServerEvent("FRP:preCharacterInitialization")
     TriggerEvent("FRP:preCharacterInitialization")
@@ -90,6 +90,15 @@ function cAPI.Initialize(pedModel, lastPosition, stats)
 
     TriggerEvent("FRP:postCharacterInitialization")
     TriggerServerEvent("FRP:postCharacterInitialization")
+
+    if metadata?.walkStyle then
+        Citizen.InvokeNative(0xCB9401F918CB0F75, playerPed, metadata.walkStyle, true,-1) -- aplicar walk
+    end
+
+    if metadata?.facialExp then
+        Citizen.InvokeNative(0x8B3B71C80A29A4BB, playerPed, GetHashKey(metadata.facialExp), 6)
+        Citizen.InvokeNative(0xA762C9D6CF165E0D, playerPed, "MoodName", metadata.facialExp, -1)
+    end
     
     cAPI.EndFade(500, true)
 end

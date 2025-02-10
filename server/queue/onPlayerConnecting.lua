@@ -102,8 +102,9 @@ function OnPlayerConnecting(name, setKickReason, deferrals)
 	local identifiers = GetPlayerIdentifiers(playerId)
 	local mappedIdentifiers = MapIdentifiers(identifiers)
 
-	if mappedIdentifiers.steam == nil then
-		-- return setDeferralsDone( i18n.translate('error.steam_not_found') )
+	if not mappedIdentifiers.fivem then
+		setDeferralsDone(i18n.translate('error.fivem_not_found'))
+		return
 	end
 
 	log_debug( ('mappedIdentifiers: %s'):format(json.encode(mappedIdentifiers, { indent = true })) )
@@ -327,7 +328,6 @@ end
 AddEventHandler('playerJoining', onPlayerJoining)
 
 
-
 function ReleasePlayerUserAsDisconnected(playerId, reason)
 	local userId = API.sources[playerId]
     local User = API.users[userId]
@@ -345,7 +345,9 @@ function ReleasePlayerUserAsDisconnected(playerId, reason)
 end
 
 function SetUserIdLock(userId, locked)
-	API.userIdLock[userId] = locked == true and true or nil
+	if userId then
+		API.userIdLock[userId] = locked == true and true or nil
+	end
 
 	if DEBUG_LOGS then
 

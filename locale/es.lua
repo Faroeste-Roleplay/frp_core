@@ -7,6 +7,7 @@ i18n.importData("es", {
         steam_not_found = '¡Necesitas tener Steam abierto!',
         Connection_rejected = "Conexión denegada",
         endpoint = '¿Punto final inexistente? ¡Conéctate de nuevo!',
+        fivem_not_found = 'Debes iniciar sesión en tu cuenta de FiveM',
        
         discord_not_found = "Discordia no encontrada",
         not_allowed = "No tienes ningún rol prioritario. ¡Únete a nuestro discordia!",
@@ -15,7 +16,8 @@ i18n.importData("es", {
         join_discord = "Para obtener acceso a nuestro servidor necesitas unirte a nuestro discord. \n\nBusca la sala #cómo-unirte-al-servidor",
         auth_code_invalid = 'El código de autorización utilizado en la API de Discord no es válido, ¡infórmele a un desarrollador!',
         request_exceeded = 'Se ha superado el número de solicitudes. ¡Inténtelo de nuevo más tarde!',
-        banned = "Estás prohibido: "
+        banned = "Estás prohibido: ",
+        server_is_blocked = "¡El servidor está bloqueado, sólo el personal autorizado puede iniciar sesión!",
     },
     success = {},
     info = {

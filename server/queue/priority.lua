@@ -1,3 +1,5 @@
+local isPrivateServer = GetConvar("sv_private", 'false') == "true"
+
 function IsAllowlisted(playerId, userGroup, mappedIdentifiers)
 	if not Config.Allowlist then
 		return true, 100, nil
@@ -38,8 +40,9 @@ function IsAllowlisted(playerId, userGroup, mappedIdentifiers)
 	local status, err = pcall(function()
 		local discordUserId = string.gsub(discordIdentifier, 'discord:', '')
 
-		return FetchGuildMemberObject(discordUserId)
+		return API.GetDiscordGuildMember(discordUserId)
 	end)
+	
 
 	if not status then
 		local errCode = tonumber(err)
@@ -67,6 +70,16 @@ function IsAllowlisted(playerId, userGroup, mappedIdentifiers)
 
 	local dateHour = date.hour
 
+	
+	if isPrivateServer then
+		priority = -1
+		error = i18n.translate("error.server_is_blocked")
+	else
+		priority = 0
+		error = nil
+	end
+
+
 	--[[ Só verificar os cargos caso nenhum error tenha sido gerado. ]]
 	for _, registeredRole in ipairs(gGuildPriorityRoles) do
 		for _, role in ipairs(guildMember.roles) do
@@ -85,8 +98,8 @@ function IsAllowlisted(playerId, userGroup, mappedIdentifiers)
 			end
 		end
 	end
-
-	local isAllowlisted = priority >= 0
+	
+	local isAllowlisted = isPrivateServer and priority >= 10 or priority >= 1
 
 	if not isAllowlisted and not error then
 		error = i18n.translate("error.not_allowed")
@@ -95,36 +108,6 @@ function IsAllowlisted(playerId, userGroup, mappedIdentifiers)
 	error = isAllowlisted and nil or error
 
 	return isAllowlisted, priority, error
-end
-
-function FetchGuildMemberObject(discordUserId)
-	local request = '' -- json.encode({ })
-
-	local p = promise.new()
-
-	local onResponse = function(status, body, headers, errorData)
-
-		if status ~= 200 then
-			return p:reject(tostring(status))
-		end
-
-		local response = json.decode(body)
-
-		p:resolve(response)
-	end
-
-	PerformHttpRequest( 
-		('https://discord.com/api/v10/guilds/%s/members/%s'):format(Config.DiscordGuildId, discordUserId),
-		onResponse,
-		'GET',
-		request,
-		{
-			['Content-Type'] = 'application/json',
-			['Authorization'] = string.format('Bot %s', GetConvar("discord_bot_token", ""))
-		}
-	)
-
-	return Citizen.Await(p)
 end
 
 --[[

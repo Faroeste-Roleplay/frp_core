@@ -78,6 +78,21 @@ function API.GetDiscordRolesFromUser( discordId )
 	return user?.roles
 end
 
+function API.DiscordMemberHasRole( discordId, roleId )
+	local roles = API.GetDiscordRolesFromUser( discordId )
+	local hasRole = false
+
+	if roles then
+		for _, rId in pairs( roles ) do 
+			if tonumber(rId) == tonumber(roleId) then
+				hasRole = true
+			end	
+		end
+	end
+	
+	return hasRole
+end
+
 function API.RemoveDiscordMemberRole( discordId, roleId )
 	if not discordId then return end
 

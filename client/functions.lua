@@ -252,11 +252,32 @@ function cAPI.GetFromCoordsFromPlayer(position, ped, radius)
 	return endCoords
 end
 
-function cAPI.GetTownNameAtCoords(coords)
-    local town_hash = Citizen.InvokeNative(0x43AD8FC02B429D33, coords, 1)
+function cAPI.GetCurrentStateName()
+    local pedCoords = GetEntityCoords(PlayerPedId())
+    local town_hash = Citizen.InvokeNative(0x43AD8FC02B429D33, pedCoords, 0)
+
+    if town_hash == 999150106 then
+        return "Ambarino"
+    elseif town_hash == -1806461473 then
+        return "Lemoyne"
+    elseif town_hash == -694461623 then
+        return "West Elizabeth"
+    elseif town_hash == 1098225713 then
+        return "New Austin"
+    elseif town_hash == 1093870742 then
+        return "New Hanover"
+    elseif town_hash == -1828192959 then
+        return "Guarma"
+    end
+end
+
+function cAPI.GetCurrentTownName()
+    local playerPed = PlayerPedId()
+
+    local pedCoords = GetEntityCoords( playerPed )
+    local town_hash = Citizen.InvokeNative(0x43AD8FC02B429D33, pedCoords, 1)
+
     if town_hash == GetHashKey("Annesburg") then
-        return "Annesburg"
-    elseif town_hash == GetHashKey("Annesburg") then
         return "Annesburg"
     elseif town_hash == GetHashKey("Armadillo") then
         return "Armadillo"
@@ -304,8 +325,8 @@ function cAPI.GetTownNameAtCoords(coords)
         return "Aguasdulces Villa"
     elseif town_hash == GetHashKey("Manicato") then
         return "Manicato"
-    else
-        return "Other place"
+    elseif town_hash == false then
+        return "Cidade Fantasma"
     end
 end
 

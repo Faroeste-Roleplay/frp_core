@@ -56,7 +56,7 @@ function VirtualWorld:AddPlayerOnVirtualWorld( playerId, virtualWorldId )
     local playerOnVirtualWorld = VirtualWorld:GetPlayerVirtualWorld( playerId )
 
     if not virtualWorld then
-        return VirtualWorld:Create( { playerId }, virtualWorldId)
+        return VirtualWorld:Create( { playerId }, virtualWorldId )
     end
 
     if playerOnVirtualWorld then
@@ -65,9 +65,17 @@ function VirtualWorld:AddPlayerOnVirtualWorld( playerId, virtualWorldId )
 
     SetPlayerRoutingBucket(playerId, virtualWorldId)
     Players[playerId] = virtualWorldId
+
+    for _, pId in ipairs(virtualWorld.players) do
+        if pId == playerId then
+            return
+        end
+    end
+
     table.insert(virtualWorld.players, playerId)
     TriggerEvent("VirtualWorld:PlayerAddedToWorld", playerId, virtualWorldId)
 end
+
 
 function VirtualWorld:RemovePlayerFromVirtualWorld( playerId )
     local playerVirtualWorld = VirtualWorld:GetPlayerVirtualWorld( playerId )

@@ -16,7 +16,7 @@ CREATE TABLE `character` (
 	`userId` INT(11) NOT NULL,
 	`firstName` VARCHAR(50) NOT NULL COLLATE 'utf8mb3_general_ci',
 	`lastName` VARCHAR(50) NOT NULL COLLATE 'utf8mb3_general_ci',
-	`birthDate` INT(15) NULL DEFAULT NULL,
+	`birthDate` BIGINT(20) NULL DEFAULT NULL,
 	`metaData` TEXT NULL DEFAULT '{}' COLLATE 'utf8mb3_general_ci',
 	`favoriteReserveType` INT(11) NULL DEFAULT NULL,
 	`favouriteHorseTransportId` INT(11) NULL DEFAULT NULL,

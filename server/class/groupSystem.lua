@@ -83,11 +83,14 @@ function API.GroupSystem()
             characterId = character:GetId()
         end
 
-        local characterId = view == "USER_ONLY" and nil or characterId;
+        if view == "USER_ONLY" then
+            characterId = nil
+        end
 
         local groupMembers = getGroupMembersAnyGroup(userId, characterId)
 
         for _, groupMember in pairs(groupMembers) do 
+            local canAdd = true
             local groupMemberId, groupId = groupMember.id, groupMember.groupId
 
             local isGroupMemberAPrimePrivilege, primeId = PrimeService.isGroupMemberAPrimePrivilege(groupMemberId)
@@ -95,13 +98,14 @@ function API.GroupSystem()
             if isGroupMemberAPrimePrivilege then
                 local isPrimeActive = PrimeService.isPrimeActive(primeId)
                 if not isPrimeActive then
-                    break
+                    canAdd = false
                 end
             end
 
-            local group = self:GetGroup(groupId)
-
-            self:AddUserToGroupLocally(user, group, groupMemberId)
+            if canAdd then
+                local group = self:GetGroup(groupId)
+                self:AddUserToGroupLocally(user, group, groupMemberId)
+            end
         end
     end
 
@@ -115,7 +119,9 @@ function API.GroupSystem()
             characterId = character:GetId()
         end
 
-        local characterId = view == "USER_ONLY" and nil or characterId;
+        if view == "USER_ONLY" then
+            characterId = nil
+        end
 
         local groupMembers = getGroupMembersAnyGroup(userId, characterId)
 
@@ -144,7 +150,7 @@ function API.GroupSystem()
     self.AddUserToGroup = function(this, user, group, characterId)
         local groupId = group:GetId()
         local userId = user:GetId()
-
+        
         local groupMemberId = addGroupMember(groupId, userId, characterId)
 
         if not groupMemberId then

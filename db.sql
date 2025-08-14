@@ -298,7 +298,7 @@ CREATE TABLE IF NOT EXISTS `user_credentials` (
   `userId` int(11) NOT NULL,
   `license` varchar(50) DEFAULT NULL,
   `discord` varchar(50) DEFAULT NULL,
-  `steam` varchar(50) NOT NULL,
+  `steam` varchar(50) DEFAULT NULL,
   `fivem` varchar(50) DEFAULT NULL,
   `xbl` varchar(50) DEFAULT NULL,
   `license2` varchar(50) DEFAULT NULL,

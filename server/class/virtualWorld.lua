@@ -68,6 +68,7 @@ function VirtualWorld:AddPlayerOnVirtualWorld( playerId, virtualWorldId )
 
     for _, pId in ipairs(virtualWorld.players) do
         if pId == playerId then
+            TriggerEvent("VirtualWorld:PlayerAddedToWorld", playerId, virtualWorldId)
             return
         end
     end

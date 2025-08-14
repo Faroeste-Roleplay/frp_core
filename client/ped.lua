@@ -11,7 +11,7 @@ function cAPI.SetPlayerPedModel(model)
     end
 
     SetPlayerModel(PlayerId(), modelHash, true)
-    NativeSetRandomOutfitVariation(PlayerPedId(SetPlayerPed))
+    NativeSetRandomOutfitVariation(PlayerPedId())
 
     -- while not NativeHasPedComponentLoaded(ped) do
     --     Wait(10)
@@ -19,7 +19,9 @@ function cAPI.SetPlayerPedModel(model)
 
     SetModelAsNoLongerNeeded(model)
 
-    Citizen.Wait(200)
+    Citizen.Wait(300)
+
+    cAPI.FixStuckAmmoClothingPiece()
 end
 
 function cAPI.SetPedScale(ped, num)
@@ -228,6 +230,7 @@ function cAPI.FixStuckAmmoClothingPiece()
 
         -- RemoveTagFromMetaPed
         N_0xd710a5007c2ac539(playerPed, GetHashKey('AMMO_PISTOLS'), 0);
+        N_0xd710a5007c2ac539(playerPed, GetHashKey('PANTS'), 0);
 
         -- UpdatePedVariation
         N_0xcc8ca3e88256e58f(playerPed, 0, 1, 1, 1, 0);

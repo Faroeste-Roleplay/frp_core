@@ -3,13 +3,18 @@ local gCharAppearence
 local gLastPosition
 local gStats
 
+local function isPedValid( model )
+    return IsModelValid( GetHashKey(model) )
+end
 
 function cAPI.SetDataAppearence(appearance)
     local pedIsMale = appearance.appearance.isMale
     local pedModel = pedIsMale and 'mp_male' or 'mp_female'
     
-    if appearance?.overridePedModel and appearance?.overridePedModel ~= "" then
-        pedModel = appearance.overridePedModel
+    if appearance.appearanceCustomizable?.overridePedModel and appearance.appearanceCustomizable?.overridePedModel ~= "" then
+        if isPedValid( appearance.appearanceCustomizable.overridePedModel ) then
+            pedModel = appearance.appearanceCustomizable.overridePedModel
+        end
     end
 
     gPedModel = pedModel
@@ -17,7 +22,7 @@ function cAPI.SetDataAppearence(appearance)
 end
 
 function cAPI.SetPlayerScale()
-    local height = gCharAppearence.appearance.height
+    local height = gCharAppearence?.appearance?.height or 180
     setPlayerPedScale( height )
 end
 
@@ -107,10 +112,24 @@ cAPI.ApplyCharacterAppearance = Appearance.ApplyCharacterAppearance
 cAPI.GetPedOverlayInstance = Appearance.GetPedOverlayInstance
 cAPI.SetPedOverlayInstance = Appearance.SetPedOverlayInstance
 
-function cAPI.SetPlayerAppearence()
-    cAPI.ApplyCharacterAppearance(PlayerPedId(), gCharAppearence)
 
-    cAPI.FixStuckAmmoClothingPiece()
+function cAPI.SetPlayerAppearence()
+    local isDefaultModel = gPedModel == "mp_male" or gPedModel == "mp_female"
+    if isDefaultModel then
+        cAPI.ApplyCharacterAppearance(PlayerPedId(), gCharAppearence)
+    end
+
+    if not isDefaultModel and gCharAppearence?.appearanceCustomizable?.equippedOutfitId then
+        SetPedOutfitPreset( PlayerPedId(), gCharAppearence?.appearanceCustomizable?.equippedOutfitId or 1)
+    end
+
+    Wait(100)
+
+    cAPI.SetPlayerScale()
+end 
+
+function cAPI.TeleportPlayerWithGroundZ( position )
+    handleTpNormally( position )
 end
 
 function cAPI.TeleportPlayer(position, variation)
@@ -141,6 +160,35 @@ function cAPI.TeleportPlayer(position, variation)
     StopPlayerTeleport()
 end
 
+
+-- function cAPI.TeleportPlayer(position, variation)
+--     local findCollisionLand = false
+--     local xAdd = math.random(-(variation or 0), variation or 0)
+--     local yAdd = math.random(-(variation or 0), variation or 0)
+
+--     -- DEBUG(" position :: ", position)
+
+--     local newCoords = vec3(position.x + xAdd, position.y + yAdd, position.z)
+--     local _, groundZ, normal = GetGroundZAndNormalFor_3dCoord(newCoords.x, newCoords.y, newCoords.z)
+
+--     if _ then
+--         newCoords = vec3(newCoords.xy, groundZ)
+--     end
+
+--     -- DEBUG(" newCoords :: ", newCoords)
+--     RequestCollisionAtCoord(newCoords)
+
+--     local playerId = PlayerId();
+--     StartPlayerTeleport(playerId, newCoords.x + 0.0001, newCoords.y + 0.0001, newCoords.z + 0.0001, (position?.w or 0) + 0.0001, true, true, true);
+
+--     while IsPlayerTeleportActive() do
+--         Citizen.InvokeNative(0xC39DCE4672CBFBC1, playerId)
+--         Wait(500)
+--     end
+    
+--     StopPlayerTeleport()
+-- end
+
 function cAPI.SetPlayerWhistle()
     local pedId = PlayerPedId()
     local whistlePitch, whistleClarity, whistleShape = 
@@ -151,6 +199,48 @@ function cAPI.SetPlayerWhistle()
     N_0x9963681a8bc69bf3(pedId, 'Ped.WhistlePitch', whistlePitch);
     N_0x9963681a8bc69bf3(pedId, 'Ped.WhistleClarity', whistleClarity);
     N_0x9963681a8bc69bf3(pedId, 'Ped.WhistleShape', whistleShape);
+end
+
+local oldTime 
+
+function cAPI.ReloadSkin()
+    if not gCharAppearence then
+        return
+    end
+
+    if LocalPlayer.state.rcBlocked then
+        return
+    end
+
+    local canSet = true
+    
+    if oldTime then
+        local currentTime = GetGameTimer()
+    
+        if currentTime - oldTime < 5000 then
+            canSet = false
+        end
+    end
+    
+    if not canSet then
+        cAPI.Notify("error", i18n.translate("error.timeout"))
+        return
+    end
+
+    oldTime = GetGameTimer()
+    
+    cAPI.SaveHealth()
+
+    cAPI.SetPlayerDefaultModel()
+    cAPI.SetPlayerAppearence()
+
+    cAPI.ReturnLastStatus()
+
+    --# tentativa de melhorar o tamanho na hora do reload
+    CreateThread(function()
+        Wait(1000)
+        cAPI.SetPlayerScale()
+    end)
 end
 
 function cAPI.SetPlayerDefaultModel()
@@ -165,39 +255,56 @@ function cAPI.IsPlayerInitialized()
     return initializedPlayer
 end
 
+
+
+
 function cAPI.TeleportPlayerToWaypoint()
-    if not IsWaypointActive() then
-        return
+    local PlayerPed = PlayerPedId()
+    local Blip = GetWaypointCoords()
+    
+    if IsPedInAnyVehicle(PlayerPed) then
+        PlayerPed = GetVehiclePedIsUsing(PlayerPed)
+    end
+    
+    if Blip then
+        TriggerEvent('freecam:setCamCoord', Blip.x, Blip.y)
+        handleTpNormally( Blip )
+    else
+        TriggerEvent("texas:notify:native", 'Waypoint não encontrado, marque o local no mapa e tente novamente.', 10000)
     end
 
-    local x, y, z = table.unpack(GetWaypointCoords())
-
-    local ped = PlayerPedId()
-
-    -- for i, height in ipairs(groundCheckHeights) do
-    -- SetEntityCoordsNoOffset(ped, x, y, height, 0, 0, 1)
-
-    RequestCollisionAtCoord(x, y, z)
-    local retVal, groundZ, normal = GetGroundZAndNormalFor_3dCoord(x, y, z)
-
-    if retVal == false then
-        RequestCollisionAtCoord(x, y, z)
-        local tries = 10
-        while retVal == false and tries > 0 do
-            Citizen.Wait(100)
-            retVal, groundZ, normal = GetGroundZAndNormalFor_3dCoord(x, y, z)
-            tries = tries - 1
-        end
-
-        z = (groundZ or 2000.0) + 1.0
-    end
+    -- if not IsWaypointActive() then
+    --     return
     -- end
 
-    -- if not groundFound then
-    -- 	z = 1200
-    -- end
+    -- local x, y, z = table.unpack(GetWaypointCoords())
 
-    SetEntityCoordsNoOffset(ped, x, y, z, 0, 0, 1)
+    -- local ped = PlayerPedId()
+
+    -- -- for i, height in ipairs(groundCheckHeights) do
+    -- -- SetEntityCoordsNoOffset(ped, x, y, height, 0, 0, 1)
+
+    -- RequestCollisionAtCoord(x, y, z)
+    -- local retVal, groundZ, normal = GetGroundZAndNormalFor_3dCoord(x, y, z)
+
+    -- if retVal == false then
+    --     RequestCollisionAtCoord(x, y, z)
+    --     local tries = 10
+    --     while retVal == false and tries > 0 do
+    --         Citizen.Wait(100)
+    --         retVal, groundZ, normal = GetGroundZAndNormalFor_3dCoord(x, y, z)
+    --         tries = tries - 1
+    --     end
+
+    --     z = (groundZ or 2000.0) + 1.0
+    -- end
+    -- -- end
+
+    -- -- if not groundFound then
+    -- -- 	z = 1200
+    -- -- end
+
+    -- SetEntityCoordsNoOffset(ped, x, y, z, 0, 0, 1)
 end
 
 function cAPI.IsPlayerMountedOnOwnHorse()
@@ -287,6 +394,16 @@ function cAPI.ReturnLastStatus()
 
     ChangePedStamina(ped, playerStatus.sNormal)
     SetAttributeCoreValue(ped, 1, playerStatus.sCore)
+end
+
+
+
+function cAPI.SetHealth(amount)
+	SetEntityHealth(PlayerPedId(), math.floor(amount))
+end
+
+function cAPI.GetHealth()
+	return GetEntityHealth(PlayerPedId())
 end
 
 

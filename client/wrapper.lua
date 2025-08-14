@@ -1,4 +1,3 @@
-
 local requests = {}
 
 function cAPI.Request(text, time)
@@ -23,15 +22,23 @@ RegisterNUICallback("request", function(data, cb)
 	end
 end)
 
+RegisterNetEvent("core:client:responseRequest", function( accepted )
+	SendNUIMessage({ act = "event", event = "no" })
+end)
+
 Citizen.CreateThread(function()
 	while true do
-		Citizen.Wait(3)
-		if IsControlJustPressed(0, 0xCEFD9220) then
+
+		Wait(3)
+
+		if IsControlJustPressed(0, 0xF3830D8E) then
 			SendNUIMessage({ act = "event", event = "yes" })
 		end
-		if IsControlJustPressed(0, 0x4BC9DABB) then
+
+		if IsControlJustPressed(0, 0x80F28E95) then
 			SendNUIMessage({ act = "event", event = "no" })
 		end
+
 	end
 end)
 

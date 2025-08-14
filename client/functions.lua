@@ -34,14 +34,6 @@ function cAPI.Target(Distance, Ped)
 	return Entity, farCoordsX, farCoordsY, farCoordsZ
 end
 
-function cAPI.SetHealth(amount)
-	SetEntityHealth(PlayerPedId(), math.floor(amount))
-end
-
-function cAPI.GetHealth()
-	return GetEntityHealth(PlayerPedId())
-end
-
 local Invinsible
 
 function cAPI.ForceLightningFlashAtCoords( x, y, z )
@@ -182,6 +174,10 @@ function cAPI.SpawnVehicle(model, cb, coords, isnetworked)
     if cb ~= nil then
         cb(veh)
     end
+end
+
+function cAPI.NotifySimple(text, timeout)
+    TriggerEvent("FRP:Notify", text, timeout)
 end
 
 function cAPI.Notify(type, text, quantity)
@@ -361,4 +357,119 @@ function cAPI.leaveDimension(dimensionId)
     local transportEntityNetworkId = transportEntityId ~= 0 and NetworkGetNetworkIdFromEntity(transportEntityId) or nil;
         
     TriggerServerEvent('net.session.requestLeaveDimension', dimensionId, transportEntityNetworkId);
+end
+
+function cAPI.DisplayHelpText(helpText)
+    local str = Citizen.InvokeNative(0xFA925AC00EB830B9, 10, "LITERAL_STRING", helpText, Citizen.ResultAsLong())
+    SetTextScale(0.25, 0.25)
+    SetTextCentre(1)
+    Citizen.InvokeNative(0xFA233F8FE190514C, str)
+    Citizen.InvokeNative(0xE9990552DEC71600)
+end
+
+
+
+local function FindZForCoords(x, y)
+    local found = true
+    local START_Z = 1500
+    local z = START_Z
+    while found and z > 0 do
+        local _found, _z = GetGroundZAndNormalFor_3dCoord(x + 0.0, y + 0.0, z - 1.0)
+        if _found then
+            z = _z + 0.0
+        end
+        found = _found
+        Wait(0)
+    end
+    if z == START_Z then return nil end
+    return z + 0.0
+end
+
+local function finalZPos(x,y,z)
+    local _finalZ
+        local DELAY = 500
+    for i = 1, 5 do
+        if _finalZ ~= nil then break end
+        print("Z calc attempt #" .. i .. " (" .. (i * DELAY) .. "ms)")
+        _finalZ = FindZForCoords(x, y)
+        if _z == nil then
+            print("Didn't resolve! Trying again in " .. DELAY)
+            Wait(DELAY)
+        end
+    end
+    
+    if _finalZ ~= nil then
+        z = _finalZ
+    end
+    
+    return z
+end
+
+function handleTpNormally( coords )
+    local x,y,z in coords 
+
+    local ped = PlayerPedId()
+    local veh = GetVehiclePedIsIn(ped, false)
+    local horse
+
+    if IsPedOnMount(ped) then
+        horse = GetMount(ped)
+        SetEntityCoords(horse, x, y, 100.0, false, false, false, false)
+        FreezeEntityPosition(horse, true)
+    end
+    SetEntityCoords(ped, x, y, 100.0, false, false, false, false)
+
+    --Prepare vehicle
+    if veh > 0 then
+        SetVehicleCanBreak(veh, false)
+        SetVehicleWheelsCanBreak(veh, false)
+        SetEntityCollision(veh, false, false)
+        SetEntityCoords(veh, x, y, 100.0, false, false, false, false)
+        SetPedIntoVehicle(ped, veh, -1)
+        FreezeEntityPosition(veh, true)
+    else
+        FreezeEntityPosition(ped, true)
+    end
+
+    while IsEntityWaitingForWorldCollision(ped) do
+        print("waiting for collision...")
+        Wait(100)
+    end
+
+    -- Automatically calculate ground Z
+    if z == 0 then
+        z = finalZPos( x,y,z )
+    end
+
+    -- Teleport to targert
+    ped = PlayerPedId() --update ped id
+
+    if horse then
+        SetEntityCoords(horse, x, y, z + 0.5, false, false, false, false)
+        FreezeEntityPosition(horse, false)
+    end
+    SetEntityCoords(ped, x, y, z + 0.5, false, false, false, false)
+
+    -- handle vehicle teleport
+    if veh > 0 then
+        veh = GetVehiclePedIsIn(ped, false) --update veh id
+        SetEntityAlpha(veh, 125)
+        SetEntityCoords(veh, x, y, z + 0.5, false, false, false, false)
+        SetPedIntoVehicle(ped, veh, -1)
+        SetVehicleOnGroundProperly(veh)
+        SetEntityCollision(veh, true, true)
+        FreezeEntityPosition(veh, false)
+        CreateThread(function()
+            Wait(2000)
+            ResetEntityAlpha(veh)
+            SetVehicleCanBreak(veh, true)
+            SetVehicleWheelsCanBreak(veh, true)
+        end)
+    else
+        FreezeEntityPosition(ped, false)
+    end
+
+    -- point camera to the ped direction
+
+    Citizen.InvokeNative(0x14F3947318CA8AD2, 0.0, 0.0) -- SetThirdPersonCamRelativeHeadingLimitsThisUpdate
 end

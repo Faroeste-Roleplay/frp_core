@@ -32,15 +32,15 @@ AddEventHandler("playerSpawned", function()
 end)
 
 function OpenRequestMenuToChangeLanguage()
-    local input = lib.inputDialog(i18n.translate('info.select_language'), {
-        { type = 'select', label = i18n.translate('info.language'), options = {
-            { value = 'en', label = 'English' },
-            { value = 'pt', label = 'Português' },
-            { value = 'es', label = 'Español'}
-        }},
-    })
+    -- local input = lib.inputDialog(i18n.translate('info.select_language'), {
+    --     { type = 'select', label = i18n.translate('info.language'), options = {
+    --         { value = 'en', label = 'English' },
+    --         { value = 'pt', label = 'Português' },
+    --         { value = 'es', label = 'Español'}
+    --     }},
+    -- })
 
-    local languageResult = input[1]
+    -- local languageResult = input[1]
 
     if languageResult then
         TriggerEvent('FRP:SetLanguage', languageResult)

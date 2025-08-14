@@ -6,6 +6,7 @@ AddEventHandler('playerDropped', function(reason)
 	local playerPosition = GetEntityCoords( GetPlayerPed( playerId ) )
     
 	API.DropUser(playerId, playerPosition, reason)
+    TriggerClientEvent("FRP:onDisconectedPlayer", -1, playerId, #GetPlayers())
 end)
 
 AddEventHandler('playerConnectionBailed', function(playerId, reason)
@@ -14,11 +15,13 @@ end)
 
 RegisterNetEvent("FRP:onPlayerSpawned", function()
     local playerId = source
-    local userId = API.sources[playerId]
+    local userId = API.sources[tostring(playerId)]
 
     if userId then
         API.ConnectUser(playerId, userId)
     end
+
+    TriggerClientEvent("FRP:onConectedPlayer", -1, playerId, #GetPlayers(), GetConvar("sv_maxclients", 10))
 end)
 
 RegisterNetEvent("FRP:addReconnectPlayer", function()
@@ -30,6 +33,8 @@ RegisterNetEvent("FRP:addReconnectPlayer", function()
     if userId then
         API.ConnectUser(playerId, userId)
     end
+
+    TriggerClientEvent("FRP:onConectedPlayer", -1, playerId, #GetPlayers())
 end)
 
 RegisterNetEvent('FRP:sv_playAmbSpeech', function(pedNet, line)

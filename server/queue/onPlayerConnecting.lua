@@ -68,7 +68,7 @@ function OnPlayerConnecting(name, setKickReason, deferrals)
 				DeferralCards.CardElement:TextBlock({
 					size = 'extraLarge',
 					weight = 'Bolder',
-					text = i18n.translate('error.connection_rejected')
+					text = i18n.translate('error.connection_rejected'),
 				}),
 				DeferralCards.CardElement:TextBlock({
 					size = 'medium',
@@ -85,14 +85,10 @@ function OnPlayerConnecting(name, setKickReason, deferrals)
 		})
 
 		if wasDeniedConnection then
+			deferrals.done(denyReason)
+
 			log(('Conexão terminada. Motivo: %s'):format(denyReason))
-
 			SetUserIdLock(userId, false)
-
-			deferrals.presentCard(cardOne, function(data, rawData)
-				deferrals.done(denyReason)
-			end)
-
 			return
 		end
 
@@ -101,11 +97,6 @@ function OnPlayerConnecting(name, setKickReason, deferrals)
 
 	local identifiers = GetPlayerIdentifiers(playerId)
 	local mappedIdentifiers = MapIdentifiers(identifiers)
-
-	if not mappedIdentifiers.fivem then
-		setDeferralsDone(i18n.translate('error.fivem_not_found'))
-		return
-	end
 
 	log_debug( ('mappedIdentifiers: %s'):format(json.encode(mappedIdentifiers, { indent = true })) )
 
@@ -171,8 +162,13 @@ function OnPlayerConnecting(name, setKickReason, deferrals)
 		end
 	end
 
-	if matchingUser then
+	if Config.fivemRequired then
+		if not mappedIdentifiers.fivem then
+			return setDeferralsDone( i18n.translate('error.fivem_not_found') )
+		end
+	end
 
+	if matchingUser then
 		log_debug( ('matchingUser: %s'):format(json.encode(matchingUser, { indent = true })) )
 
 		--[[ Usuário encontrado ]]
@@ -197,7 +193,12 @@ function OnPlayerConnecting(name, setKickReason, deferrals)
 
 		log_debug( ('no user found, allow user creation matchingUserIndex') )
 	end
+	
+    local primaryIdentifier = mappedIdentifiers[Config.PrimaryIdentifier]
 
+	if not primaryIdentifier then
+		return setDeferralsDone( i18n.translate("error.not_identifier_primary", Config.PrimaryIdentifier) )
+	end
 
 	log_debug( ('shouldCreateUser(%s)'):format(shouldCreateUser == true and 'true' or 'false'))
 
@@ -211,11 +212,15 @@ function OnPlayerConnecting(name, setKickReason, deferrals)
 
 		updateDeferrals(i18n.translate('info.create_user'))
 
-		userId = API.CreateUser(playerId, mappedIdentifiers)
+		local status, err = pcall(function()
+			return API.CreateUser(playerId, mappedIdentifiers)
+		end)
 
-		if userId == nil then
-			return setDeferralsDone(i18n.translate('error.create_user'))
+		if not status then
+			return setDeferralsDone(i18n.translate('error.create_user', err))
 		end
+
+		userId = err
 	end
 	
 	--[[ Mutex lock para o userId. ]]
@@ -262,7 +267,7 @@ function OnPlayerConnecting(name, setKickReason, deferrals)
 	-- --[[ Registrar os dados dos Identity Providers na instancia do User. ]]
 	-- onUserCreatedIdentityProviderListener(user)
 
-	API.sources[playerId] = userId
+	API.sources[tostring(playerId)] = userId
 
 	lib.logger(playerId, 'User', ("AUTENTICADO - %s - source %s - uId %s"):format(GetPlayerName( playerId ), playerId, userId))
 
@@ -302,9 +307,9 @@ function onPlayerJoining(temporaryPlayerId)
 
 	temporaryPlayerId = tonumber(temporaryPlayerId)
 
-	local userId = API.sources[temporaryPlayerId]
+	local userId = API.sources[tostring(temporaryPlayerId)]
 
-	API.sources[temporaryPlayerId] = permanentPlayerId
+	API.sources[tostring(temporaryPlayerId)] = permanentPlayerId
 
 	local identifiers = GetPlayerIdentifiers(temporaryPlayerId)
 	local mappedIdentifiers = MapIdentifiers(identifiers)
@@ -329,8 +334,7 @@ AddEventHandler('playerJoining', onPlayerJoining)
 
 
 function ReleasePlayerUserAsDisconnected(playerId, reason)
-	local userId = API.sources[playerId]
-    local User = API.users[userId]
+	local userId = API.sources[tostring(playerId)]
 
 	if not userId then
 		return
@@ -339,9 +343,9 @@ function ReleasePlayerUserAsDisconnected(playerId, reason)
 	SetUserIdLock(userId, false)
 
 	ConnectionLog( ('Player(%s) UserId(%s):'):format(GetPlayerName(playerId), userId and tostring(userId) or '?') , ('se desconectou, motivo: %s'):format(reason or '?'))
-	log:captureMessage( ('Usuário %s se desconectou | "%s" '):format(userId, reason or '?') )
+	-- log:captureMessage( ('Usuário %s se desconectou | "%s" '):format(userId, reason or '?') )
 
-	return true, User
+	return true
 end
 
 function SetUserIdLock(userId, locked)

@@ -1,6 +1,8 @@
-local isPrivateServer = GetConvar("sv_private", 'false') == "true"
+
 
 function IsAllowlisted(playerId, userGroup, mappedIdentifiers)
+	local isPrivateServer = GetConvar("sv_private", 'false') == "true"
+
 	if not Config.Allowlist then
 		return true, 100, nil
 	end
@@ -8,13 +10,16 @@ function IsAllowlisted(playerId, userGroup, mappedIdentifiers)
 	local priority = -1
 	local error = nil
 
-	local isStaff = userGroup == 'superadmin' or
-					userGroup == 'support'
+	local isStaff = API.IsPlayerAceAllowedGroup(playerId, "staff")
 
 	if isStaff then
 		priority = 100
 
 		return true --[[ isAllowlisted ]], priority, nil --[[ error ]]
+	end
+
+	if isPrivateServer then
+		return false, -1, i18n.translate("error.server_is_blocked")
 	end
 
 	local isPrime =    userGroup == 'bronze'

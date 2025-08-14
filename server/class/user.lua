@@ -23,11 +23,13 @@ function API.User(playerId, id, ipAddress, identifiers)
     self.loggedIn = nil
     self.isNewbie = false
 
+    self.isStaff = false
+
     self.Initialize = function(this)
         local mappedIdentifiers =  self.identifiers
         self.primaryIdentifier = mappedIdentifiers[Config.PrimaryIdentifier]
 
-        API.sources[self.source] = self.id
+        API.sources[tostring(self.source)] = self.id
         API.identifiers[self.primaryIdentifier] = mappedIdentifiers
 
         self.identifiers = mappedIdentifiers
@@ -53,7 +55,9 @@ function API.User(playerId, id, ipAddress, identifiers)
 
         Player(self.source).state:set('isNewbie', self.isNewbie, true)
         Player(self.source).state:set('isSteakFresh', self.isSteakFresh, true)
+        Player(self.source).state:set('userId', self.id, true)
 
+        Entity( GetPlayerPed( self.source ) ).state:set('userId', self.id, true )
         self:UpdateName( GetPlayerName(self.source) )
     end
 
@@ -242,7 +246,7 @@ function API.User(playerId, id, ipAddress, identifiers)
     end
 
     self.DeleteCharacter = function(this, id)
-        API_Database.execute("FRP/DeleteCharacter", {charId = id, userId = self.id})
+        -- API_Database.execute("FRP/DeleteCharacter", {charId = id, userId = self.id})
     end
 
     self.SetCharacter = function(this, id)
@@ -265,12 +269,18 @@ function API.User(playerId, id, ipAddress, identifiers)
                 charData.favouriteHorseTransportId
             )
 
-            local memberDiscordId = self.identifiers['discord']
+            local memberDiscordId = self.identifiers['discord']:gsub("discord:", "")
 
             -- API.GetDiscordMemberName( memberDiscordId )
 
-            API.DefineDiscordMemberName( memberDiscordId, ("#%s - %s %s"):format(self.id, charData.firstName, charData.lastName) )
-            API.DefineDiscordMemberRole( memberDiscordId, Config.LoggedInDiscordRole )
+            local isStaff = API.IsPlayerAceAllowedGroup( self.source, 'staff' )
+
+            self.isStaff = isStaff
+            
+            if not isStaff then
+                API.DefineDiscordMemberName( memberDiscordId, ("#%s - %s %s"):format(self.id, charData.firstName, charData.lastName) )
+                API.DefineDiscordMemberRole( memberDiscordId, Config.LoggedInDiscordRole )
+            end
 
             self.Character:Initialize(self.id, self.source)
             TriggerEvent("FRP:onCharacterLoaded", self, id)
@@ -278,16 +288,14 @@ function API.User(playerId, id, ipAddress, identifiers)
             cAPI.SetCharacterId(self:GetSource(), id)
 
             API.citizen[charData.citizenId] = self:GetId()
+            API.discord[memberDiscordId] = self:GetId()
             self.CharId = id
 
             self.loggedIn = os.time(os.date("*t"))
             Player(self.source).state:set('loggedIn', os.time(), true)
-
-            
-            local isStaff = API.IsPlayerAceAllowedGroup( self.source, 'staff' )
             Player(playerId).state:set('staff', isStaff, true)
             
-            lib.logger(self.source, 'User', ("Logou - %s[%s] : %s %s"):format(self.userId, self.name, charData.firstName, charData.lastName))
+            lib.logger(self.source, 'User', ("LOGOU - %s - uId %s - source %s : %s %s (%s)"):format(self.name or GetPlayerName(self.source), self.id, self.source, charData.firstName, charData.lastName, charData.citizenId))
 
             return self.Character
         end
@@ -327,13 +335,13 @@ function API.User(playerId, id, ipAddress, identifiers)
         TriggerClientEvent("FRP:TOAST:New", self:GetSource(), type, text, quantity)
     end
 
-    self.Logout = function(this)
+    self.Logout = function(this, keepOnline)
         local character = self.Character
 
         if character then
-            character:Release()
-    
+            -- character:Release()
             API.citizen[character.citizenId] = nil
+            API.discord[self.identifiers['discord']] = nil
             API.chars[character.id] = nil
         end
 
@@ -343,24 +351,33 @@ function API.User(playerId, id, ipAddress, identifiers)
 
             self.loggedIn = nil
         end
-        
-        local memberDiscordId = self.identifiers['discord']
 
-        API.DefineDiscordMemberName( memberDiscordId )
-        API.RemoveDiscordMemberRole( memberDiscordId, Config.LoggedInDiscordRole )
+        local memberDiscordId = self.identifiers['discord']:gsub("discord:", "")
 
-        self.Character = nil
-        TriggerClientEvent("FRP:onCharacterLogout", self.source, self.CharId)
-        TriggerEvent("FRP:onCharacterLogout", self, self.CharId)
+        if not self.isStaff then
+            -- local oldName = API.GetDiscordMemberName( memberDiscordId )
+            -- API.DefineDiscordMemberName( memberDiscordId, ("#%s - %s"):format(self.id, oldName) )
+            API.RemoveDiscordMemberRole( memberDiscordId, Config.LoggedInDiscordRole )
+        end
+
+        if keepOnline then
+            -- self.Character = nil
+            TriggerClientEvent("FRP:onCharacterLogout", self.source, self.CharId)
+            TriggerEvent("FRP:onCharacterLogout", self, self.CharId)
+        end
     end
 
     self.UpdatePlayedTime = function(this, playedTime)
-        local query = "UPDATE user SET sessionDuration = IFNULL(SEC_TO_TIME(TIME_TO_SEC(sessionDuration) + SEC_TO_TIME(@tempo)), '00:00:00') WHERE id = @id"
+        local query = [[
+            UPDATE user 
+            SET sessionDuration = SEC_TO_TIME(IFNULL(TIME_TO_SEC(sessionDuration), 0) + @tempo) 
+            WHERE id = @id
+        ]]
         local params = {
             ['@tempo'] = playedTime,
             ['@id'] = self.id
         }
-        
+
         MySQL.execute(query, params)
     end
 
@@ -398,7 +415,7 @@ function API.User(playerId, id, ipAddress, identifiers)
 
     self.JoinGroup = function(this, group, addPrincipal)
         local groupName = group:GetName()
-        
+
         if self:HasGroup(groupName) then
             return false
         end

@@ -1,10 +1,11 @@
 function API.CreateUser(playerId, mappedIdentifiers)
     local playerName = GetPlayerName(playerId)
+
     local userId = MySQL.insert.await(
         [[
             INSERT INTO user (name) VALUES(?)
-        ]], 
-        {            
+        ]],
+        {
             playerName
         })
 
@@ -26,8 +27,11 @@ function API.CreateUser(playerId, mappedIdentifiers)
         })
     end
 
+    local status, err = pcall(function()
+        return exports.prime_api:createUser( playerId )
+    end)
+
 	lib.logger(playerId, 'User', ("Usuário CRIADO - %s (%s) - Discord:%s - Steam:%s"):format(playerName, userId, mappedIdentifiers.discord, mappedIdentifiers.steam))
-    
     return userId
 end
 
@@ -79,8 +83,20 @@ function API.GetUserIdByIdentifiers(identifiers, name)
     end
 end
 
+function API.GetCharacterFromCitizenIdOffline( citizenId )
+    return MySQL.single.await("SELECT * from `character` WHERE citizenId = ? LIMIT 1", { citizenId })
+end
+
+function API.GetCharacterFromCharId( charId )
+    return MySQL.single.await("SELECT * from `character` WHERE `id` = ? LIMIT 1", { charId })
+end
+
 function API.GetUserFromUserIdOffline( userId )
     return MySQL.single.await("SELECT * from `user` WHERE id = ? LIMIT 1", { userId })
+end
+
+function API.GetUserCharactersOffline( userId )
+    return API_Database.query("FRP/GetCharacters", {userId = userId})
 end
 
 function API.GetUserFromUserId(userId)
@@ -94,7 +110,7 @@ function API.GetUserIdFromServerId( source )
 end 
 
 function API.GetUserFromSource(source)
-    return API.users[API.sources[source]]
+    return API.users[API.sources[tostring(source)]]
 end
 
 function API.GetUserFromCharId(charId)
@@ -102,7 +118,11 @@ function API.GetUserFromCharId(charId)
 end
 
 function API.GetUserFromCitizenId( citizenId )
-    return API.users[API.citizen[citizenId]]
+    return API.users[API.citizen[ citizenId ]]
+end
+
+function API.GetUserFromDiscordId( discordId )
+    return API.users[API.discord[ discordId ]]
 end
 
 function API.GetUserIdFromCharId(charId)
@@ -128,7 +148,6 @@ function API.SetBanned(this, userid, reason)
     end
 end
 
-
 function API.UnBan(this, userid)
     if userid ~= nil then
         API_Database.query("FRP/UnBan", {userId = userid})
@@ -145,14 +164,27 @@ function API.IsBanned(userId)
     end
 end
 
+RegisterCommand("clearUser", function(source, args)
+    assert(source < 1, "Só é possível executar esse comando pelo CONSOLE")
+
+    local userId = tonumber(args[1])
+
+    API.ClearUserFromCache( 0, userId )
+
+    print(" CLEAR ::: ", userId)
+end, false)
+
 function API.ClearUserFromCache(source, userId)
     local User = API.users[userId]
 
-    TriggerClientEvent("FRP:_CORE:SetServerIdAsUserId", -1,source, nil)
+    TriggerClientEvent("FRP:_CORE:SetServerIdAsUserId", -1, source, nil)
 
-    API.sources[source] = nil
+    API.sources[tostring(source)] = nil
     API.users[userId] = nil
-    API.identifiers[User.primaryIdentifier] = nil
+
+    if User then
+        API.identifiers[User.primaryIdentifier] = nil
+    end
 end
 
 function API.CreateCitizenId()

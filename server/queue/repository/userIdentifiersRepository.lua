@@ -2,19 +2,21 @@ function GetUserFromIdentifiersRepository(mappedIdentifiers)
     local user
 
     for key, identifier in pairs(mappedIdentifiers) do
+        if key ~= "ip" then 
 
-        local res = MySQL.single.await([[
-            SELECT id, userId
-            FROM `user_credentials` 
-            WHERE ?? = ?
-        ]], {
-            key,
-            identifier
-        })
+            local res = MySQL.single.await([[
+                SELECT id, userId
+                FROM `user_credentials` 
+                WHERE ?? = ?
+            ]], {
+                key,
+                identifier
+            })
 
-        if res?.id then
-            user = res
-            break
+            if res?.id then
+                user = res
+                break
+            end
         end
     end
 

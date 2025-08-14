@@ -7,8 +7,12 @@ Config.SkyCamSpawnEffect = false
 Config.DefaultSpawnPosition = vector3(-1099.470, -1839.129, 60.327)
 Config.DisableAutoSpawn = true
 
+Config.fivemRequired = false
+
+Config.CoordsToIgnoreCoords = vec3(-561.3221, -5697.16, 74.108841)
+
 -- in-game role
-Config.LoggedInDiscordRole = 1338513326656979025
+Config.LoggedInDiscordRole = 1359900362500346007
 
 -- Config.DefaultFirstSpawnCoords = { -- saint denis
 --     vector3(2695.72, -1444.99, 45.30),
@@ -31,6 +35,6 @@ Config.PrimaryIdentifier = "steam"
 Config.DefaultCharsSlotsAmount = 1
 
 Config.DiscordGuildId = GetConvar("discord_guild_id", 412627639380213760)
-Config.DiscordInvite = "https://discord.gg/uVDf5kGbB8"
+Config.DiscordInvite = GetConvar("discord", '')
 
 Config.EnablePlayerSelectLanguage = true

@@ -13,6 +13,7 @@ function API.Character(id, citizenId, firstName, lastName, birthDate, metaData, 
     self.metaData = metaData or {}
     self.outfitId = 0
 	self.session = {}
+    self.isMale = false
 
     self.level = level or 1
     self.xp = xp or 0
@@ -43,6 +44,7 @@ function API.Character(id, citizenId, firstName, lastName, birthDate, metaData, 
             name = self:GetFullName(),
             outfit = self:GetCurrentOutfit(),
             citizenId = self.citizenId,
+            userId = userId,
         })
 
         self.Inventory = res
@@ -179,6 +181,19 @@ function API.Character(id, citizenId, firstName, lastName, birthDate, metaData, 
         return res
     end
 
+    self.SetCharacterOverrideModel = function( this, model )
+        local affectedRows = MySQL.update.await('UPDATE character_appearance_customizable SET overridePedModel = ?, equippedOutfitId = 1 WHERE charId = ?', {
+            model,
+            self.id, 
+        })
+
+        if affectedRows then
+            return true
+        end
+
+        return false
+    end
+    
     self.SetCharacterAppearanceCustomizable = function( this, characterAppearance )
         local res = MySQL.insert.await([[
             INSERT INTO character_appearance_customizable 
@@ -252,6 +267,19 @@ function API.Character(id, citizenId, firstName, lastName, birthDate, metaData, 
         })
     end
 
+    self.CloneOutfitWithNewName = function( this, outfitName )    
+        local outfitData = self:GetOutfitDataFromDB( self.outfitId )
+        local newOutfitId = self:CreateCharacterOutfit( outfitData, outfitName )
+
+        if newOutfitId then
+            self:SetCurrentOutfit( newOutfitId )
+            
+            local data = self:GetAppearance()
+            cAPI.SetDataAppearence(self.source, data)
+            return
+        end
+    end
+
     self.DeleteOutfitFromId = function( this, outfitId )
         local outfits = self:GetOutfitList()
 
@@ -276,10 +304,20 @@ function API.Character(id, citizenId, firstName, lastName, birthDate, metaData, 
                     break 
                 end
             end
-         end
+        end
 
         return res
     end
+
+    self.SetCharacterHeight = function( this, height )
+        local affectedRows = MySQL.update.await('UPDATE character_appearance SET height = ? WHERE charId = ?', {
+            height,
+            self.id,
+        })
+
+        return affectedRows ~= nil
+    end
+
 
     self.DefineAvailableOutfitPlayer = function( this ) 
 
@@ -302,6 +340,8 @@ function API.Character(id, citizenId, firstName, lastName, birthDate, metaData, 
             INSERT INTO character_appearance_overlays 
                 (charId, data)
             VALUES( ?, ? )
+            ON DUPLICATE KEY UPDATE  
+                data = VALUES(data)
         ]], {
             self.id,
             json.encode(characterAppearanceOverlays)
@@ -400,6 +440,8 @@ function API.Character(id, citizenId, firstName, lastName, birthDate, metaData, 
         characterData.appearanceOverlays.data =  json.decode(characterData.appearanceOverlays.data)
         characterData.appearance.expressions = json.decode(characterData.appearance.expressions)
 
+        self.isMale = characterData.appearance.isMale
+
         return characterData
     end
 
@@ -413,11 +455,33 @@ function API.Character(id, citizenId, firstName, lastName, birthDate, metaData, 
         return {}
     end
 
+    
+    self.UpdateAllCharacterAppearance = function(this, playerProfileCreation, equippedApparelsByType )
+
+        self:SetCharacterAppearance(   playerProfileCreation.components    )
+        self:SetCharacterAppearanceCustomizable(    playerProfileCreation.componentsCustomizable    )
+        self:SetCharacterAppearanceOverlays(    playerProfileCreation.overlays    )
+        self:SetCharacterAppearanceOverlaysCustomizable(    playerProfileCreation.overlaysCustomizable    )
+
+        if equippedApparelsByType then
+            local outfitId = self:CreateCharacterOutfit( equippedApparelsByType, i18n.translate("initial"))
+            if outfitId then
+                self:SetCurrentOutfit(outfitId)
+            end
+        end
+
+        lib.logger(self.source, 'User', ("Atualizou completamente o Personagem (%s): %s %s"):format(self.userId, self.firstName, self.lastName))
+    end
+
     self.SetGameAppearance = function(this)
         local data = self:GetAppearance()
+        cAPI.SaveHealth(self.source)
+
         cAPI.SetDataAppearence(self.source, data)
         cAPI.SetPlayerDefaultModel(self.source)
         cAPI.SetPlayerAppearence(self.source)
+
+        cAPI.ReturnLastStatus(self.source)
     end
 
 	-- Session variables, handy for temporary variables attached to a player

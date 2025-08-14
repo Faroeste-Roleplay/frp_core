@@ -140,6 +140,7 @@ function getGroupMembersAnyGroup(userId, characterId)
 end
 
 
+--## TODO exportar essas funções dentro do groupSystem
 function addGroupMember(groupId, userId, characterId)
     return MySQL.insert.await('INSERT INTO `group_member` (groupId, userId, characterId) VALUES (?, ?, ?)', {
         groupId,
@@ -147,6 +148,7 @@ function addGroupMember(groupId, userId, characterId)
         characterId
     })
 end
+exports("addGroupMember", addGroupMember)
 
 function deleteGroupMemberFromId( groupMemberId )
     return MySQL.query.await('DELETE FROM `group_member` WHERE `id` = ? ', {
@@ -165,3 +167,4 @@ function deleteGroupMember(groupId, userId, characterId)
 
     return deleteGroupMemberFromId( groupMemberId )
 end
+exports("deleteGroupMember", deleteGroupMember)

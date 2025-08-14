@@ -8,6 +8,7 @@ API.sources = {} -- key: source | value: userId
 API.identifiers = {} -- key: identifier | value: userId
 API.chars = {}
 API.citizen = {}
+API.discord = {}
 API.userIdLock = {}
 API.groupSystem = {}
 
@@ -92,4 +93,21 @@ SetConvarReplicated('ox:primaryShade', '9')
 --     print(" API sources :: ", json.encode(API.sources, {intent=true}))
 --     print(" ================================= ")
 --     print(" API identifiers :: ", json.encode(API.identifiers, {intent=true}))
+-- end)
+
+-- AddEventHandler('txAdmin:events:scheduledRestart', function(eventData)
+--     if eventData.secondsRemaining ~= 60 then return end
+
+--     for _, user in pairs ( API.users ) do 
+--         local playerId = user:GetSource()
+--         local playerPosition = GetEntityCoords( GetPlayerPed( playerId ) )
+
+--         TriggerClientEvent("hud:client:requestToSaveStatus", playerId)
+
+--         Wait(200)
+
+--         API.DropUser(playerId, playerPosition, "Servidor agendado para reiniciar")
+
+--         DropPlayer( playerId, "Servidor agendado para reiniciar")
+--     end
 -- end)

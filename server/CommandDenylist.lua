@@ -101,6 +101,8 @@ function AddUserPlayerTokensToDenylist(userId, perpetrator, reason, expirationTi
 
 	return true
 end
+exports('AddUserPlayerTokensToDenylist', AddUserPlayerTokensToDenylist)
+
 
 function SetAllUserDenylistBatchesAsDeactivated(userId)
 	local result = DenylistBatchRepository:GetBanFromUserId(userId)
@@ -113,3 +115,4 @@ function SetAllUserDenylistBatchesAsDeactivated(userId)
 	
 	return true
 end
+exports('SetAllUserDenylistBatchesAsDeactivated', SetAllUserDenylistBatchesAsDeactivated)

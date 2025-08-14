@@ -1,42 +1,50 @@
 function API.ConnectUser(source, userId, identifiers)
     if API.users[userId] then
-        return
+        local user = API.users[userId]
+        local oldId = user:GetSource()
+
+        if oldId == tonumber(source) then
+            return
+        end
     end
 
     local User = API.User(source, userId, GetPlayerEndpoint(source), identifiers)
     User:Initialize();
 
-    API.users[userId] = User
-
     print(#GetPlayers() .. "/" .. GetConvarInt('sv_maxclients', 32) .. " | " .. GetPlayerName(source) .. " (" .. User:GetIpAddress() .. ") entrou (userId = " .. userId .. ", source = " .. source .. ")")
 
     TriggerEvent("FRP:onUserLoaded", User)
 
-    lib.logger(source, 'User', ("CONECTOU - %s - source %s - UserId - %s "):format(User:GetName(), source, userId))
-
     TriggerClientEvent("FRP:_CORE:SetServerIdAsUserId", -1, source, userId)
     TriggerClientEvent("FRP:_CORE:SetServerIdAsUserIdPacked", source, API.sources)
+
+    API.users[userId] = User
+
+    lib.logger(source, 'User', ("CONECTOU - %s - source %s - UserId - %s "):format(User:GetName(), source, userId))
 
     return User
 end
 
 function API.DropUser(playerId, playerPosition, reason)
-    local userId = API.sources[playerId]
+    local userId = API.sources[tostring(playerId)]
     local User = API.users[userId]
 
-	local Character = User:GetCharacter()
+    if User then
+        local Character = User:GetCharacter()
 
-	if Character then
-        User:Logout()
-		Character:SavePosition( playerPosition )
-	end
-    
-    lib.logger(source, 'User', ("DESCONECTOU - %s - source %s - UserId - %s "):format(User:GetName(), source, userId))
+        if Character then
+            User:Logout()
+            local dist = #( playerPosition - Config.CoordsToIgnoreCoords )
+            if dist > 50 then
+                Character:SavePosition( playerPosition )
+            end
+        end
 
-    local wasReleased, userRef = ReleasePlayerUserAsDisconnected(playerId, reason)
+        lib.logger(source, 'User', ("Desconectou - %s - source %s - UserId %s "):format(User:GetName(), User:GetSource(), userId))
+    end
 
-	if wasReleased then
-		TriggerEvent("FRP:playerDropped", playerId, User)
-        API.ClearUserFromCache(playerId, userId)
-	end
+    ReleasePlayerUserAsDisconnected(playerId, reason)
+
+    TriggerEvent("FRP:playerDropped", playerId, User, reason)
+    API.ClearUserFromCache(playerId, userId)
 end

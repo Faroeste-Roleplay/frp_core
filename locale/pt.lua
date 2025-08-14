@@ -1,9 +1,11 @@
 i18n.importData("pt", {
     error = {
+        timeout = "Você está tentando fazer isso rápido demais",
         internal_error = "Ocorreu algum erro desconhecido, por favor contate a staff",
-        create_user = 'Não foi possível criar seu usuário, contate um Desenvolvedor!',
+        create_user = 'Não foi possível criar seu usuário, contate um Desenvolvedor : %s!',
         user_connected = 'O seu usuário já está conectado no servidor. Tente novamente mais tarde!',
         identifiers_not_found = 'Nenhum identificador confiável :/',
+        not_identifier_primary = 'Não encontramos o seu %s, caso tenha duvida contate a staff!',
         steam_not_found = 'Você precisa estar com a Steam aberta!',
         connection_rejected = "Conexão Negada",
         endpoint = 'Endpoint inexistente? Conecte-se novamente!',

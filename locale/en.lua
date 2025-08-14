@@ -1,5 +1,6 @@
 i18n.importData("en", {
     error = {
+        timeout = "You're trying to do this too fast",
         internal_error = "An unknown error has occurred, please contact staff",
         create_user = 'Unable to create your user, contact a Developer!',
         user_connected = 'Your user is already connected to the server. Try again later!',

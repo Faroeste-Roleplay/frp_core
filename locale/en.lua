@@ -5,6 +5,7 @@ i18n.importData("en", {
         create_user = 'Unable to create your user, contact a Developer!',
         user_connected = 'Your user is already connected to the server. Try again later!',
         identifiers_not_found = 'No trusted identifiers :/',
+        not_identifier_primary = 'We couldn`t find your %s, if you have any questions, please contact the staff!',
         steam_not_found = 'You need to have Steam open!',
         connection_rejected = "Connection Denied",
         endpoint = 'Nonexistent endpoint? Please connect again!',

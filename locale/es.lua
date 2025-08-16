@@ -5,15 +5,16 @@ i18n.importData("es", {
         create_user = 'No se puede crear su usuario, ¡contacte a un desarrollador!',
         user_connected = 'Su usuario ya está conectado al servidor. ¡Inténtalo de nuevo más tarde!',
         identifiers_not_found = 'No hay identificadores confiables :/',
+        not_identifier_primary = 'No pudimos encontrar su %s, si tiene alguna pregunta, comuníquese con el personal.',
         steam_not_found = '¡Necesitas tener Steam abierto!',
         Connection_rejected = "Conexión denegada",
         endpoint = '¿Punto final inexistente? ¡Conéctate de nuevo!',
         fivem_not_found = 'Debes iniciar sesión en tu cuenta de FiveM',
-       
+
         discord_not_found = "Discordia no encontrada",
         not_allowed = "No tienes ningún rol prioritario. ¡Únete a nuestro discordia!",
         not_priority_role = "No puedes jugar entre las 00:00 y las 06:00 con tu prioridad actual.",
-       
+
         join_discord = "Para obtener acceso a nuestro servidor necesitas unirte a nuestro discord. \n\nBusca la sala #cómo-unirte-al-servidor",
         auth_code_invalid = 'El código de autorización utilizado en la API de Discord no es válido, ¡infórmele a un desarrollador!',
         request_exceeded = 'Se ha superado el número de solicitudes. ¡Inténtelo de nuevo más tarde!',

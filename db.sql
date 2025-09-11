@@ -411,18 +411,24 @@ ALTER TABLE `character_rpg_stats`
 
 
 
-
--- Dumping structure for table project.business
 CREATE TABLE IF NOT EXISTS `business` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `bid` int(11) NOT NULL,
-  `name` varchar(50) NOT NULL DEFAULT '',
-  `classe` int(11) NOT NULL,
-  `level` int(11) DEFAULT 1,
-  `status` int(11) DEFAULT NULL,
-  `owners` varchar(250) DEFAULT '{}',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`businessId` VARCHAR(50) NOT NULL DEFAULT '0' COLLATE 'utf8mb4_general_ci',
+	`classe` VARCHAR(50) NOT NULL DEFAULT '' COLLATE 'utf8mb4_general_ci',
+	`level` INT(11) NULL DEFAULT '1',
+	`status` INT(11) NULL DEFAULT '1',
+	`hasPhysicLocation` TINYINT(4) NULL DEFAULT '0',
+	`owners` VARCHAR(250) NULL DEFAULT '{}' COLLATE 'utf8mb4_general_ci',
+	`paymentInterval` INT(11) NULL DEFAULT '30',
+	PRIMARY KEY (`id`) USING BTREE,
+	UNIQUE INDEX `businessId` (`businessId`) USING BTREE
+)
+COLLATE='utf8mb4_general_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=0
+;
+
+
 
 -- Dumping data for table project.business: ~0 rows (approximately)
 

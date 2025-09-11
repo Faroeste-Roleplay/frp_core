@@ -298,7 +298,7 @@ CREATE TABLE IF NOT EXISTS `user_credentials` (
   `userId` int(11) NOT NULL,
   `license` varchar(50) DEFAULT NULL,
   `discord` varchar(50) DEFAULT NULL,
-  `steam` varchar(50) DEFAULT NULL,
+  `steam` varchar(50) NOT NULL,
   `fivem` varchar(50) DEFAULT NULL,
   `xbl` varchar(50) DEFAULT NULL,
   `license2` varchar(50) DEFAULT NULL,
@@ -408,3 +408,88 @@ ALTER TABLE `character_rpg_stats`
 	CHANGE COLUMN `statStress` `fatigue` INT(11) NOT NULL DEFAULT '0' AFTER `drunk`,
 	CHANGE COLUMN `statDrugs` `drugs` INT(11) NOT NULL DEFAULT '0' AFTER `fatigue`,
 	ADD COLUMN `sick` INT(11) NOT NULL DEFAULT '0' AFTER `drugs`;
+
+
+
+
+-- Dumping structure for table project.business
+CREATE TABLE IF NOT EXISTS `business` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `bid` int(11) NOT NULL,
+  `name` varchar(50) NOT NULL DEFAULT '',
+  `classe` int(11) NOT NULL,
+  `level` int(11) DEFAULT 1,
+  `status` int(11) DEFAULT NULL,
+  `owners` varchar(250) DEFAULT '{}',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumping data for table project.business: ~0 rows (approximately)
+
+-- Dumping structure for table project.business_employers
+CREATE TABLE IF NOT EXISTS `business_employers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `businessId` int(11) NOT NULL,
+  `citizenId` varchar(50) NOT NULL DEFAULT '',
+  `grade` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumping data for table project.business_employers: ~0 rows (approximately)
+
+-- Dumping structure for table project.business_grades
+CREATE TABLE IF NOT EXISTS `business_grades` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `businessId` int(11) DEFAULT NULL,
+  `name` varchar(50) NOT NULL,
+  `permissions` varchar(250) NOT NULL DEFAULT '{}',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumping data for table project.business_grades: ~0 rows (approximately)
+
+-- Dumping structure for table project.business_info
+CREATE TABLE IF NOT EXISTS `business_info` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `businessId` int(11) DEFAULT NULL,
+  `short_name` text NOT NULL,
+  `property_location` varchar(250) DEFAULT '{}',
+  `description` varchar(250) DEFAULT '',
+  `logo` varchar(250) DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumping data for table project.business_info: ~0 rows (approximately)
+
+/*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
+/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
+/*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40111 SET SQL_NOTES=IFNULL(@OLD_SQL_NOTES, 1) */;
+
+
+CREATE TABLE `character_purchase_tax` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`citizenid` VARCHAR(50) NOT NULL DEFAULT '0' COLLATE 'utf8mb3_general_ci',
+	`tax` INT(11) NOT NULL DEFAULT '0',
+	PRIMARY KEY (`id`) USING BTREE
+)
+COLLATE='utf8mb3_general_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=36
+;
+
+
+CREATE TABLE `jail` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`charId` INT(11) NULL DEFAULT NULL,
+	`jail_time` INT(11) NULL DEFAULT NULL,
+	`date` TIMESTAMP NOT NULL DEFAULT current_timestamp(),
+	PRIMARY KEY (`id`) USING BTREE,
+	INDEX `charId` (`charId`) USING BTREE,
+	CONSTRAINT `FK_jail_character` FOREIGN KEY (`charId`) REFERENCES `character` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+)
+COLLATE='latin1_swedish_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=0
+;
